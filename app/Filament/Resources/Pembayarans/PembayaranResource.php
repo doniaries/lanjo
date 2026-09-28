@@ -19,6 +19,8 @@ class PembayaranResource extends Resource
     protected static ?string $model = Pembayaran::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-credit-card';
+    protected static bool $shouldRegisterNavigation = false;
+
     public static function getNavigationGroup(): ?string
     {
         return 'Transaksi';

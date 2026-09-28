@@ -13,6 +13,26 @@ class ListPesanans extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            \Filament\Actions\Action::make('cetak_laporan')
+                ->label('Cetak Laporan')
+                ->icon('heroicon-o-printer')
+                ->color('success')
+                ->form([
+                    \Filament\Forms\Components\DatePicker::make('start_date')
+                        ->label('Dari Tanggal')
+                        ->required()
+                        ->default(now()),
+                    \Filament\Forms\Components\DatePicker::make('end_date')
+                        ->label('Sampai Tanggal')
+                        ->required()
+                        ->default(now()),
+                ])
+                ->action(function (array $data) {
+                    return redirect()->route('laporan.transaksi', [
+                        'start' => $data['start_date'],
+                        'end' => $data['end_date'],
+                    ]);
+                }),
             CreateAction::make(),
         ];
     }

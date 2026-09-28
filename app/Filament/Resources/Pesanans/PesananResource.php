@@ -40,7 +40,8 @@ class PesananResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            \App\Filament\Resources\Pesanans\RelationManagers\DetailPesanansRelationManager::class,
+            \App\Filament\Resources\Pesanans\RelationManagers\PembayaransRelationManager::class,
         ];
     }
 
