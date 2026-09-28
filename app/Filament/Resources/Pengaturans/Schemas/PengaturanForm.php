@@ -27,6 +27,9 @@ class PengaturanForm
                     ->required()
                     ->numeric()
                     ->default(0.0),
+                \Filament\Forms\Components\Toggle::make('pajak_aktif')
+                    ->label('Aktifkan Pajak di POS')
+                    ->default(false),
                 TextInput::make('nama_pimpinan')
                     ->label('Nama Pimpinan')
                     ->maxLength(255),

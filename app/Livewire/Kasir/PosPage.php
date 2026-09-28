@@ -233,6 +233,8 @@ class PosPage extends Component
 
     public function getPajakProperty(): float
     {
+        if (! ($this->pengaturan?->pajak_aktif ?? false)) return 0;
+        
         $pajak = $this->pengaturan?->pajak_default ?? 0;
         return $this->subtotal * ($pajak / 100);
     }
@@ -279,7 +281,14 @@ class PosPage extends Component
         $user = auth()->user();
 
         DB::transaction(function () use ($user) {
-            $nomor = 'NOTA-' . now()->format('Ymd-His') . '-' . rand(100, 999);
+            $today = now()->format('Ymd');
+            $latestPesanan = Pesanan::whereDate('tanggal', today())->latest('id')->first();
+            if ($latestPesanan && preg_match('/NOTA-\d{8}-(\d{4})/', $latestPesanan->nomor_nota, $matches)) {
+                $nextNumber = intval($matches[1]) + 1;
+            } else {
+                $nextNumber = 1;
+            }
+            $nomor = 'NOTA-' . $today . '-' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
 
             $pesanan = Pesanan::create([
                 'nomor_nota'   => $nomor,

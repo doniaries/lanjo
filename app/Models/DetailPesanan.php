@@ -5,5 +5,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class DetailPesanan extends Model {
     protected $guarded = [];
     public function pesanan(): BelongsTo { return $this->belongsTo(Pesanan::class); }
+    public function menu(): BelongsTo { return $this->belongsTo(Menu::class); }
     public function varianMenu(): BelongsTo { return $this->belongsTo(VarianMenu::class); }
 }
