@@ -63,11 +63,11 @@ class AdminPanelProvider extends PanelProvider
                     ->sort(-3),
             ]) */
             ->navigationGroups([
-                'Dinas',
-                'Data',
-                'Ekraf',
+                'Transaksi',
+                'Katalog Menu',
+                'Inventori',
+                'Master Data',
                 'Pengaturan',
-
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([

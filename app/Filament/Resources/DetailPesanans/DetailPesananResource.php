@@ -19,7 +19,10 @@ class DetailPesananResource extends Resource
     protected static ?string $model = DetailPesanan::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-list';
-    protected static ?string $navigationGroup = 'Transaksi';
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Transaksi';
+    }
     protected static ?int $navigationSort = 3;
 
     protected static ?string $recordTitleAttribute = 'id';

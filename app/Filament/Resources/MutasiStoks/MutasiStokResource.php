@@ -19,7 +19,10 @@ class MutasiStokResource extends Resource
     protected static ?string $model = MutasiStok::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-archive-box';
-    protected static ?string $navigationGroup = 'Inventori';
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Inventori';
+    }
     protected static ?int $navigationSort = 1;
 
     protected static ?string $recordTitleAttribute = 'id';

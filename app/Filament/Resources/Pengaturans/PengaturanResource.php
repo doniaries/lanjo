@@ -19,7 +19,10 @@ class PengaturanResource extends Resource
     protected static ?string $model = Pengaturan::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-cog-8-tooth';
-    protected static ?string $navigationGroup = 'Pengaturan';
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Pengaturan';
+    }
     protected static ?int $navigationSort = 1;
 
     protected static ?string $recordTitleAttribute = 'id';

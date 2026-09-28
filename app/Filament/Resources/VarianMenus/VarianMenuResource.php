@@ -19,7 +19,10 @@ class VarianMenuResource extends Resource
     protected static ?string $model = VarianMenu::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-adjustments-horizontal';
-    protected static ?string $navigationGroup = 'Katalog Menu';
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Katalog Menu';
+    }
     protected static ?int $navigationSort = 3;
 
     protected static ?string $recordTitleAttribute = 'id';

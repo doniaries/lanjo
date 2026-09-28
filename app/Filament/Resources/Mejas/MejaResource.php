@@ -19,7 +19,10 @@ class MejaResource extends Resource
     protected static ?string $model = Meja::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-squares-2x2';
-    protected static ?string $navigationGroup = 'Master Data';
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Master Data';
+    }
     protected static ?int $navigationSort = 1;
 
     protected static ?string $recordTitleAttribute = 'id';
