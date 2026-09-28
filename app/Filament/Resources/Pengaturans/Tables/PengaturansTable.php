@@ -5,6 +5,8 @@ namespace App\Filament\Resources\Pengaturans\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -21,9 +23,11 @@ class PengaturansTable
                 TextColumn::make('tipe_toko')
                     ->badge(),
                 TextColumn::make('pajak_default')
+                    ->label('Pajak (%)')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('logo')
+                ImageColumn::make('logo')
+                    ->disk('public')
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()

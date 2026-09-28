@@ -27,7 +27,15 @@ class PengaturanForm
                     ->required()
                     ->numeric()
                     ->default(0.0),
-                TextInput::make('logo'),
+                TextInput::make('nama_pimpinan')
+                    ->label('Nama Pimpinan')
+                    ->maxLength(255),
+                \Filament\Forms\Components\FileUpload::make('logo')
+                    ->image()
+                    ->directory('pengaturan')
+                    ->maxSize(2048)
+                    ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/jpg'])
+                    ->imageEditor(),
             ]);
     }
 }

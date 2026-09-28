@@ -41,6 +41,9 @@ class MenuForm
                     ->image()
                     ->disk('public')
                     ->directory('menus')
+                    ->maxSize(2048)
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/jpg'])
+                    ->imageEditor()
                     ->nullable(),
                 Toggle::make('status_aktif')
                     ->label('Aktif')

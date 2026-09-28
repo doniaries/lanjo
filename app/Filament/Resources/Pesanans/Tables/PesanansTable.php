@@ -16,14 +16,17 @@ class PesanansTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn ($query) => $query
-                ->with(['meja', 'kasir'])
-                ->latest('tanggal')
+            ->modifyQueryUsing(
+                fn($query) => $query
+                    ->with(['meja', 'kasir'])
+                    ->latest('tanggal')
             )
+            ->recordUrl(fn (\Illuminate\Database\Eloquent\Model $record): string => \App\Filament\Resources\Pesanans\Pages\ViewPesanan::getUrl(['record' => $record->id]))
             ->columns([
                 TextColumn::make('nomor_nota')
                     ->label('No. Nota')
                     ->searchable()
+                    ->copyable()
                     ->sortable()
                     ->weight('bold')
                     ->fontFamily('mono')
@@ -43,8 +46,8 @@ class PesanansTable
                 TextColumn::make('tipe_pesanan')
                     ->label('Tipe')
                     ->badge()
-                    ->color(fn ($state) => $state === 'dine_in' ? 'success' : 'warning')
-                    ->formatStateUsing(fn ($state) => $state === 'dine_in' ? 'Dine In' : 'Take Away'),
+                    ->color(fn($state) => $state === 'dine_in' ? 'success' : 'warning')
+                    ->formatStateUsing(fn($state) => $state === 'dine_in' ? 'Dine In' : 'Take Away'),
 
                 TextColumn::make('kasir.name')
                     ->label('Kasir')
@@ -53,12 +56,12 @@ class PesanansTable
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
-                    ->color(fn ($state) => match($state) {
+                    ->color(fn($state) => match ($state) {
                         'selesai' => 'success',
                         'batal'   => 'danger',
                         default   => 'warning',
                     })
-                    ->formatStateUsing(fn ($state) => match($state) {
+                    ->formatStateUsing(fn($state) => match ($state) {
                         'selesai' => 'Selesai',
                         'batal'   => 'Batal',
                         default   => 'Baru',
@@ -66,7 +69,7 @@ class PesanansTable
 
                 TextColumn::make('total_akhir')
                     ->label('Total')
-                    ->formatStateUsing(fn ($state) => format_rupiah($state))
+                    ->formatStateUsing(fn($state) => format_rupiah($state))
                     ->sortable()
                     ->weight('bold'),
 
