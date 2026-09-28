@@ -35,35 +35,35 @@
                 {{-- Riwayat --}}
                 <a href="{{ route('filament.admin.resources.pesanans.index') }}" target="_blank"
                     title="Riwayat Transaksi"
-                    class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl bg-surface border border-surface-border hover:border-brand-500 hover:text-brand-400 text-surface-muted transition group">
+                    class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl bg-blue-500/10 text-blue-500 border border-blue-500/20 hover:bg-blue-500 hover:text-white transition group">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     <span class="text-[10px] font-medium">Riwayat</span>
                 </a>
 
                 {{-- Pending --}}
                 <button wire:click="$set('showPending', true)" title="Pesanan Pending"
-                    class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl bg-surface border border-surface-border hover:border-amber-400 hover:text-amber-400 text-surface-muted transition">
+                    class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20 hover:bg-amber-500 hover:text-white transition group">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     <span class="text-[10px] font-medium">Pending</span>
                 </button>
 
                 {{-- Reset / Bersihkan Cart --}}
                 <button wire:click="clearCart" wire:confirm="Kosongkan semua pesanan?" title="Reset Pesanan"
-                    class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl bg-surface border border-surface-border hover:border-red-400 hover:text-red-400 text-surface-muted transition">
+                    class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl bg-rose-500/10 text-rose-500 border border-rose-500/20 hover:bg-rose-500 hover:text-white transition group">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                     <span class="text-[10px] font-medium">Reset</span>
                 </button>
 
                 {{-- Laporan --}}
                 <a href="{{ route('filament.admin.resources.pembayarans.index') }}" target="_blank" title="Laporan Pembayaran"
-                    class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl bg-surface border border-surface-border hover:border-green-400 hover:text-green-400 text-surface-muted transition">
+                    class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 hover:bg-emerald-500 hover:text-white transition group">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                     <span class="text-[10px] font-medium">Laporan</span>
                 </a>
 
                 {{-- Theme Toggle --}}
                 <button onclick="document.documentElement.classList.toggle('light-mode')" title="Ubah Tema"
-                    class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl bg-surface border border-surface-border hover:border-brand-400 hover:text-brand-400 text-surface-muted transition">
+                    class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl bg-purple-500/10 text-purple-500 border border-purple-500/20 hover:bg-purple-500 hover:text-white transition group">
                     <svg class="w-4 h-4 hidden .light-mode:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                     <svg class="w-4 h-4 block .light-mode:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
                     <span class="text-[10px] font-medium">Tema</span>
@@ -71,7 +71,7 @@
 
                 {{-- Fullscreen --}}
                 <button @click="toggleFullscreen()" title="Full Screen"
-                    class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl bg-surface border border-surface-border hover:border-brand-400 hover:text-brand-400 text-surface-muted transition">
+                    class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl bg-cyan-500/10 text-cyan-500 border border-cyan-500/20 hover:bg-cyan-500 hover:text-white transition group">
                     <svg x-show="!isFullscreen" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
                     <svg x-show="isFullscreen" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25"/></svg>
                     <span class="text-[10px] font-medium" x-text="isFullscreen ? 'Keluar' : 'Fullscr'"></span>
@@ -107,21 +107,27 @@
 
         {{-- KATEGORI TABS + SEARCH --}}
         <div class="flex items-center gap-2 px-5 py-3 border-b border-surface-border bg-surface-card shrink-0 overflow-x-auto">
+            @php
+                $allColor = 'bg-brand-600 text-white shadow-lg shadow-brand-900';
+                $allInactive = 'bg-brand-500/10 text-brand-500 border border-brand-500/20 hover:bg-brand-500 hover:text-white';
+                $colors = [
+                    ['active' => 'bg-indigo-600 text-white shadow-lg shadow-indigo-900', 'inactive' => 'bg-indigo-500/10 text-indigo-500 border border-indigo-500/20 hover:bg-indigo-500 hover:text-white'],
+                    ['active' => 'bg-pink-600 text-white shadow-lg shadow-pink-900', 'inactive' => 'bg-pink-500/10 text-pink-500 border border-pink-500/20 hover:bg-pink-500 hover:text-white'],
+                    ['active' => 'bg-orange-600 text-white shadow-lg shadow-orange-900', 'inactive' => 'bg-orange-500/10 text-orange-500 border border-orange-500/20 hover:bg-orange-500 hover:text-white'],
+                    ['active' => 'bg-teal-600 text-white shadow-lg shadow-teal-900', 'inactive' => 'bg-teal-500/10 text-teal-500 border border-teal-500/20 hover:bg-teal-500 hover:text-white'],
+                    ['active' => 'bg-fuchsia-600 text-white shadow-lg shadow-fuchsia-900', 'inactive' => 'bg-fuchsia-500/10 text-fuchsia-500 border border-fuchsia-500/20 hover:bg-fuchsia-500 hover:text-white'],
+                ];
+            @endphp
             {{-- Tombol Semua --}}
             <button wire:click="$set('selectedKategori', null)"
-                class="shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200
-                {{ $selectedKategori === null
-                    ? 'bg-brand-600 text-white shadow-lg shadow-brand-900'
-                    : 'bg-surface border border-surface-border text-surface-muted hover:border-brand-500 hover:text-white' }}">
+                class="shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 {{ $selectedKategori === null ? $allColor : $allInactive }}">
                 Semua
             </button>
 
             @foreach($this->kategoris as $kat)
+                @php $c = $colors[$loop->index % count($colors)]; @endphp
                 <button wire:click="selectKategori({{ $kat->id }})"
-                    class="shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200
-                    {{ $selectedKategori === $kat->id
-                        ? 'bg-brand-600 text-white shadow-lg shadow-brand-900'
-                        : 'bg-surface border border-surface-border text-surface-muted hover:border-brand-500 hover:text-white' }}">
+                    class="shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 {{ $selectedKategori === $kat->id ? $c['active'] : $c['inactive'] }}">
                     {{ $kat->nama }}
                 </button>
             @endforeach
@@ -463,12 +469,150 @@
                         <p class="text-2xl font-black text-green-400">Rp {{ number_format($kembalianSuccess, 0, ',', '.') }}</p>
                     </div>
                 @endif
+                <div class="grid grid-cols-2 gap-3 mt-2">
+                    <button onclick="printStruk(58)" class="w-full py-3 rounded-2xl bg-surface border border-brand-500 text-brand-400 font-bold hover:bg-brand-500/10 transition flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                        58mm
+                    </button>
+                    <button onclick="printStruk(80)" class="w-full py-3 rounded-2xl bg-surface border border-brand-500 text-brand-400 font-bold hover:bg-brand-500/10 transition flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                        80mm
+                    </button>
+                </div>
                 <button wire:click="closeSuccess"
-                    class="w-full py-3 rounded-2xl bg-brand-600 hover:bg-brand-500 text-white font-bold transition">
-                    Pesanan Baru
+                    class="w-full py-3 rounded-2xl bg-brand-600 hover:bg-brand-500 text-white font-bold transition mt-2">
+                    Selesai (Pesanan Baru)
                 </button>
             </div>
         </div>
     @endif
 
+    {{-- ═══════════════════════════════════════════════════════ --}}
+    {{-- PRINT AREA (HIDDEN FROM SCREEN)                        --}}
+    {{-- ═══════════════════════════════════════════════════════ --}}
+    @if(!empty($notaData))
+    <div id="print-area" class="hidden text-black bg-white">
+        <div class="print-header text-center mb-4">
+            <h1 class="font-bold text-xl">{{ $notaData['toko'] }}</h1>
+            <p class="text-xs">{{ $notaData['alamat'] }}</p>
+            <p class="text-xs">{{ $notaData['telepon'] }}</p>
+        </div>
+        
+        <div class="text-xs mb-3 flex justify-between border-b border-black pb-2 border-dashed">
+            <div>
+                <p>No: {{ $notaData['nomor'] }}</p>
+                <p>Tgl: {{ $notaData['tanggal'] }}</p>
+            </div>
+            <div class="text-right">
+                <p>Ksr: {{ $notaData['kasir'] }}</p>
+                @if($notaData['nama_pembeli'])
+                <p>Plg: {{ $notaData['nama_pembeli'] }}</p>
+                @endif
+            </div>
+        </div>
+
+        <table class="w-full text-xs mb-3">
+            @foreach($notaData['items'] as $item)
+            <tr>
+                <td colspan="3" class="pb-1">{{ $item['nama'] }}</td>
+            </tr>
+            <tr class="border-b border-black border-dashed">
+                <td class="pb-2">{{ $item['qty'] }}x</td>
+                <td class="pb-2">{{ number_format($item['harga'], 0, ',', '.') }}</td>
+                <td class="text-right pb-2">{{ number_format($item['qty'] * $item['harga'], 0, ',', '.') }}</td>
+            </tr>
+            @endforeach
+        </table>
+
+        <div class="text-xs space-y-1 mb-3 border-b border-black pb-3 border-dashed">
+            <div class="flex justify-between">
+                <span>Subtotal</span>
+                <span>{{ number_format($notaData['subtotal'], 0, ',', '.') }}</span>
+            </div>
+            @if($notaData['diskon'] > 0)
+            <div class="flex justify-between">
+                <span>Diskon</span>
+                <span>-{{ number_format($notaData['diskon'], 0, ',', '.') }}</span>
+            </div>
+            @endif
+            @if($notaData['pajak'] > 0)
+            <div class="flex justify-between">
+                <span>Pajak ({{ $notaData['pajak_pct'] }}%)</span>
+                <span>{{ number_format($notaData['pajak'], 0, ',', '.') }}</span>
+            </div>
+            @endif
+            <div class="flex justify-between font-bold text-sm pt-1">
+                <span>TOTAL</span>
+                <span>{{ number_format($notaData['total'], 0, ',', '.') }}</span>
+            </div>
+        </div>
+
+        <div class="text-xs space-y-1 mb-4">
+            <div class="flex justify-between">
+                <span>Bayar ({{ ucfirst(str_replace('_', ' ', $notaData['metode'])) }})</span>
+                <span>{{ number_format($notaData['nominal_bayar'], 0, ',', '.') }}</span>
+            </div>
+            @if($notaData['metode'] === 'qris' || $notaData['metode'] === 'transfer')
+            <div class="flex justify-between">
+                <span>Bank/E-Wallet</span>
+                <span class="uppercase">{{ $notaData['bank_pengirim'] ?: '-' }}</span>
+            </div>
+            @endif
+            <div class="flex justify-between">
+                <span>Kembali</span>
+                <span>{{ number_format($notaData['kembalian'], 0, ',', '.') }}</span>
+            </div>
+        </div>
+
+        <div class="text-center text-xs mt-4 mb-8">
+            <p>Terima Kasih</p>
+            <p>Selamat Datang Kembali</p>
+        </div>
+    </div>
+    @endif
+
+    <style>
+        @media print {
+            body > *:not(#print-area) {
+                display: none !important;
+            }
+            body {
+                background: white !important;
+                margin: 0;
+                padding: 0;
+            }
+            #print-area {
+                display: block !important;
+                color: black !important;
+                background: white !important;
+            }
+            #print-area * {
+                color: black !important;
+            }
+            
+            .print-58 {
+                width: 58mm;
+                margin: 0;
+                padding: 4mm;
+                font-family: monospace;
+            }
+            .print-80 {
+                width: 80mm;
+                margin: 0;
+                padding: 4mm;
+                font-family: monospace;
+            }
+        }
+    </style>
+    <script>
+        function printStruk(size) {
+            const pa = document.getElementById('print-area');
+            if(pa) {
+                pa.className = 'print-' + size;
+                window.print();
+            } else {
+                alert('Data struk tidak ditemukan!');
+            }
+        }
+    </script>
 </div>
