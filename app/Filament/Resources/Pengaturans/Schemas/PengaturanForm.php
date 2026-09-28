@@ -32,6 +32,7 @@ class PengaturanForm
                     ->maxLength(255),
                 \Filament\Forms\Components\FileUpload::make('logo')
                     ->image()
+                    ->disk('public')
                     ->directory('pengaturan')
                     ->maxSize(2048)
                     ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/jpg'])
