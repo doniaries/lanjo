@@ -27,7 +27,6 @@
                 </div>
                 <div>
                     <p class="text-sm font-bold text-white leading-tight">{{ $this->pengaturan?->nama_toko ?? config('app.name') }}</p>
-                    <p class="text-xs text-surface-muted">{{ now()->isoFormat('dddd, D MMM Y') }}</p>
                 </div>
             </div>
 
@@ -62,6 +61,14 @@
                     <span class="text-[10px] font-medium">Laporan</span>
                 </a>
 
+                {{-- Theme Toggle --}}
+                <button onclick="document.documentElement.classList.toggle('light-mode')" title="Ubah Tema"
+                    class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl bg-surface border border-surface-border hover:border-brand-400 hover:text-brand-400 text-surface-muted transition">
+                    <svg class="w-4 h-4 hidden .light-mode:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                    <svg class="w-4 h-4 block .light-mode:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                    <span class="text-[10px] font-medium">Tema</span>
+                </button>
+
                 {{-- Fullscreen --}}
                 <button @click="toggleFullscreen()" title="Full Screen"
                     class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl bg-surface border border-surface-border hover:border-brand-400 hover:text-brand-400 text-surface-muted transition">
@@ -75,7 +82,7 @@
 
                 {{-- Kasir info --}}
                 <div class="flex items-center gap-2">
-                    <div class="w-7 h-7 bg-brand-700 rounded-full flex items-center justify-center text-xs font-bold">
+                    <div class="w-7 h-7 bg-brand-700 rounded-full flex items-center justify-center text-xs font-bold text-white">
                         {{ substr(auth()->user()->name, 0, 1) }}
                     </div>
                     <span class="text-xs text-white font-medium">{{ auth()->user()->name }}</span>
@@ -94,7 +101,7 @@
                 get tanggal() { return this.now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }); }
             }" class="flex flex-col items-end">
                 <span x-text="jam" class="text-xl font-black text-white tracking-wider tabular-nums"></span>
-                <span x-text="tanggal" class="text-[10px] text-surface-muted"></span>
+                <span x-text="tanggal" class="text-[11px] text-white opacity-80 font-medium"></span>
             </div>
         </div>
 
@@ -400,13 +407,18 @@
                                 (int)(ceil($tot / 10000) * 10000),
                                 (int)(ceil($tot / 50000) * 50000),
                                 (int)(ceil($tot / 100000) * 100000),
+                                20000,
+                                50000,
+                                100000,
+                                200000,
                             ]);
                             sort($quickAmounts);
+                            // Filter only those >= total to avoid negative change, except we always show them
                         @endphp
-                        <div class="grid grid-cols-4 gap-2">
+                        <div class="flex flex-wrap gap-2">
                             @foreach($quickAmounts as $amount)
                                 <button @click="setVal({{ $amount }})"
-                                    class="py-2.5 bg-surface border border-surface-border rounded-xl text-sm font-bold text-white hover:border-brand-500 hover:text-brand-400 transition">
+                                    class="px-4 py-2 bg-surface border border-surface-border rounded-xl text-sm font-bold text-white hover:border-brand-500 hover:text-brand-400 transition">
                                     {{ number_format($amount, 0, ',', '.') }}
                                 </button>
                             @endforeach
