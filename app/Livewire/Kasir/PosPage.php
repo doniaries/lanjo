@@ -43,6 +43,8 @@ class PosPage extends Component
     public bool   $showPending        = false;
     public bool   $showRiwayat        = false;
     public bool   $showLaporan        = false;
+    public bool   $showDetailPesanan  = false;
+    public ?int   $selectedPesananId  = null;
     public string $laporanStart       = '';
     public string $laporanEnd         = '';
     public float  $kembalianSuccess   = 0;
@@ -53,6 +55,63 @@ class PosPage extends Component
         $this->laporanStart = now()->format('Y-m-d');
         $this->laporanEnd = now()->format('Y-m-d');
         $this->selectedKategori = null;
+    }
+
+    public function viewPesananDetail($id): void
+    {
+        $this->selectedPesananId = $id;
+        $this->showRiwayat = false;
+        $this->showDetailPesanan = true;
+        
+        $pesanan = $this->selectedPesananDetail;
+        if ($pesanan) {
+            $items = [];
+            foreach ($pesanan->detailPesanans as $detail) {
+                $items[] = [
+                    'nama' => $detail->menu->nama ?? $detail->nama_menu_snapshot,
+                    'qty' => $detail->jumlah,
+                    'harga' => $detail->harga_satuan_snapshot,
+                ];
+            }
+            $pembayaran = $pesanan->pembayarans->first();
+
+            $this->notaData = [
+                'nomor'          => $pesanan->nomor_nota,
+                'tanggal'        => \Carbon\Carbon::parse($pesanan->tanggal)->format('d/m/Y H:i'),
+                'kasir'          => $pesanan->kasir?->name ?? '-',
+                'toko'           => $this->pengaturan?->nama_toko ?? config('app.name'),
+                'alamat'         => $this->pengaturan?->alamat ?? '',
+                'telepon'        => $this->pengaturan?->telepon ?? '',
+                'items'          => $items,
+                'subtotal'       => $pesanan->subtotal,
+                'pajak'          => $pesanan->pajak_nilai ?? 0,
+                'pajak_pct'      => $this->pengaturan?->pajak_default ?? 0,
+                'diskon'         => $pesanan->diskon_nilai ?? 0,
+                'total'          => $pesanan->total_akhir,
+                'metode'         => $pembayaran?->metode ?? 'tunai',
+                'nominal_bayar'  => $pembayaran?->jumlah_bayar ?? $pesanan->total_akhir,
+                'kembalian'      => $pembayaran?->kembalian ?? 0,
+                'nama_pembeli'   => '', // could be added to DB later if needed
+                'bank_pengirim'  => '',
+                'tipe_pesanan'   => $pesanan->tipe_pesanan,
+                'catatan'        => $pesanan->catatan ?? '',
+            ];
+        }
+    }
+
+    public function closeDetailPesanan(): void
+    {
+        $this->showDetailPesanan = false;
+        $this->selectedPesananId = null;
+        $this->showRiwayat = true;
+    }
+
+    #[Computed]
+    public function selectedPesananDetail()
+    {
+        return $this->selectedPesananId 
+            ? Pesanan::with(['detailPesanans.menu', 'kasir', 'meja', 'pembayarans'])->find($this->selectedPesananId) 
+            : null;
     }
 
     #[Computed]

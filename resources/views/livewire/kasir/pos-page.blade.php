@@ -389,7 +389,7 @@
                                 this.display = this.format({{ (int) $nominalBayar }});
                                 this.$watch('display', val => {
                                     const raw = parseInt(String(val).replace(/\./g,'')) || 0;
-                                    @this.set('nominalBayar', raw);
+                                    $wire.set('nominalBayar', raw);
                                 });
                             },
                             format(n) {
@@ -399,11 +399,11 @@
                                 const raw = e.target.value.replace(/\./g,'').replace(/[^0-9]/g,'');
                                 const num = parseInt(raw) || 0;
                                 this.display = this.format(num);
-                                @this.set('nominalBayar', num);
+                                $wire.set('nominalBayar', num);
                             },
                             setVal(n) {
                                 this.display = this.format(n);
-                                @this.set('nominalBayar', n);
+                                $wire.set('nominalBayar', n);
                             }
                         }">
                         <p class="text-xs text-surface-muted font-semibold uppercase tracking-wider">Nominal Bayar</p>
@@ -420,19 +420,14 @@
                         {{-- Quick amounts dari total --}}
                         @php
                             $tot = (int) $this->total;
-                            $base = (int)(ceil($tot / 5000) * 5000);
                             $quickAmounts = array_unique([
-                                $base,
-                                (int)(ceil($tot / 10000) * 10000),
-                                (int)(ceil($tot / 50000) * 50000),
-                                (int)(ceil($tot / 100000) * 100000),
+                                $tot,
                                 20000,
                                 50000,
                                 100000,
                                 200000,
                             ]);
                             sort($quickAmounts);
-                            // Filter only those >= total to avoid negative change, except we always show them
                         @endphp
                         <div class="flex flex-wrap gap-2">
                             @foreach($quickAmounts as $amount)
@@ -644,9 +639,9 @@
                     </thead>
                     <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
                         @forelse($this->riwayatTransaksi as $rt)
-                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition cursor-pointer" wire:click="viewPesananDetail({{ $rt->id }})">
                             <td class="px-4 py-3">{{ \Carbon\Carbon::parse($rt->tanggal)->format('H:i') }}</td>
-                            <td class="px-4 py-3 font-mono text-emerald-600 dark:text-emerald-400">{{ $rt->nomor_nota }}</td>
+                            <td class="px-4 py-3 font-mono text-emerald-600 dark:text-emerald-400 font-semibold underline decoration-emerald-600/30 underline-offset-2">{{ $rt->nomor_nota }}</td>
                             <td class="px-4 py-3">{{ $rt->tipe_pesanan === 'dine_in' ? 'Dine In' : 'Take Away' }}</td>
                             <td class="px-4 py-3">{{ $rt->kasir?->name }}</td>
                             <td class="px-4 py-3 text-right font-semibold">Rp {{ number_format($rt->total_akhir, 0, ',', '.') }}</td>
@@ -675,45 +670,185 @@
     </div>
     @endif
 
-    <style>
-        @media print {
-            body > *:not(#print-area) {
-                display: none !important;
-            }
-            body {
-                background: white !important;
-                margin: 0;
-                padding: 0;
-            }
-            #print-area {
-                display: block !important;
-                color: black !important;
-                background: white !important;
-            }
-            #print-area * {
-                color: black !important;
-            }
+    @if($showDetailPesanan && $this->selectedPesananDetail)
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" style="margin:0 !important">
+        <div class="bg-white dark:bg-gray-900 w-full max-w-2xl max-h-[85vh] rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800 flex flex-col">
+            <div class="p-4 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-900 rounded-t-2xl shrink-0">
+                <h3 class="font-bold text-lg text-gray-900 dark:text-white">Detail Transaksi: {{ $this->selectedPesananDetail->nomor_nota }}</h3>
+                <button wire:click="closeDetailPesanan" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
             
-            .print-58 {
-                width: 58mm;
-                margin: 0;
-                padding: 4mm;
-                font-family: monospace;
-            }
-            .print-80 {
-                width: 80mm;
-                margin: 0;
-                padding: 4mm;
-                font-family: monospace;
-            }
-        }
-    </style>
+            <div class="p-6 overflow-y-auto flex-1 space-y-6">
+                <!-- Info Header -->
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <p class="text-gray-500 dark:text-gray-400">Tanggal</p>
+                        <p class="font-medium text-gray-900 dark:text-white">{{ \Carbon\Carbon::parse($this->selectedPesananDetail->tanggal)->format('d M Y, H:i') }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 dark:text-gray-400">Kasir</p>
+                        <p class="font-medium text-gray-900 dark:text-white">{{ $this->selectedPesananDetail->kasir?->name ?? '-' }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 dark:text-gray-400">Tipe Pesanan</p>
+                        <p class="font-medium text-gray-900 dark:text-white">{{ $this->selectedPesananDetail->tipe_pesanan === 'dine_in' ? 'Dine In' : 'Take Away' }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 dark:text-gray-400">Status</p>
+                        <p class="font-medium text-gray-900 dark:text-white uppercase">{{ $this->selectedPesananDetail->status }}</p>
+                    </div>
+                </div>
+
+                <!-- Items -->
+                <div>
+                    <h4 class="font-semibold text-gray-900 dark:text-white mb-3">Daftar Menu</h4>
+                    <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 border border-gray-100 dark:border-gray-800">
+                        <table class="w-full text-sm text-left">
+                            <thead>
+                                <tr class="text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">
+                                    <th class="pb-2 font-medium">Item</th>
+                                    <th class="pb-2 font-medium text-center">Qty</th>
+                                    <th class="pb-2 font-medium text-right">Harga</th>
+                                    <th class="pb-2 font-medium text-right">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                @foreach($this->selectedPesananDetail->detailPesanans as $detail)
+                                <tr>
+                                    <td class="py-2 text-gray-900 dark:text-white">{{ $detail->menu->nama ?? 'Menu Terhapus' }}</td>
+                                    <td class="py-2 text-center text-gray-900 dark:text-white">{{ $detail->jumlah }}</td>
+                                    <td class="py-2 text-right text-gray-900 dark:text-white">Rp {{ number_format($detail->harga_satuan, 0, ',', '.') }}</td>
+                                    <td class="py-2 text-right text-gray-900 dark:text-white font-medium">Rp {{ number_format($detail->subtotal, 0, ',', '.') }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Summary -->
+                <div class="space-y-2 text-sm flex-1 w-full lg:w-1/2 ml-auto">
+                    <div class="flex justify-between text-gray-600 dark:text-gray-400">
+                        <span>Subtotal</span>
+                        <span>Rp {{ number_format($this->selectedPesananDetail->subtotal, 0, ',', '.') }}</span>
+                    </div>
+                    @if($this->selectedPesananDetail->diskon > 0)
+                    <div class="flex justify-between text-rose-500">
+                        <span>Diskon</span>
+                        <span>- Rp {{ number_format($this->selectedPesananDetail->diskon, 0, ',', '.') }}</span>
+                    </div>
+                    @endif
+                    @if($this->selectedPesananDetail->pajak > 0)
+                    <div class="flex justify-between text-gray-600 dark:text-gray-400">
+                        <span>Pajak</span>
+                        <span>Rp {{ number_format($this->selectedPesananDetail->pajak, 0, ',', '.') }}</span>
+                    </div>
+                    @endif
+                    <div class="flex justify-between text-base font-bold text-gray-900 dark:text-white pt-2 border-t border-gray-200 dark:border-gray-700">
+                        <span>Total Akhir</span>
+                        <span>Rp {{ number_format($this->selectedPesananDetail->total_akhir, 0, ',', '.') }}</span>
+                    </div>
+                </div>
+
+                <!-- Pembayaran -->
+                @if($this->selectedPesananDetail->pembayarans->count() > 0)
+                <div>
+                    <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Pembayaran</h4>
+                    @foreach($this->selectedPesananDetail->pembayarans as $bayar)
+                    <div class="bg-emerald-50 dark:bg-emerald-900/20 text-emerald-800 dark:text-emerald-400 p-3 rounded-lg text-sm border border-emerald-100 dark:border-emerald-800/30 flex justify-between">
+                        <div>
+                            <p class="font-medium uppercase">{{ str_replace('_', ' ', $bayar->metode_pembayaran) }}</p>
+                            <p class="text-xs opacity-80">{{ \Carbon\Carbon::parse($bayar->tanggal_bayar)->format('d M Y H:i') }}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-base">Rp {{ number_format($bayar->jumlah_bayar, 0, ',', '.') }}</p>
+                            @if($bayar->kembalian > 0)
+                            <p class="text-xs opacity-80">Kembali: Rp {{ number_format($bayar->kembalian, 0, ',', '.') }}</p>
+                            @endif
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+                @endif
+            </div>
+
+            <div class="p-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 rounded-b-2xl flex justify-between shrink-0">
+                <button onclick="printStruk('{{ $ukuranKertas }}')" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition font-medium flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                    Cetak Ulang Struk
+                </button>
+                <button wire:click="closeDetailPesanan" class="px-4 py-2 bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-700 transition font-medium">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+    @endif
     <script>
         function printStruk(size) {
             const pa = document.getElementById('print-area');
             if(pa) {
-                pa.className = 'print-' + size;
-                window.print();
+                const printWindow = window.open('', '_blank', 'width=400,height=600');
+                
+                let printHtml = `
+                    <html>
+                    <head>
+                        <title>Cetak Struk</title>
+                        <style>
+                            @page { margin: 0; }
+                            body { 
+                                font-family: monospace; 
+                                color: black; 
+                                background: white; 
+                                margin: 0; 
+                                padding: 0; 
+                            }
+                            .print-container { 
+                                width: ${size === '58' ? '58mm' : '80mm'}; 
+                                padding: 4mm; 
+                                margin: 0 auto; 
+                            }
+                            table { width: 100%; border-collapse: collapse; }
+                            .text-center { text-align: center; }
+                            .text-right { text-align: right; }
+                            .text-left { text-align: left; }
+                            .font-bold { font-weight: bold; }
+                            .text-xl { font-size: 1.25rem; margin-bottom: 0.25rem; }
+                            .text-sm { font-size: 0.875rem; }
+                            .text-xs { font-size: 0.75rem; }
+                            .mb-3 { margin-bottom: 0.75rem; }
+                            .mb-4 { margin-bottom: 1rem; }
+                            .mb-8 { margin-bottom: 2rem; }
+                            .mt-4 { margin-top: 1rem; }
+                            .pt-1 { padding-top: 0.25rem; }
+                            .pb-1 { padding-bottom: 0.25rem; }
+                            .pb-2 { padding-bottom: 0.5rem; }
+                            .pb-3 { padding-bottom: 0.75rem; }
+                            .border-b { border-bottom: 1px solid black; }
+                            .border-dashed { border-bottom-style: dashed; }
+                            .flex { display: flex; }
+                            .justify-between { justify-content: space-between; }
+                            .uppercase { text-transform: uppercase; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="print-container">
+                            ${pa.innerHTML}
+                        </div>
+                        <script>
+                            window.onload = function() {
+                                window.print();
+                                setTimeout(function() { window.close(); }, 500);
+                            }
+                        <\/script>
+                    </body>
+                    </html>
+                `;
+                
+                printWindow.document.write(printHtml);
+                printWindow.document.close();
             } else {
                 alert('Data struk tidak ditemukan!');
             }
