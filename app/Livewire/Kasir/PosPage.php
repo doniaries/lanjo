@@ -63,7 +63,18 @@ class PosPage extends Component
         $this->showRiwayat = false;
         $this->showDetailPesanan = true;
         
-        $pesanan = $this->selectedPesananDetail;
+        $this->setNotaData($id);
+    }
+
+    public function cetakStrukRiwayat($id): void
+    {
+        $this->setNotaData($id);
+        $this->dispatch('trigger-print-riwayat', ukuran: $this->ukuranKertas, nota: $this->notaData['nomor']);
+    }
+
+    private function setNotaData($id): void
+    {
+        $pesanan = Pesanan::with(['detailPesanans.menu', 'kasir', 'meja', 'pembayarans'])->find($id);
         if ($pesanan) {
             $items = [];
             foreach ($pesanan->detailPesanans as $detail) {

@@ -635,6 +635,7 @@
                             <th class="px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Kasir</th>
                             <th class="px-4 py-3 font-medium text-gray-600 dark:text-gray-400 text-right">Total</th>
                             <th class="px-4 py-3 font-medium text-gray-600 dark:text-gray-400 text-center">Status</th>
+                            <th class="px-4 py-3 font-medium text-gray-600 dark:text-gray-400 text-right">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
@@ -654,10 +655,15 @@
                                     <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20">Baru</span>
                                 @endif
                             </td>
+                            <td class="px-4 py-3 text-right">
+                                <button wire:click.stop="cetakStrukRiwayat({{ $rt->id }})" class="p-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg text-gray-600 dark:text-gray-300 transition" title="Cetak Struk">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                                </button>
+                            </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">Tidak ada transaksi hari ini</td>
+                            <td colspan="7" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">Tidak ada transaksi hari ini</td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -787,6 +793,17 @@
     </div>
     @endif
     <script>
+        document.addEventListener('trigger-print-riwayat', function(event) {
+            // Beri jeda sejenak agar DOM Livewire (print-area) selesai dirender
+            setTimeout(() => {
+                let args = event.detail;
+                // Livewire 3 mengirimkan data dalam array jika multiple args
+                let ukuran = args[0] ? args[0].ukuran : args.ukuran;
+                let nota = args[0] ? args[0].nota : args.nota;
+                printStruk(ukuran, nota);
+            }, 300);
+        });
+
         function printStruk(size, nota = 'Struk') {
             const pa = document.getElementById('print-area');
             if(pa) {
