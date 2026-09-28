@@ -11,6 +11,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             ShieldSeeder::class, // Roles & permissions
             UserSeeder::class,   // Users: superadmin, admin, member
+            PengaturanSeeder::class,
+            KategoriMenuSeeder::class,
+            MenuSeeder::class,
+            VarianMenuSeeder::class,
         ]);
     }
 }
