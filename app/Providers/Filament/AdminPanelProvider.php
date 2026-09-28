@@ -56,12 +56,13 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
             ])
-            /* ->navigationItems([
-                \Filament\Navigation\NavigationItem::make('Halaman Depan')
-                    ->url('/', shouldOpenInNewTab: true)
-                    ->icon('heroicon-o-globe-alt')
-                    ->sort(-3),
-            ]) */
+            ->navigationItems([
+                \Filament\Navigation\NavigationItem::make('🖥 Buka Kasir POS')
+                    ->url(fn () => route('kasir.pos'), shouldOpenInNewTab: true)
+                    ->icon('heroicon-o-computer-desktop')
+                    ->sort(-10) // paling atas
+                    ->group('Transaksi'),
+            ])
             ->navigationGroups([
                 'Transaksi',
                 'Katalog Menu',
