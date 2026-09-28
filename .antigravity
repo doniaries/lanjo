@@ -1,0 +1,72 @@
+---
+description: Pedoman Pengembangan Portal DISPARPORA Sijunjung (Laravel, Filament, Livewire)
+---
+
+# Pedoman Pengembangan — DISPARPORA Sijunjung
+
+Dokumen ini adalah **acuan wajib** bagi AI (Antigravity) selama pengembangan portal **disparpora.sijunjung.go.id**, menggunakan stack **Laravel + Filament + Livewire**.
+
+---
+
+## 1. Aturan Interaksi & Bahasa
+
+- **Bahasa Utama**: Selalu gunakan **Bahasa Indonesia** yang profesional, ramah, dan komunikatif dalam setiap interaksi dengan user.
+- **Klarifikasi**: Jika ada instruksi yang kurang jelas, minta klarifikasi dalam Bahasa Indonesia sebelum melakukan perubahan besar.
+- **Tone**: Bertindaklah sebagai rekan programmer (pair programmer) yang proaktif namun tetap menghormati preferensi user.
+
+---
+
+## 2. Standar Koding (Clean Code & Best Practice)
+
+### Clean Code (Kode Bersih)
+
+- **Keterbacaan**: Gunakan nama variabel, method, dan class yang deskriptif (contoh: `getVibrantColorAttribute` lebih baik daripada `getColor`).
+- **DRY (Don't Repeat Yourself)**: Jangan mengulang logika. Ekstrak logika berulang ke dalam Service, Trait, atau View Component.
+- **Single Responsibility**: Setiap class atau method hanya boleh memiliki satu tanggung jawab utama.
+- **Minimalisme**: Tulis kode yang padat namun tetap mudah dipahami. Hindari "over-engineering".
+
+### Best Practices Laravel & Livewire
+
+- **Eloquent**: Selalu prioritaskan fitur native Laravel (Relationship, Accessor, Mutator, Scopes) daripada query DB manual.
+- **Eager Loading**: Gunakan `with()` atau `load()` untuk mencegah masalah N+1 query yang memperlambat sistem.
+- **Satu Sumber Kebenaran (Single Source of Truth)**: Logika penting (seperti perhitungan warna) harus diletakkan di Model agar konsisten di seluruh aplikasi.
+- **Validation**: Gunakan aturan validasi yang kuat baik di sisi server (Laravel) maupun reaktif (Livewire).
+- **Frontend**: Gunakan Tailwind CSS secara konsisten dan manfaatkan class utilitas untuk menjaga desain tetap premium.
+
+---
+
+## 3. Sistem Warna Kategori (Vibrant System)
+
+Salah satu identitas visual utama proyek ini adalah sistem kategori yang berwarna-warni (vibrant).
+
+- **Sumber Warna**: Default warna diambil dari `App\Models\Tag::getColorAttribute()`.
+- **Aturan Warna**:
+    - **WAJIB CERIA**: Hanya gunakan warna-warna cerah (Red, Orange, Blue, Green, Purple, Pink).
+    - **ANTI ABU-ABU**: Dilarang menggunakan warna `gray`, `slate`, `zinc`, `neutral`, atau `stone` untuk kategori, karena dianggap kusam oleh user.
+    - **Deterministik**: Warna fallback harus konsisten berdasarkan ID kategori agar user tidak bingung.
+- **Aksesibilitas**: Hitung tingkat kecerahan (brightness) background untuk menentukan apakah teks harus berwarna putih atau gelap demi kenyamanan mata.
+
+---
+
+## 4. Konvensi Proyek
+
+| Komponen    | Detail                        |
+| ----------- | ----------------------------- |
+| Framework   | Laravel 11/12+                |
+| Admin Panel | Filament                      |
+| Reactive UI | Livewire 3.x + Alpine.js      |
+| Database    | plural snake_case (Indonesia) |
+| Model       | PascalCase singular           |
+
+---
+
+## 5. Alur Kerja AI
+
+1. **Analisis**: Baca model dan view yang sudah ada sebelum memulai tugas baru.
+2. **Perencanaan**: Jelaskan rencana tindakan dalam Bahasa Indonesia.
+3. **Eksekusi**: Terapkan standar koding tinggi dan pastikan tidak merusak desain yang sudah ada (terutama sistem warna).
+4. **Verifikasi**: Lakukan pembersihan cache (`php artisan optimize:clear`) dan verifikasi visual sebelum menyerahkan tugas.
+
+---
+
+_Dokumen ini adalah acuan dinamis yang harus diperbarui oleh AI jika ada perubahan standar arsitektur dalam proyek ini._
