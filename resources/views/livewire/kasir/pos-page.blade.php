@@ -455,7 +455,7 @@
                 </div>
                 <div>
                     <h2 class="text-xl font-black text-white">Transaksi Berhasil!</h2>
-                    <p class="text-sm text-surface-muted mt-1">{{ $nomorNotaSuccess }}</p>
+                    <p class="text-sm text-white opacity-70 mt-1 font-medium tracking-wide">{{ $nomorNotaSuccess }}</p>
                 </div>
                 @if($kembalianSuccess > 0)
                     <div class="bg-green-500/10 border border-green-500/20 rounded-2xl px-6 py-4">
