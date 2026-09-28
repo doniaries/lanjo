@@ -21,7 +21,7 @@ class MenusTable
         return $table
             ->modifyQueryUsing(fn ($query) => $query
                 ->with(['kategoriMenu'])
-                ->select(['menus.id', 'menus.kategori_menu_id', 'menus.nama', 'menus.harga_jual', 'menus.gambar', 'menus.stok', 'menus.status_aktif', 'menus.created_at', 'menus.updated_at'])
+                ->select(['menus.id', 'menus.kategori_menu_id', 'menus.nama', 'menus.harga_jual', 'menus.gambar', 'menus.status_aktif', 'menus.created_at', 'menus.updated_at'])
             )
             ->columns([
                 ImageColumn::make('gambar')
@@ -44,12 +44,6 @@ class MenusTable
                     ->numeric()
                     ->money('IDR')
                     ->sortable(),
-                TextColumn::make('stok')
-                    ->label('Stok')
-                    ->numeric()
-                    ->sortable()
-                    ->badge()
-                    ->color(fn ($state) => $state <= 5 ? 'danger' : ($state <= 20 ? 'warning' : 'success')),
                 IconColumn::make('status_aktif')
                     ->label('Aktif')
                     ->boolean(),

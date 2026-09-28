@@ -15,7 +15,7 @@ return new class extends Migration
             $table->decimal('harga_jual', 12, 2);
             $table->decimal('harga_modal', 12, 2)->default(0);
             $table->string('gambar')->nullable();
-            $table->integer('stok')->default(0);
+            $table->integer('stok')->nullable()->default(null);
             $table->boolean('status_aktif')->default(true);
             $table->timestamps();
         });

@@ -42,12 +42,6 @@ class MenuForm
                     ->disk('public')
                     ->directory('menus')
                     ->nullable(),
-                TextInput::make('stok')
-                    ->label('Stok')
-                    ->required()
-                    ->numeric()
-                    ->default(0)
-                    ->minValue(0),
                 Toggle::make('status_aktif')
                     ->label('Aktif')
                     ->default(true)

@@ -6,39 +6,108 @@
     <div class="flex flex-col flex-1 overflow-hidden">
 
         {{-- TOP BAR --}}
-        <div class="flex items-center justify-between px-5 py-3 bg-surface-card border-b border-surface-border shrink-0">
+        <div x-data="{
+            isFullscreen: false,
+            toggleFullscreen() {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                    this.isFullscreen = true;
+                } else {
+                    document.exitFullscreen();
+                    this.isFullscreen = false;
+                }
+            }
+        }" class="flex items-center justify-between px-4 py-2.5 bg-surface-card border-b border-surface-border shrink-0">
+
+            {{-- Logo & Nama Toko --}}
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
                     <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
                 </div>
                 <div>
                     <p class="text-sm font-bold text-white leading-tight">{{ $this->pengaturan?->nama_toko ?? config('app.name') }}</p>
-                    <p class="text-xs text-surface-muted">{{ now()->format('l, d M Y') }}</p>
+                    <p class="text-xs text-surface-muted">{{ now()->isoFormat('dddd, D MMM Y') }}</p>
                 </div>
             </div>
 
-            {{-- Search --}}
-            <div class="relative w-72">
-                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                <input wire:model.live.debounce.300ms="searchMenu" type="text" placeholder="Cari menu..."
-                    class="w-full bg-surface border border-surface-border rounded-xl pl-10 pr-4 py-2 text-sm text-white placeholder-surface-muted focus:outline-none focus:border-brand-500 transition">
+            {{-- Quick Action Buttons --}}
+            <div class="flex items-center gap-1.5">
+                {{-- Riwayat --}}
+                <a href="{{ route('filament.admin.resources.pesanans.index') }}" target="_blank"
+                    title="Riwayat Transaksi"
+                    class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl bg-surface border border-surface-border hover:border-brand-500 hover:text-brand-400 text-surface-muted transition group">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span class="text-[10px] font-medium">Riwayat</span>
+                </a>
+
+                {{-- Pending --}}
+                <button wire:click="$set('showPending', true)" title="Pesanan Pending"
+                    class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl bg-surface border border-surface-border hover:border-amber-400 hover:text-amber-400 text-surface-muted transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span class="text-[10px] font-medium">Pending</span>
+                </button>
+
+                {{-- Reset / Bersihkan Cart --}}
+                <button wire:click="clearCart" wire:confirm="Kosongkan semua pesanan?" title="Reset Pesanan"
+                    class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl bg-surface border border-surface-border hover:border-red-400 hover:text-red-400 text-surface-muted transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    <span class="text-[10px] font-medium">Reset</span>
+                </button>
+
+                {{-- Laporan --}}
+                <a href="{{ route('filament.admin.resources.pembayarans.index') }}" target="_blank" title="Laporan Pembayaran"
+                    class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl bg-surface border border-surface-border hover:border-green-400 hover:text-green-400 text-surface-muted transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <span class="text-[10px] font-medium">Laporan</span>
+                </a>
+
+                {{-- Fullscreen --}}
+                <button @click="toggleFullscreen()" title="Full Screen"
+                    class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl bg-surface border border-surface-border hover:border-brand-400 hover:text-brand-400 text-surface-muted transition">
+                    <svg x-show="!isFullscreen" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+                    <svg x-show="isFullscreen" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25"/></svg>
+                    <span class="text-[10px] font-medium" x-text="isFullscreen ? 'Keluar' : 'Fullscr'"></span>
+                </button>
+
+                {{-- Divider --}}
+                <div class="w-px h-8 bg-surface-border mx-1"></div>
+
+                {{-- Kasir info --}}
+                <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 bg-brand-700 rounded-full flex items-center justify-center text-xs font-bold">
+                        {{ substr(auth()->user()->name, 0, 1) }}
+                    </div>
+                    <span class="text-xs text-white font-medium">{{ auth()->user()->name }}</span>
+                    <a href="{{ route('filament.admin.auth.logout') }}"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                        class="text-xs text-surface-muted hover:text-red-400 transition">Keluar</a>
+                    <form id="logout-form" action="{{ route('filament.admin.auth.logout') }}" method="POST" class="hidden">@csrf</form>
+                </div>
             </div>
 
-            {{-- Kasir info --}}
-            <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-brand-700 rounded-full flex items-center justify-center text-xs font-bold">
-                    {{ substr(auth()->user()->name, 0, 1) }}
-                </div>
-                <span class="text-sm text-white font-medium">{{ auth()->user()->name }}</span>
-                <a href="{{ route('filament.admin.auth.logout') }}"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                    class="ml-2 text-xs text-surface-muted hover:text-red-400 transition">Keluar</a>
-                <form id="logout-form" action="{{ route('filament.admin.auth.logout') }}" method="POST" class="hidden">@csrf</form>
+            {{-- Live Clock --}}
+            <div x-data="{
+                now: new Date(),
+                init() { setInterval(() => this.now = new Date(), 1000) },
+                get jam() { return this.now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }); },
+                get tanggal() { return this.now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }); }
+            }" class="flex flex-col items-end">
+                <span x-text="jam" class="text-xl font-black text-white tracking-wider tabular-nums"></span>
+                <span x-text="tanggal" class="text-[10px] text-surface-muted"></span>
             </div>
         </div>
 
-        {{-- KATEGORI TABS --}}
-        <div class="flex gap-2 px-5 py-3 border-b border-surface-border bg-surface-card shrink-0 overflow-x-auto">
+        {{-- KATEGORI TABS + SEARCH --}}
+        <div class="flex items-center gap-2 px-5 py-3 border-b border-surface-border bg-surface-card shrink-0 overflow-x-auto">
+            {{-- Tombol Semua --}}
+            <button wire:click="$set('selectedKategori', null)"
+                class="shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200
+                {{ $selectedKategori === null
+                    ? 'bg-brand-600 text-white shadow-lg shadow-brand-900'
+                    : 'bg-surface border border-surface-border text-surface-muted hover:border-brand-500 hover:text-white' }}">
+                Semua
+            </button>
+
             @foreach($this->kategoris as $kat)
                 <button wire:click="selectKategori({{ $kat->id }})"
                     class="shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200
@@ -48,7 +117,18 @@
                     {{ $kat->nama }}
                 </button>
             @endforeach
+
+            {{-- Spacer --}}
+            <div class="flex-1"></div>
+
+            {{-- Search dipindah ke sini --}}
+            <div class="relative shrink-0 w-56">
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <input wire:model.live.debounce.300ms="searchMenu" type="text" placeholder="Cari menu..."
+                    class="w-full bg-surface border border-surface-border rounded-xl pl-10 pr-4 py-2 text-sm text-white placeholder-surface-muted focus:outline-none focus:border-brand-500 transition">
+            </div>
         </div>
+
 
         {{-- MENU GRID --}}
         <div class="flex-1 overflow-y-auto p-5">
@@ -58,23 +138,24 @@
                     <p class="text-sm">Menu tidak ditemukan</p>
                 </div>
             @else
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                    @foreach($this->menus as $menu)
-                        <button wire:click="addToCart({{ $menu->id }})"
-                            class="menu-card group relative bg-surface-card border border-surface-border rounded-2xl overflow-hidden text-left
-                            hover:border-brand-500 hover:shadow-lg hover:shadow-brand-900/30 active:scale-95 transition-all duration-200 cursor-pointer">
+            {{-- MENU GRID: lebih banyak kolom, gambar lebih kecil --}}
+            <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3">
+                @foreach($this->menus as $menu)
+                    <button wire:click="addToCart({{ $menu->id }})"
+                        class="menu-card group relative bg-surface-card border border-surface-border rounded-xl overflow-hidden text-left
+                        hover:border-brand-500 hover:shadow-lg hover:shadow-brand-900/30 active:scale-95 transition-all duration-200 cursor-pointer">
 
-                            {{-- Gambar --}}
-                            <div class="relative w-full aspect-square overflow-hidden bg-surface">
-                                @if($menu->gambar)
-                                    <img src="{{ $menu->gambar }}" alt="{{ $menu->nama }}"
-                                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                        onerror="this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center\'><svg class=\'w-10 h-10 text-surface-muted opacity-40\' fill=\'none\' stroke=\'currentColor\' viewBox=\'0 0 24 24\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'1\' d=\'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z\'/></svg></div>'">
-                                @else
-                                    <div class="w-full h-full flex items-center justify-center">
-                                        <svg class="w-10 h-10 text-surface-muted opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                    </div>
-                                @endif
+                        {{-- Gambar lebih kecil: h-28 (bukan aspect-square) --}}
+                        <div class="relative w-full h-28 overflow-hidden bg-surface">
+                            @if($menu->gambar)
+                                <img src="{{ $menu->gambar }}" alt="{{ $menu->nama }}"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                    onerror="this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center\'><svg class=\'w-8 h-8 text-surface-muted opacity-40\' fill=\'none\' stroke=\'currentColor\' viewBox=\'0 0 24 24\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'1\' d=\'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z\'/></svg></div>'">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center">
+                                    <svg class="w-8 h-8 text-surface-muted opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                </div>
+                            @endif
 
                                 {{-- Qty badge jika sudah di cart --}}
                                 @if(isset($cart[$menu->id]))

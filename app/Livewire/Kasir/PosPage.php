@@ -36,7 +36,8 @@ class PosPage extends Component
 
     public function mount(): void
     {
-        $this->selectedKategori = KategoriMenu::orderBy('urutan')->value('id');
+        // null = semua produk (default tampil semua)
+        $this->selectedKategori = null;
     }
 
     #[Computed]
