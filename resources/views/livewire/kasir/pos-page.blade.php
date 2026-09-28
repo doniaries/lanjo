@@ -734,7 +734,7 @@
                                 <tr>
                                     <td class="py-2 text-gray-900 dark:text-white">{{ $detail->menu->nama ?? 'Menu Terhapus' }}</td>
                                     <td class="py-2 text-center text-gray-900 dark:text-white">{{ $detail->jumlah }}</td>
-                                    <td class="py-2 text-right text-gray-900 dark:text-white">Rp {{ number_format($detail->harga_satuan, 0, ',', '.') }}</td>
+                                    <td class="py-2 text-right text-gray-900 dark:text-white">Rp {{ number_format($detail->harga_satuan_snapshot, 0, ',', '.') }}</td>
                                     <td class="py-2 text-right text-gray-900 dark:text-white font-medium">Rp {{ number_format($detail->subtotal, 0, ',', '.') }}</td>
                                 </tr>
                                 @endforeach

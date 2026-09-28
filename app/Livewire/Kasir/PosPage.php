@@ -333,7 +333,7 @@ class PosPage extends Component
 
     public function loadPending(int $id)
     {
-        $pesanan = \App\Models\Pesanan::with('detailPesanans')->find($id);
+        $pesanan = \App\Models\Pesanan::with('detailPesanans.menu')->find($id);
         if (!$pesanan) return;
 
         $this->cart = [];
@@ -342,6 +342,7 @@ class PosPage extends Component
                 'nama' => $detail->nama_menu_snapshot,
                 'harga' => $detail->harga_satuan_snapshot,
                 'qty' => $detail->jumlah,
+                'gambar' => $detail->menu->gambar ?? null,
             ];
         }
         $this->selectedMeja = $pesanan->meja_id;
