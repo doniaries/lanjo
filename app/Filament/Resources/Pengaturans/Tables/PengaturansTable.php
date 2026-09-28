@@ -26,9 +26,13 @@ class PengaturansTable
                     ->label('Pajak (%)')
                     ->numeric()
                     ->sortable(),
-                ImageColumn::make('logo')
-                    ->disk('public')
+                TextColumn::make('nama_pimpinan')
+                    ->label('Nama Pimpinan')
                     ->searchable(),
+                ImageColumn::make('logo')
+                    ->label('Logo')
+                    ->circular()
+                    ->disk('public'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

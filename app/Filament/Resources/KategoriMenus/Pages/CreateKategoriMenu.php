@@ -8,4 +8,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateKategoriMenu extends CreateRecord
 {
     protected static string $resource = KategoriMenuResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
