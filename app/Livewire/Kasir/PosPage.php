@@ -16,30 +16,42 @@ use Livewire\Attributes\Computed;
 class PosPage extends Component
 {
     // State
-    public ?int $selectedKategori = null;
-    public string $searchMenu = '';
-    public array $cart = [];          // ['menu_id' => ['nama', 'harga', 'qty', 'gambar']]
-    public ?int $selectedMeja = null;
-    public string $tipePesanan = 'dine_in';
-    public string $catatan = '';
-    public float $diskon = 0;
+    public ?int    $selectedKategori = null;
+    public string  $searchMenu       = '';
+    public array   $cart             = [];
+    public ?int    $selectedMeja     = null;
+    public string  $tipePesanan      = 'dine_in';
+    public string  $catatan          = '';
+    public float   $diskon           = 0;
 
     // Checkout modal
-    public bool $showCheckout = false;
-    public float $nominalBayar = 0;
-    public string $metodePembayaran = 'tunai';
+    public bool   $showCheckout       = false;
+    public float  $nominalBayar       = 0;
+    public string $metodePembayaran   = 'tunai';
+    public string $namaPembeli        = '';
+    public string $bankPengirim       = '';
+    public string $ukuranKertas       = '80'; // '58' atau '80'
 
-    // Success modal
-    public bool $showSuccess = false;
-    public string $nomorNotaSuccess = '';
-    public float $kembalianSuccess = 0;
+    // Print modal
+    public bool   $showPrint          = false;
+
+    // Success / nota terakhir
+    public bool   $showSuccess        = false;
+    public string $nomorNotaSuccess   = '';
+    public float  $kembalianSuccess   = 0;
+    public array  $notaData           = [];   // untuk print
+
+    // Pending (placeholder)
+    public bool   $showPending        = false;
 
     public function mount(): void
     {
-        // null = semua produk (default tampil semua)
         $this->selectedKategori = null;
     }
 
+    // ──────────────────────────────────────────────────────────
+    // Computed
+    // ──────────────────────────────────────────────────────────
     #[Computed]
     public function pengaturan()
     {
@@ -69,24 +81,24 @@ class PosPage extends Component
         return Meja::orderBy('nomor_meja')->get();
     }
 
+    // ──────────────────────────────────────────────────────────
+    // Cart actions
+    // ──────────────────────────────────────────────────────────
     public function selectKategori(int $id): void
     {
         $this->selectedKategori = $id;
         unset($this->menus);
     }
 
-    public function addToCart(int $menuId): void
+    public function addToCart(int $menuId, string $nama, float $harga, string $gambar = ''): void
     {
-        $menu = Menu::find($menuId);
-        if (! $menu) return;
-
         if (isset($this->cart[$menuId])) {
             $this->cart[$menuId]['qty']++;
         } else {
             $this->cart[$menuId] = [
-                'nama'   => $menu->nama,
-                'harga'  => (float) $menu->harga_jual,
-                'gambar' => $menu->gambar,
+                'nama'   => $nama,
+                'harga'  => $harga,
+                'gambar' => $gambar,
                 'qty'    => 1,
             ];
         }
@@ -117,12 +129,17 @@ class PosPage extends Component
 
     public function clearCart(): void
     {
-        $this->cart = [];
-        $this->catatan = '';
-        $this->diskon = 0;
-        $this->selectedMeja = null;
+        $this->cart          = [];
+        $this->catatan       = '';
+        $this->diskon        = 0;
+        $this->selectedMeja  = null;
+        $this->namaPembeli   = '';
+        $this->bankPengirim  = '';
     }
 
+    // ──────────────────────────────────────────────────────────
+    // Kalkulasi
+    // ──────────────────────────────────────────────────────────
     public function getSubtotalProperty(): float
     {
         return collect($this->cart)->sum(fn ($item) => $item['harga'] * $item['qty']);
@@ -139,16 +156,33 @@ class PosPage extends Component
         return $this->subtotal + $this->pajak - $this->diskon;
     }
 
-    public function openCheckout(): void
-    {
-        if (empty($this->cart)) return;
-        $this->nominalBayar = $this->total;
-        $this->showCheckout = true;
-    }
-
     public function getKembalianProperty(): float
     {
         return max(0, $this->nominalBayar - $this->total);
+    }
+
+    // ──────────────────────────────────────────────────────────
+    // Checkout
+    // ──────────────────────────────────────────────────────────
+    public function openCheckout(): void
+    {
+        if (empty($this->cart)) return;
+        $this->nominalBayar  = $this->total;
+        $this->namaPembeli   = '';
+        $this->bankPengirim  = '';
+        $this->showCheckout  = true;
+    }
+
+    public function setMetode(string $metode): void
+    {
+        $this->metodePembayaran = $metode;
+        if ($metode === 'tunai') {
+            $this->nominalBayar = $this->total;
+        } else {
+            $this->nominalBayar = $this->total;
+        }
+        $this->namaPembeli  = '';
+        $this->bankPengirim = '';
     }
 
     public function prosesTransaksi(): void
@@ -177,12 +211,12 @@ class PosPage extends Component
 
             foreach ($this->cart as $menuId => $item) {
                 DetailPesanan::create([
-                    'pesanan_id'           => $pesanan->id,
-                    'menu_id'              => $menuId,
-                    'nama_menu_snapshot'   => $item['nama'],
-                    'harga_satuan_snapshot'=> $item['harga'],
-                    'jumlah'               => $item['qty'],
-                    'subtotal'             => $item['harga'] * $item['qty'],
+                    'pesanan_id'            => $pesanan->id,
+                    'menu_id'               => $menuId,
+                    'nama_menu_snapshot'    => $item['nama'],
+                    'harga_satuan_snapshot' => $item['harga'],
+                    'jumlah'                => $item['qty'],
+                    'subtotal'              => $item['harga'] * $item['qty'],
                 ]);
             }
 
@@ -195,18 +229,51 @@ class PosPage extends Component
                 'kasir_id'     => $user->id,
             ]);
 
+            // Siapkan data untuk print nota
+            $this->notaData = [
+                'nomor'          => $nomor,
+                'tanggal'        => now()->format('d/m/Y H:i'),
+                'kasir'          => $user->name,
+                'toko'           => $this->pengaturan?->nama_toko ?? config('app.name'),
+                'alamat'         => $this->pengaturan?->alamat ?? '',
+                'telepon'        => $this->pengaturan?->telepon ?? '',
+                'items'          => $this->cart,
+                'subtotal'       => $this->subtotal,
+                'pajak'          => $this->pajak,
+                'pajak_pct'      => $this->pengaturan?->pajak_default ?? 0,
+                'diskon'         => $this->diskon,
+                'total'          => $this->total,
+                'metode'         => $this->metodePembayaran,
+                'nominal_bayar'  => $this->nominalBayar,
+                'kembalian'      => $this->kembalian,
+                'nama_pembeli'   => $this->namaPembeli,
+                'bank_pengirim'  => $this->bankPengirim,
+                'tipe_pesanan'   => $this->tipePesanan,
+                'catatan'        => $this->catatan,
+            ];
+
             $this->nomorNotaSuccess = $nomor;
             $this->kembalianSuccess = $this->kembalian;
         });
 
         $this->showCheckout = false;
-        $this->showSuccess = true;
+        $this->showSuccess  = true;
         $this->clearCart();
     }
 
     public function closeSuccess(): void
     {
         $this->showSuccess = false;
+    }
+
+    public function openPrint(): void
+    {
+        $this->showPrint = true;
+    }
+
+    public function closePrint(): void
+    {
+        $this->showPrint = false;
     }
 
     public function render()

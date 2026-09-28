@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             MenuSeeder::class,
             VarianMenuSeeder::class,
             ShiftSeeder::class,
+            MejaSeeder::class,
         ]);
     }
 }

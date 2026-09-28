@@ -5,7 +5,10 @@ namespace App\Filament\Resources\Pesanans\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class PesanansTable
@@ -13,48 +16,82 @@ class PesanansTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn ($query) => $query->with(['meja', 'kasir']))
+            ->modifyQueryUsing(fn ($query) => $query
+                ->with(['meja', 'kasir'])
+                ->latest('tanggal')
+            )
             ->columns([
                 TextColumn::make('nomor_nota')
-                    ->searchable(),
-                TextColumn::make('tanggal')
-                    ->dateTime()
-                    ->sortable(),
-                TextColumn::make('meja.nomor_meja')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('tipe_pesanan')
-                    ->badge(),
-                TextColumn::make('kasir.name')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('status')
-                    ->badge(),
-                TextColumn::make('subtotal')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('diskon_nilai')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('pajak_nilai')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('total_akhir')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('No. Nota')
+                    ->searchable()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->weight('bold')
+                    ->fontFamily('mono')
+                    ->copyable(),
+
+                TextColumn::make('tanggal')
+                    ->label('Tanggal')
+                    ->dateTime('d M Y H:i')
+                    ->sortable(),
+
+                TextColumn::make('meja.nomor_meja')
+                    ->label('Meja')
+                    ->badge()
+                    ->color('info')
+                    ->placeholder('Take Away'),
+
+                TextColumn::make('tipe_pesanan')
+                    ->label('Tipe')
+                    ->badge()
+                    ->color(fn ($state) => $state === 'dine_in' ? 'success' : 'warning')
+                    ->formatStateUsing(fn ($state) => $state === 'dine_in' ? 'Dine In' : 'Take Away'),
+
+                TextColumn::make('kasir.name')
+                    ->label('Kasir')
+                    ->sortable(),
+
+                TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->color(fn ($state) => match($state) {
+                        'selesai' => 'success',
+                        'batal'   => 'danger',
+                        default   => 'warning',
+                    })
+                    ->formatStateUsing(fn ($state) => match($state) {
+                        'selesai' => 'Selesai',
+                        'batal'   => 'Batal',
+                        default   => 'Baru',
+                    }),
+
+                TextColumn::make('total_akhir')
+                    ->label('Total')
+                    ->money('IDR')
+                    ->sortable()
+                    ->weight('bold'),
+
+                TextColumn::make('created_at')
+                    ->label('Dibuat')
+                    ->dateTime('d M Y')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('status')
+                    ->options([
+                        'baru'    => 'Baru',
+                        'selesai' => 'Selesai',
+                        'batal'   => 'Batal',
+                    ]),
+                SelectFilter::make('tipe_pesanan')
+                    ->label('Tipe')
+                    ->options([
+                        'dine_in'   => 'Dine In',
+                        'take_away' => 'Take Away',
+                    ]),
             ])
             ->recordActions([
+                ViewAction::make(),
                 EditAction::make(),
             ])
             ->toolbarActions([

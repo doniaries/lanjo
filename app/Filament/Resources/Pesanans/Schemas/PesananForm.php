@@ -2,10 +2,13 @@
 
 namespace App\Filament\Resources\Pesanans\Schemas;
 
+use App\Models\Meja;
+use App\Models\User;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class PesananForm
@@ -14,40 +17,79 @@ class PesananForm
     {
         return $schema
             ->components([
+                // Nomor nota: auto-generate, readonly saat create
                 TextInput::make('nomor_nota')
-                    ->required(),
+                    ->label('Nomor Nota')
+                    ->default(fn () => 'REC-' . now()->format('Y-m-d') . '-' . str_pad(
+                        \App\Models\Pesanan::whereDate('created_at', today())->count() + 1,
+                        4, '0', STR_PAD_LEFT
+                    ))
+                    ->required()
+                    ->unique(ignoreRecord: true)
+                    ->readOnly(),
+
                 DateTimePicker::make('tanggal')
+                    ->label('Tanggal')
+                    ->default(now())
                     ->required(),
-                TextInput::make('meja_id')
-                    ->numeric(),
+
+                Select::make('meja_id')
+                    ->label('Meja')
+                    ->relationship('meja', 'nomor_meja')
+                    ->options(fn () => Meja::orderBy('nomor_meja')->pluck('nomor_meja', 'id'))
+                    ->searchable()
+                    ->nullable()
+                    ->placeholder('-- Pilih Meja (opsional) --'),
+
                 Select::make('tipe_pesanan')
-                    ->options(['dine_in' => 'Dine in', 'take_away' => 'Take away'])
+                    ->label('Tipe Pesanan')
+                    ->options(['dine_in' => '🍽 Dine In', 'take_away' => '🛍 Take Away'])
                     ->default('dine_in')
                     ->required(),
-                TextInput::make('kasir_id')
-                    ->required()
-                    ->numeric(),
+
+                Select::make('kasir_id')
+                    ->label('Kasir')
+                    ->relationship('kasir', 'name')
+                    ->options(fn () => User::orderBy('name')->pluck('name', 'id'))
+                    ->searchable()
+                    ->required(),
+
                 Select::make('status')
-                    ->options(['baru' => 'Baru', 'selesai' => 'Selesai', 'batal' => 'Batal'])
+                    ->label('Status')
+                    ->options([
+                        'baru'    => 'Baru',
+                        'selesai' => 'Selesai',
+                        'batal'   => 'Batal',
+                    ])
                     ->default('baru')
                     ->required(),
+
                 TextInput::make('subtotal')
-                    ->required()
+                    ->label('Subtotal')
                     ->numeric()
-                    ->default(0.0),
+                    ->prefix('Rp')
+                    ->default(0),
+
                 TextInput::make('diskon_nilai')
-                    ->required()
+                    ->label('Diskon')
                     ->numeric()
-                    ->default(0.0),
+                    ->prefix('Rp')
+                    ->default(0),
+
                 TextInput::make('pajak_nilai')
-                    ->required()
+                    ->label('Pajak')
                     ->numeric()
-                    ->default(0.0),
+                    ->prefix('Rp')
+                    ->default(0),
+
                 TextInput::make('total_akhir')
-                    ->required()
+                    ->label('Total Akhir')
                     ->numeric()
-                    ->default(0.0),
+                    ->prefix('Rp')
+                    ->default(0),
+
                 Textarea::make('catatan')
+                    ->label('Catatan')
                     ->columnSpanFull(),
             ]);
     }

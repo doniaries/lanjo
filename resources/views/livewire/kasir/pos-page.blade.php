@@ -141,7 +141,7 @@
             {{-- MENU GRID: lebih banyak kolom, gambar lebih kecil --}}
             <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3">
                 @foreach($this->menus as $menu)
-                    <button wire:click="addToCart({{ $menu->id }})"
+                    <button wire:click="addToCart({{ $menu->id }}, '{{ addslashes($menu->nama) }}', {{ $menu->harga_jual }}, '{{ $menu->gambar ?? '' }}')"
                         class="menu-card group relative bg-surface-card border border-surface-border rounded-xl overflow-hidden text-left
                         hover:border-brand-500 hover:shadow-lg hover:shadow-brand-900/30 active:scale-95 transition-all duration-200 cursor-pointer">
 
@@ -355,22 +355,67 @@
 
                 {{-- Nominal (tunai only) --}}
                 @if($metodePembayaran === 'tunai')
-                    <div class="space-y-2">
+                    <div class="space-y-3"
+                        x-data="{
+                            display: '{{ number_format($nominalBayar, 0, ',', '.') }}',
+                            init() {
+                                this.display = this.format({{ (int) $nominalBayar }});
+                                this.$watch('display', val => {
+                                    const raw = parseInt(String(val).replace(/\./g,'')) || 0;
+                                    @this.set('nominalBayar', raw);
+                                });
+                            },
+                            format(n) {
+                                return parseInt(n).toLocaleString('id-ID');
+                            },
+                            onInput(e) {
+                                const raw = e.target.value.replace(/\./g,'').replace(/[^0-9]/g,'');
+                                const num = parseInt(raw) || 0;
+                                this.display = this.format(num);
+                                @this.set('nominalBayar', num);
+                            },
+                            setVal(n) {
+                                this.display = this.format(n);
+                                @this.set('nominalBayar', n);
+                            }
+                        }">
                         <p class="text-xs text-surface-muted font-semibold uppercase tracking-wider">Nominal Bayar</p>
-                        <input type="number" wire:model.live="nominalBayar"
-                            class="w-full bg-surface border border-surface-border rounded-xl px-4 py-3 text-lg font-bold text-white focus:outline-none focus:border-brand-500 text-right">
-                        {{-- Quick amounts --}}
-                        <div class="flex gap-2 flex-wrap">
-                            @foreach([50000, 100000, 150000, 200000] as $amount)
-                                <button wire:click="$set('nominalBayar', {{ $amount }})"
-                                    class="px-3 py-1.5 bg-surface border border-surface-border rounded-lg text-xs font-medium text-surface-muted hover:border-brand-500 hover:text-white transition">
+                        
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-surface-muted font-bold text-xl">Rp</span>
+                            <input type="text" inputmode="numeric"
+                                x-model="display"
+                                @input="onInput($event)"
+                                @focus="$event.target.select()"
+                                class="w-full bg-surface border border-surface-border rounded-xl pl-12 pr-4 py-3 text-2xl font-black text-white focus:outline-none focus:border-brand-500 text-right tabular-nums">
+                        </div>
+
+                        {{-- Quick amounts dari total --}}
+                        @php
+                            $tot = (int) $this->total;
+                            $base = (int)(ceil($tot / 5000) * 5000);
+                            $quickAmounts = array_unique([
+                                $base,
+                                (int)(ceil($tot / 10000) * 10000),
+                                (int)(ceil($tot / 50000) * 50000),
+                                (int)(ceil($tot / 100000) * 100000),
+                            ]);
+                            sort($quickAmounts);
+                        @endphp
+                        <div class="grid grid-cols-4 gap-2">
+                            @foreach($quickAmounts as $amount)
+                                <button @click="setVal({{ $amount }})"
+                                    class="py-2.5 bg-surface border border-surface-border rounded-xl text-sm font-bold text-white hover:border-brand-500 hover:text-brand-400 transition">
                                     {{ number_format($amount, 0, ',', '.') }}
                                 </button>
                             @endforeach
                         </div>
-                        <div class="flex justify-between bg-green-500/10 border border-green-500/20 rounded-xl px-4 py-3">
-                            <span class="text-sm text-green-400 font-semibold">Kembalian</span>
-                            <span class="text-sm font-bold text-green-400">Rp {{ number_format($this->kembalian, 0, ',', '.') }}</span>
+
+                        <div class="flex justify-between items-center bg-green-500/10 border border-green-500/20 rounded-xl px-5 py-4">
+                            <div>
+                                <p class="text-xs text-green-400 font-semibold uppercase tracking-wider">Kembalian</p>
+                                <p class="text-2xl font-black text-green-400">Rp {{ number_format($this->kembalian, 0, ',', '.') }}</p>
+                            </div>
                         </div>
                     </div>
                 @endif

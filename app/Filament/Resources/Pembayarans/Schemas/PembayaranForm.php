@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Pembayarans\Schemas;
 
+use App\Models\Pesanan;
+use App\Models\User;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -13,25 +15,46 @@ class PembayaranForm
     {
         return $schema
             ->components([
-                TextInput::make('pesanan_id')
-                    ->required()
-                    ->numeric(),
+                Select::make('pesanan_id')
+                    ->label('Nomor Nota')
+                    ->relationship('pesanan', 'nomor_nota')
+                    ->options(fn () => Pesanan::orderByDesc('created_at')->pluck('nomor_nota', 'id'))
+                    ->searchable()
+                    ->required(),
+
                 Select::make('metode')
-                    ->options(['tunai' => 'Tunai', 'qris' => 'Qris', 'transfer' => 'Transfer'])
+                    ->label('Metode Bayar')
+                    ->options([
+                        'tunai'    => '💵 Tunai',
+                        'transfer' => '🏦 Transfer',
+                        'qris'     => '📱 QRIS',
+                    ])
                     ->default('tunai')
                     ->required(),
+
                 TextInput::make('jumlah_bayar')
-                    ->required()
-                    ->numeric(),
-                TextInput::make('kembalian')
-                    ->required()
+                    ->label('Jumlah Bayar')
                     ->numeric()
-                    ->default(0.0),
-                DateTimePicker::make('waktu_bayar')
+                    ->prefix('Rp')
                     ->required(),
-                TextInput::make('kasir_id')
-                    ->required()
-                    ->numeric(),
+
+                TextInput::make('kembalian')
+                    ->label('Kembalian')
+                    ->numeric()
+                    ->prefix('Rp')
+                    ->default(0),
+
+                DateTimePicker::make('waktu_bayar')
+                    ->label('Waktu Bayar')
+                    ->default(now())
+                    ->required(),
+
+                Select::make('kasir_id')
+                    ->label('Kasir')
+                    ->relationship('kasir', 'name')
+                    ->options(fn () => User::orderBy('name')->pluck('name', 'id'))
+                    ->searchable()
+                    ->required(),
             ]);
     }
 }
