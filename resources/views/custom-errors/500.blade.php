@@ -1,4 +1,4 @@
-@extends('errors::minimal')
+@extends('custom-errors.minimal')
 
 @section('title', 'Terjadi Kesalahan Server')
 @section('code', '500')

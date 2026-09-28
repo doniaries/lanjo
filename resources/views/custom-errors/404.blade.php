@@ -1,4 +1,4 @@
-@extends('errors::minimal')
+@extends('custom-errors.minimal')
 
 @section('title', 'Halaman Tidak Ditemukan')
 @section('code', '404')

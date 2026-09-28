@@ -17,5 +17,12 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        $exceptions->renderable(function (\Symfony\Component\HttpKernel\Exception\HttpException $e, $request) {
+            if (app()->environment('production')) {
+                $status = $e->getStatusCode();
+                if (view()->exists("custom-errors.{$status}")) {
+                    return response()->view("custom-errors.{$status}", ['exception' => $e], $status, $e->getHeaders());
+                }
+            }
+        });
     })->create();
