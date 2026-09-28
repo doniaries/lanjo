@@ -33,12 +33,11 @@
             {{-- Quick Action Buttons --}}
             <div class="flex items-center gap-1.5">
                 {{-- Riwayat --}}
-                <a href="{{ route('filament.admin.resources.pesanans.index') }}" target="_blank"
-                    title="Riwayat Transaksi"
+                <button wire:click="$set('showRiwayat', true)" title="Riwayat Transaksi"
                     class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl bg-blue-500/10 text-blue-500 border border-blue-500/20 hover:bg-blue-500 hover:text-white transition group">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     <span class="text-[10px] font-medium">Riwayat</span>
-                </a>
+                </button>
 
                 {{-- Pending --}}
                 <button wire:click="$set('showPending', true)" title="Pesanan Pending"
@@ -55,17 +54,31 @@
                 </button>
 
                 {{-- Laporan --}}
-                <a href="{{ route('filament.admin.resources.pembayarans.index') }}" target="_blank" title="Laporan Pembayaran"
+                <button wire:click="$set('showLaporan', true)" title="Cetak Laporan"
                     class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 hover:bg-emerald-500 hover:text-white transition group">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                     <span class="text-[10px] font-medium">Laporan</span>
-                </a>
+                </button>
 
                 {{-- Theme Toggle --}}
-                <button onclick="document.documentElement.classList.toggle('light-mode')" title="Ubah Tema"
+                <button x-data="{
+                        toggleTheme() {
+                            let theme = localStorage.getItem('theme') || 'dark';
+                            theme = theme === 'dark' ? 'light' : 'dark';
+                            localStorage.setItem('theme', theme);
+                            if (theme === 'dark') {
+                                document.documentElement.classList.add('dark');
+                                document.documentElement.classList.remove('light');
+                            } else {
+                                document.documentElement.classList.remove('dark');
+                                document.documentElement.classList.add('light');
+                            }
+                        }
+                    }" 
+                    @click="toggleTheme()" title="Ubah Tema"
                     class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl bg-purple-500/10 text-purple-500 border border-purple-500/20 hover:bg-purple-500 hover:text-white transition group">
-                    <svg class="w-4 h-4 hidden .light-mode:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                    <svg class="w-4 h-4 block .light-mode:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                    <svg class="w-4 h-4 dark:hidden block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                    <svg class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
                     <span class="text-[10px] font-medium">Tema</span>
                 </button>
 
@@ -567,6 +580,97 @@
         <div class="text-center text-xs mt-4 mb-8">
             <p>Terima Kasih</p>
             <p>Selamat Datang Kembali</p>
+        </div>
+    </div>
+    @endif
+
+    {{-- ═══════════════════════════════════════════════════════ --}}
+    {{-- MODAL LAPORAN --}}
+    {{-- ═══════════════════════════════════════════════════════ --}}
+    @if($showLaporan)
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" style="margin:0 !important">
+        <div class="bg-white dark:bg-gray-900 w-full max-w-sm rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+            <div class="p-4 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-900">
+                <h3 class="font-bold text-lg text-gray-900 dark:text-white">Cetak Laporan Transaksi</h3>
+                <button wire:click="$set('showLaporan', false)" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="p-5 space-y-4 bg-white dark:bg-gray-900">
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">Dari Tanggal</label>
+                    <input type="date" wire:model.defer="laporanStart" class="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white text-sm rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-emerald-500 outline-none transition" style="color-scheme: dark light;">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">Sampai Tanggal</label>
+                    <input type="date" wire:model.defer="laporanEnd" class="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white text-sm rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-emerald-500 outline-none transition" style="color-scheme: dark light;">
+                </div>
+            </div>
+            <div class="p-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 flex justify-end gap-3">
+                <button wire:click="$set('showLaporan', false)" class="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition">Batal</button>
+                <a href="{{ route('laporan.transaksi') }}?start={{ $laporanStart }}&end={{ $laporanEnd }}" target="_blank"
+                   @click="$wire.set('showLaporan', false)"
+                   class="px-5 py-2 text-sm font-medium bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl shadow-lg shadow-emerald-500/30 transition">
+                    Cetak PDF
+                </a>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    {{-- ═══════════════════════════════════════════════════════ --}}
+    {{-- MODAL RIWAYAT TRANSAKSI HARI INI --}}
+    {{-- ═══════════════════════════════════════════════════════ --}}
+    @if($showRiwayat)
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" style="margin:0 !important">
+        <div class="bg-white dark:bg-gray-900 w-full max-w-4xl max-h-[85vh] rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800 flex flex-col">
+            <div class="p-4 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-900 rounded-t-2xl shrink-0">
+                <h3 class="font-bold text-lg text-gray-900 dark:text-white">Riwayat Transaksi Hari Ini</h3>
+                <button wire:click="$set('showRiwayat', false)" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="p-0 overflow-y-auto flex-1 bg-white dark:bg-gray-900">
+                <table class="w-full text-left border-collapse text-sm text-gray-900 dark:text-white">
+                    <thead class="bg-gray-50 dark:bg-gray-900 sticky top-0 z-10 border-b border-gray-100 dark:border-gray-800">
+                        <tr>
+                            <th class="px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Waktu</th>
+                            <th class="px-4 py-3 font-medium text-gray-600 dark:text-gray-400">No. Nota</th>
+                            <th class="px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Tipe</th>
+                            <th class="px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Kasir</th>
+                            <th class="px-4 py-3 font-medium text-gray-600 dark:text-gray-400 text-right">Total</th>
+                            <th class="px-4 py-3 font-medium text-gray-600 dark:text-gray-400 text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+                        @forelse($this->riwayatTransaksi as $rt)
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
+                            <td class="px-4 py-3">{{ \Carbon\Carbon::parse($rt->tanggal)->format('H:i') }}</td>
+                            <td class="px-4 py-3 font-mono text-emerald-600 dark:text-emerald-400">{{ $rt->nomor_nota }}</td>
+                            <td class="px-4 py-3">{{ $rt->tipe_pesanan === 'dine_in' ? 'Dine In' : 'Take Away' }}</td>
+                            <td class="px-4 py-3">{{ $rt->kasir?->name }}</td>
+                            <td class="px-4 py-3 text-right font-semibold">Rp {{ number_format($rt->total_akhir, 0, ',', '.') }}</td>
+                            <td class="px-4 py-3 text-center">
+                                @if($rt->status === 'selesai')
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-100 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">Selesai</span>
+                                @elseif($rt->status === 'batal')
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-rose-100 dark:bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-500/20">Batal</span>
+                                @else
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20">Baru</span>
+                                @endif
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">Tidak ada transaksi hari ini</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+            <div class="p-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 rounded-b-2xl flex justify-between shrink-0 items-center">
+                <span class="text-xs text-gray-500 dark:text-gray-400">Menampilkan maks 50 transaksi terbaru.</span>
+            </div>
         </div>
     </div>
     @endif

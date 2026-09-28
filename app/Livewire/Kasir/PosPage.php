@@ -38,15 +38,31 @@ class PosPage extends Component
     // Success / nota terakhir
     public bool   $showSuccess        = false;
     public string $nomorNotaSuccess   = '';
+
+    // Modals
+    public bool   $showPending        = false;
+    public bool   $showRiwayat        = false;
+    public bool   $showLaporan        = false;
+    public string $laporanStart       = '';
+    public string $laporanEnd         = '';
     public float  $kembalianSuccess   = 0;
     public array  $notaData           = [];   // untuk print
 
-    // Pending (placeholder)
-    public bool   $showPending        = false;
-
     public function mount(): void
     {
+        $this->laporanStart = now()->format('Y-m-d');
+        $this->laporanEnd = now()->format('Y-m-d');
         $this->selectedKategori = null;
+    }
+
+    #[Computed]
+    public function riwayatTransaksi()
+    {
+        return \App\Models\Pesanan::with('kasir')
+            ->whereDate('tanggal', today())
+            ->latest('tanggal')
+            ->limit(50)
+            ->get();
     }
 
     // ──────────────────────────────────────────────────────────
