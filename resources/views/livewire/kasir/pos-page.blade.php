@@ -1,4 +1,5 @@
-<div class="flex h-screen overflow-hidden select-none">
+<div class="flex h-screen overflow-hidden select-none"
+    @keydown.window.enter.prevent="if(!['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName) && Object.keys($wire.cart).length > 0 && !$wire.showCheckout && !$wire.showSuccess) $wire.set('showCheckout', true)">
 
     {{-- ═══════════════════════════════════════════════════════ --}}
     {{-- LEFT PANEL — Menu Browser                              --}}
