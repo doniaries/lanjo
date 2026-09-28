@@ -72,6 +72,45 @@ class UserSeeder extends Seeder
         $member->syncRoles(['member']);
 
         // ────────────────────────────────────────────────────────────────
+        // 4. KARYAWAN (4 Orang)
+        // ────────────────────────────────────────────────────────────────
+        $karyawan1 = User::create([
+            'name'              => 'Budi (Karyawan)',
+            'email'             => 'budi@local.com',
+            'password'          => Hash::make('Karyawan@123'),
+            'is_active'         => true,
+            'email_verified_at' => now(),
+        ]);
+        $karyawan1->syncRoles(['member']);
+
+        $karyawan2 = User::create([
+            'name'              => 'Siti (Karyawan)',
+            'email'             => 'siti@local.com',
+            'password'          => Hash::make('Karyawan@123'),
+            'is_active'         => true,
+            'email_verified_at' => now(),
+        ]);
+        $karyawan2->syncRoles(['member']);
+
+        $karyawan3 = User::create([
+            'name'              => 'Agus (Karyawan)',
+            'email'             => 'agus@local.com',
+            'password'          => Hash::make('Karyawan@123'),
+            'is_active'         => true,
+            'email_verified_at' => now(),
+        ]);
+        $karyawan3->syncRoles(['member']);
+
+        $karyawan4 = User::create([
+            'name'              => 'Dewi (Karyawan)',
+            'email'             => 'dewi@local.com',
+            'password'          => Hash::make('Karyawan@123'),
+            'is_active'         => true,
+            'email_verified_at' => now(),
+        ]);
+        $karyawan4->syncRoles(['member']);
+
+        // ────────────────────────────────────────────────────────────────
         // INFO SUMMARY
         // ────────────────────────────────────────────────────────────────
         $this->command->newLine();
@@ -83,6 +122,10 @@ class UserSeeder extends Seeder
                 [1, 'Super Admin',   'superadmin@gmail.com', 'super_admin', '@Iamsuperadmin'],
                 [2, 'Administrator', 'admin@local.com',      'admin',       'Admin@123'],
                 [3, 'Member',        'member@local.com',     'member',      'Member@123'],
+                [4, 'Budi',          'budi@local.com',       'member',      'Karyawan@123'],
+                [5, 'Siti',          'siti@local.com',       'member',      'Karyawan@123'],
+                [6, 'Agus',          'agus@local.com',       'member',      'Karyawan@123'],
+                [7, 'Dewi',          'dewi@local.com',       'member',      'Karyawan@123'],
             ]
         );
         $this->command->newLine();
