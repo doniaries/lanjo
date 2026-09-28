@@ -41,7 +41,7 @@ class PesananResource extends Resource
     {
         return $schema
             ->components([
-                \Filament\Infolists\Components\Section::make('Informasi Pesanan')
+                \Filament\Schemas\Components\Section::make('Informasi Pesanan')
                     ->schema([
                         \Filament\Infolists\Components\TextEntry::make('nomor_nota')->label('No. Nota')->weight('bold'),
                         \Filament\Infolists\Components\TextEntry::make('tanggal')->dateTime('d M Y H:i'),
@@ -59,13 +59,29 @@ class PesananResource extends Resource
                             }),
                         \Filament\Infolists\Components\TextEntry::make('catatan')->columnSpanFull(),
                     ])->columns(3),
-                \Filament\Infolists\Components\Section::make('Total')
+                \Filament\Schemas\Components\Section::make('Total')
                     ->schema([
                         \Filament\Infolists\Components\TextEntry::make('subtotal')->formatStateUsing(fn ($state) => format_rupiah($state)),
                         \Filament\Infolists\Components\TextEntry::make('diskon')->formatStateUsing(fn ($state) => format_rupiah($state)),
                         \Filament\Infolists\Components\TextEntry::make('pajak')->formatStateUsing(fn ($state) => format_rupiah($state)),
                         \Filament\Infolists\Components\TextEntry::make('total_akhir')->label('Total Akhir')->weight('bold')->color('primary')->formatStateUsing(fn ($state) => format_rupiah($state)),
                     ])->columns(4),
+                \Filament\Schemas\Components\Section::make('Pembayaran')
+                    ->schema([
+                        \Filament\Infolists\Components\RepeatableEntry::make('pembayarans')
+                            ->label('')
+                            ->schema([
+                                \Filament\Infolists\Components\TextEntry::make('metode')
+                                    ->formatStateUsing(fn ($state) => ucfirst(str_replace('_', ' ', $state))),
+                                \Filament\Infolists\Components\TextEntry::make('jumlah_bayar')
+                                    ->formatStateUsing(fn ($state) => format_rupiah($state)),
+                                \Filament\Infolists\Components\TextEntry::make('kembalian')
+                                    ->formatStateUsing(fn ($state) => format_rupiah($state)),
+                                \Filament\Infolists\Components\TextEntry::make('tanggal_bayar')
+                                    ->dateTime('d M Y H:i'),
+                            ])
+                            ->columns(4)
+                    ]),
             ]);
     }
 
@@ -73,7 +89,6 @@ class PesananResource extends Resource
     {
         return [
             \App\Filament\Resources\Pesanans\RelationManagers\DetailPesanansRelationManager::class,
-            \App\Filament\Resources\Pesanans\RelationManagers\PembayaransRelationManager::class,
         ];
     }
 
