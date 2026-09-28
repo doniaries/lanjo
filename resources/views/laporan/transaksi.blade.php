@@ -29,14 +29,14 @@
         <tbody>
             @php $grandTotal = 0; @endphp
             @forelse($pesanans as $index => $pesanan)
-                @php $grandTotal += $pesanan->total_harga; @endphp
+                @php $grandTotal += $pesanan->total_akhir; @endphp
                 <tr>
                     <td>{{ $index + 1 }}</td>
                     <td>{{ \Carbon\Carbon::parse($pesanan->tanggal)->format('d/m/Y H:i') }}</td>
-                    <td>{{ $pesanan->no_nota ?? '-' }}</td>
+                    <td>{{ $pesanan->nomor_nota ?? '-' }}</td>
                     <td>{{ $pesanan->kasir->name ?? '-' }}</td>
                     <td>{{ ucfirst($pesanan->status) }}</td>
-                    <td class="text-right">Rp {{ number_format($pesanan->total_harga, 0, ',', '.') }}</td>
+                    <td class="text-right">Rp {{ number_format($pesanan->total_akhir, 0, ',', '.') }}</td>
                 </tr>
             @empty
                 <tr>
