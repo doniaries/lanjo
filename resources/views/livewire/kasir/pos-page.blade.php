@@ -447,13 +447,22 @@
                     </div>
                 @endif
 
-                <button wire:click="prosesTransaksi"
-                    wire:loading.attr="disabled"
-                    wire:target="prosesTransaksi"
-                    class="w-full py-4 rounded-2xl bg-green-600 hover:bg-green-500 text-white font-bold text-base transition active:scale-95 shadow-lg shadow-green-900/50">
-                    <span wire:loading.remove wire:target="prosesTransaksi">✅ Selesaikan Transaksi</span>
-                    <span wire:loading wire:target="prosesTransaksi">Memproses...</span>
-                </button>
+                <div class="flex gap-3">
+                    <button wire:click="simpanPending"
+                        wire:loading.attr="disabled"
+                        wire:target="simpanPending"
+                        class="w-1/3 py-4 rounded-2xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-base transition active:scale-95 shadow-lg shadow-orange-900/50">
+                        <span wire:loading.remove wire:target="simpanPending">⏳ Pending</span>
+                        <span wire:loading wire:target="simpanPending">Memproses...</span>
+                    </button>
+                    <button wire:click="prosesTransaksi"
+                        wire:loading.attr="disabled"
+                        wire:target="prosesTransaksi"
+                        class="w-2/3 py-4 rounded-2xl bg-green-600 hover:bg-green-500 text-white font-bold text-base transition active:scale-95 shadow-lg shadow-green-900/50">
+                        <span wire:loading.remove wire:target="prosesTransaksi">✅ Selesaikan</span>
+                        <span wire:loading wire:target="prosesTransaksi">Memproses...</span>
+                    </button>
+                </div>
             </div>
         </div>
     @endif
@@ -669,8 +678,8 @@
                     </tbody>
                 </table>
             </div>
-            <div class="p-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 rounded-b-2xl flex justify-between shrink-0 items-center">
-                <span class="text-xs text-gray-500 dark:text-gray-400">Menampilkan maks 50 transaksi terbaru.</span>
+            <div class="p-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 rounded-b-2xl shrink-0">
+                {{ $this->riwayatTransaksi->links('livewire::tailwind') }}
             </div>
         </div>
     </div>
@@ -792,6 +801,53 @@
         </div>
     </div>
     @endif
+
+    {{-- MODAL PENDING ORDER --}}
+    @if($showPending)
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" style="margin:0 !important">
+        <div class="bg-white dark:bg-gray-900 w-full max-w-4xl max-h-[85vh] rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800 flex flex-col">
+            <div class="p-4 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-900 rounded-t-2xl shrink-0">
+                <h3 class="font-bold text-lg text-gray-900 dark:text-white">Pesanan Pending</h3>
+                <button wire:click="$set('showPending', false)" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="p-0 overflow-y-auto flex-1 bg-white dark:bg-gray-900">
+                <table class="w-full text-left border-collapse text-sm text-gray-900 dark:text-white">
+                    <thead class="bg-gray-50 dark:bg-gray-900 sticky top-0 z-10 border-b border-gray-100 dark:border-gray-800">
+                        <tr>
+                            <th class="px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Waktu</th>
+                            <th class="px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Kasir</th>
+                            <th class="px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Tipe</th>
+                            <th class="px-4 py-3 font-medium text-gray-600 dark:text-gray-400 text-right">Total</th>
+                            <th class="px-4 py-3 font-medium text-gray-600 dark:text-gray-400 text-right">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+                        @forelse($this->pendingTransaksi as $pt)
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
+                            <td class="px-4 py-3">{{ \Carbon\Carbon::parse($pt->tanggal)->format('d/m/Y H:i') }}</td>
+                            <td class="px-4 py-3">{{ $pt->kasir?->name }}</td>
+                            <td class="px-4 py-3">{{ $pt->tipe_pesanan === 'dine_in' ? 'Dine In' : 'Take Away' }}</td>
+                            <td class="px-4 py-3 text-right font-semibold">Rp {{ number_format($pt->total_akhir, 0, ',', '.') }}</td>
+                            <td class="px-4 py-3 text-right">
+                                <button wire:click="loadPending({{ $pt->id }})" class="px-3 py-1.5 bg-amber-100 dark:bg-amber-500/10 hover:bg-amber-200 dark:hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 rounded-lg font-medium transition text-xs border border-amber-200 dark:border-amber-500/20">
+                                    Lanjutkan
+                                </button>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="5" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">Tidak ada pesanan pending</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    @endif
+
     <script>
         document.addEventListener('trigger-print-riwayat', function(event) {
             // Beri jeda sejenak agar DOM Livewire (print-area) selesai dirender

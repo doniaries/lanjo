@@ -11,10 +11,13 @@ use App\Models\Pesanan;
 use App\Models\DetailPesanan;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Livewire\WithPagination;
 use Livewire\Attributes\Computed;
 
 class PosPage extends Component
 {
+    use WithPagination;
+
     // State
     public ?int    $selectedKategori = null;
     public string  $searchMenu       = '';
@@ -131,7 +134,15 @@ class PosPage extends Component
         return \App\Models\Pesanan::with('kasir')
             ->whereDate('tanggal', today())
             ->latest('tanggal')
-            ->limit(50)
+            ->paginate(15);
+    }
+
+    #[Computed]
+    public function pendingTransaksi()
+    {
+        return \App\Models\Pesanan::with('kasir')
+            ->where('status', 'baru')
+            ->latest('tanggal')
             ->get();
     }
 
@@ -271,6 +282,76 @@ class PosPage extends Component
         }
         $this->namaPembeli  = '';
         $this->bankPengirim = '';
+    }
+
+    public function simpanPending(): void
+    {
+        if (empty($this->cart)) return;
+
+        /** @var \App\Models\User|null $user */
+        $user = auth()->user();
+
+        DB::transaction(function () use ($user) {
+            $today = now()->format('Ymd');
+            $latestPesanan = Pesanan::whereDate('tanggal', today())->latest('id')->first();
+            if ($latestPesanan && preg_match('/NOTA-\d{8}-(\d{4})/', $latestPesanan->nomor_nota, $matches)) {
+                $nextNumber = intval($matches[1]) + 1;
+            } else {
+                $nextNumber = 1;
+            }
+            $nomor = 'NOTA-' . $today . '-' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+
+            $pesanan = Pesanan::create([
+                'nomor_nota'   => $nomor,
+                'tanggal'      => now(),
+                'meja_id'      => $this->selectedMeja ?: null,
+                'tipe_pesanan' => $this->tipePesanan,
+                'kasir_id'     => $user->id,
+                'status'       => 'baru',
+                'subtotal'     => $this->subtotal,
+                'diskon_nilai' => $this->diskon,
+                'pajak_nilai'  => $this->pajak,
+                'total_akhir'  => $this->total,
+                'catatan'      => $this->catatan,
+            ]);
+
+            foreach ($this->cart as $menuId => $item) {
+                DetailPesanan::create([
+                    'pesanan_id'            => $pesanan->id,
+                    'menu_id'               => $menuId,
+                    'nama_menu_snapshot'    => $item['nama'],
+                    'harga_satuan_snapshot' => $item['harga'],
+                    'jumlah'                => $item['qty'],
+                    'subtotal'              => $item['harga'] * $item['qty'],
+                ]);
+            }
+        });
+
+        $this->showCheckout = false;
+        $this->clearCart();
+    }
+
+    public function loadPending(int $id)
+    {
+        $pesanan = \App\Models\Pesanan::with('detailPesanans')->find($id);
+        if (!$pesanan) return;
+
+        $this->cart = [];
+        foreach ($pesanan->detailPesanans as $detail) {
+            $this->cart[$detail->menu_id] = [
+                'nama' => $detail->nama_menu_snapshot,
+                'harga' => $detail->harga_satuan_snapshot,
+                'qty' => $detail->jumlah,
+            ];
+        }
+        $this->selectedMeja = $pesanan->meja_id;
+        $this->tipePesanan = $pesanan->tipe_pesanan;
+        $this->catatan = $pesanan->catatan ?? '';
+        $this->diskon = (float) $pesanan->diskon_nilai;
+
+        $pesanan->delete();
+        
+        $this->showPending = false;
     }
 
     public function prosesTransaksi(): void

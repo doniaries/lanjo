@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Kasir\PosPage;
+use App\Livewire\Kasir\RiwayatPage;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -14,6 +15,7 @@ Route::get('/login', function () {
 // Halaman Kasir POS — dilindungi auth Filament
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/kasir', PosPage::class)->name('kasir.pos');
+    Route::get('/kasir/riwayat', RiwayatPage::class)->name('kasir.riwayat');
     
     Route::get('/laporan-transaksi', function (\Illuminate\Http\Request $request) {
         $start = $request->start;
