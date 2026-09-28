@@ -27,11 +27,12 @@ class ListPesanans extends ListRecords
                         ->required()
                         ->default(now()),
                 ])
-                ->action(function (array $data) {
-                    return redirect()->route('laporan.transaksi', [
+                ->action(function (array $data, \Livewire\Component $livewire) {
+                    $url = route('laporan.transaksi', [
                         'start' => $data['start_date'],
                         'end' => $data['end_date'],
                     ]);
+                    $livewire->js("window.open('{$url}', '_blank');");
                 }),
             CreateAction::make(),
         ];

@@ -50,7 +50,6 @@ class PesananForm
                 Select::make('kasir_id')
                     ->label('Kasir')
                     ->relationship('kasir', 'name')
-                    ->options(fn () => User::orderBy('name')->pluck('name', 'id'))
                     ->searchable()
                     ->required(),
 
@@ -66,26 +65,26 @@ class PesananForm
 
                 TextInput::make('subtotal')
                     ->label('Subtotal')
-                    ->numeric()
-                    ->prefix('Rp')
+                    ->formatStateUsing(fn ($state) => $state ? format_rupiah($state) : format_rupiah(0))
+                    ->readOnly()
                     ->default(0),
 
                 TextInput::make('diskon_nilai')
                     ->label('Diskon')
-                    ->numeric()
-                    ->prefix('Rp')
+                    ->formatStateUsing(fn ($state) => $state ? format_rupiah($state) : format_rupiah(0))
+                    ->readOnly()
                     ->default(0),
 
                 TextInput::make('pajak_nilai')
                     ->label('Pajak')
-                    ->numeric()
-                    ->prefix('Rp')
+                    ->formatStateUsing(fn ($state) => $state ? format_rupiah($state) : format_rupiah(0))
+                    ->readOnly()
                     ->default(0),
 
                 TextInput::make('total_akhir')
                     ->label('Total Akhir')
-                    ->numeric()
-                    ->prefix('Rp')
+                    ->formatStateUsing(fn ($state) => $state ? format_rupiah($state) : format_rupiah(0))
+                    ->readOnly()
                     ->default(0),
 
                 Textarea::make('catatan')

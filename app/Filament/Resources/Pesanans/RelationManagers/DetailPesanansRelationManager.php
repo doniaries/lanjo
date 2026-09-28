@@ -36,23 +36,30 @@ class DetailPesanansRelationManager extends RelationManager
             ->recordTitleAttribute('nama_menu_snapshot')
             ->columns([
                 TextColumn::make('nama_menu_snapshot')
+                    ->label('Nama Menu')
                     ->searchable(),
+                TextColumn::make('jumlah')
+                    ->label('Jumlah')
+                    ->sortable(),
+                TextColumn::make('harga_satuan_snapshot')
+                    ->label('Harga Satuan')
+                    ->formatStateUsing(fn($state) => format_rupiah($state)),
+                TextColumn::make('subtotal_snapshot')
+                    ->label('Subtotal')
+                    ->formatStateUsing(fn($state) => format_rupiah($state)),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
                 CreateAction::make(),
-                AssociateAction::make(),
             ])
             ->recordActions([
                 EditAction::make(),
-                DissociateAction::make(),
                 DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DissociateBulkAction::make(),
                     DeleteBulkAction::make(),
                 ]),
             ]);

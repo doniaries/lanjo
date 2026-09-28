@@ -52,7 +52,6 @@ class PembayaranForm
                 Select::make('kasir_id')
                     ->label('Kasir')
                     ->relationship('kasir', 'name')
-                    ->options(fn () => User::orderBy('name')->pluck('name', 'id'))
                     ->searchable()
                     ->required(),
             ]);

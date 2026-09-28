@@ -36,23 +36,27 @@ class PembayaransRelationManager extends RelationManager
             ->recordTitleAttribute('metode')
             ->columns([
                 TextColumn::make('metode')
+                    ->label('Metode Pembayaran')
                     ->searchable(),
+                TextColumn::make('nominal')
+                    ->label('Nominal Bayar')
+                    ->formatStateUsing(fn ($state) => format_rupiah($state)),
+                TextColumn::make('kembalian')
+                    ->label('Kembalian')
+                    ->formatStateUsing(fn ($state) => format_rupiah($state)),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
                 CreateAction::make(),
-                AssociateAction::make(),
             ])
             ->recordActions([
                 EditAction::make(),
-                DissociateAction::make(),
                 DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DissociateBulkAction::make(),
                     DeleteBulkAction::make(),
                 ]),
             ]);

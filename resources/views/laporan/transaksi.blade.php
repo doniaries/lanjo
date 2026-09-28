@@ -12,7 +12,20 @@
     </style>
 </head>
 <body>
-    <h2 class="text-center">Laporan Transaksi</h2>
+    @php
+        $pengaturan = \App\Models\Pengaturan::first();
+        $namaToko = $pengaturan->nama_toko ?? 'Nama Toko';
+        $alamatToko = $pengaturan->alamat ?? 'Alamat Toko';
+        $telpToko = $pengaturan->telepon ?? '-';
+        $shiftAktif = \App\Models\Shift::where('pengguna_id', auth()->id())->where('status', 'buka')->first();
+    @endphp
+
+    <div class="text-center" style="margin-bottom: 20px; border-bottom: 1px solid #000; padding-bottom: 10px;">
+        <h1 style="margin: 0; font-size: 24px;">{{ $namaToko }}</h1>
+        <p style="margin: 5px 0;">{{ $alamatToko }} | Telp: {{ $telpToko }}</p>
+    </div>
+
+    <h2 class="text-center" style="margin-top: 20px;">Laporan Transaksi</h2>
     <p class="text-center">Periode: {{ \Carbon\Carbon::parse($start)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($end)->format('d/m/Y') }}</p>
 
     <table>
@@ -36,7 +49,7 @@
                     <td>{{ $pesanan->nomor_nota ?? '-' }}</td>
                     <td>{{ $pesanan->kasir->name ?? '-' }}</td>
                     <td>{{ ucfirst($pesanan->status) }}</td>
-                    <td class="text-right">Rp {{ number_format($pesanan->total_akhir, 0, ',', '.') }}</td>
+                    <td class="text-right">{{ format_rupiah($pesanan->total_akhir) }}</td>
                 </tr>
             @empty
                 <tr>
@@ -47,9 +60,20 @@
         <tfoot>
             <tr>
                 <th colspan="5" class="text-right">Grand Total</th>
-                <th class="text-right">Rp {{ number_format($grandTotal, 0, ',', '.') }}</th>
+                <th class="text-right">{{ format_rupiah($grandTotal) }}</th>
             </tr>
         </tfoot>
+    </table>
+
+    <table style="width: 100%; border: none; margin-top: 50px;">
+        <tr style="border: none;">
+            <td style="border: none; text-align: right; width: 100%;">
+                <p style="margin: 0;">Kasir Bertugas,</p>
+                <br><br><br><br>
+                <p style="margin: 0; font-weight: bold; text-decoration: underline;">{{ auth()->user()->name ?? 'Administrator' }}</p>
+                <p style="margin: 5px 0 0 0;">Shift: {{ $shiftAktif ? 'Aktif (' . \Carbon\Carbon::parse($shiftAktif->waktu_mulai)->format('H:i') . ' - Sekarang)' : 'Tidak ada' }}</p>
+            </td>
+        </tr>
     </table>
 </body>
 </html>

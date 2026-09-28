@@ -66,7 +66,7 @@ class PesanansTable
 
                 TextColumn::make('total_akhir')
                     ->label('Total')
-                    ->money('IDR')
+                    ->formatStateUsing(fn ($state) => format_rupiah($state))
                     ->sortable()
                     ->weight('bold'),
 
