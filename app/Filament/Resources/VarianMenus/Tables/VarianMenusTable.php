@@ -13,9 +13,9 @@ class VarianMenusTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn ($query) => $query->with(['menu']))
             ->columns([
-                TextColumn::make('menu_id')
-                    ->numeric()
+                TextColumn::make('menu.nama')
                     ->sortable(),
                 TextColumn::make('nama_varian')
                     ->searchable(),

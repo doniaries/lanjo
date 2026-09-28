@@ -25,7 +25,7 @@ class MenuResource extends Resource
     }
     protected static ?int $navigationSort = 1;
 
-    protected static ?string $recordTitleAttribute = 'id';
+    protected static ?string $recordTitleAttribute = 'nama';
 
     public static function form(Schema $schema): Schema
     {

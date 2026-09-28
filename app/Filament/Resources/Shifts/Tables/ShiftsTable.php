@@ -13,9 +13,9 @@ class ShiftsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn ($query) => $query->with(['pengguna']))
             ->columns([
-                TextColumn::make('pengguna_id')
-                    ->numeric()
+                TextColumn::make('pengguna.name')
                     ->sortable(),
                 TextColumn::make('waktu_mulai')
                     ->dateTime()

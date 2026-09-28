@@ -13,18 +13,19 @@ class PesanansTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn ($query) => $query->with(['meja', 'kasir']))
             ->columns([
                 TextColumn::make('nomor_nota')
                     ->searchable(),
                 TextColumn::make('tanggal')
                     ->dateTime()
                     ->sortable(),
-                TextColumn::make('meja_id')
+                TextColumn::make('meja.nomor_meja')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('tipe_pesanan')
                     ->badge(),
-                TextColumn::make('kasir_id')
+                TextColumn::make('kasir.name')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('status')

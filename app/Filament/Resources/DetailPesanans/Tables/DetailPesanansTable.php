@@ -13,14 +13,15 @@ class DetailPesanansTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn ($query) => $query->with(['pesanan', 'varianMenu']))
             ->columns([
-                TextColumn::make('pesanan_id')
+                TextColumn::make('pesanan.nomor_nota')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('menu_id')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('varian_menu_id')
+                TextColumn::make('varianMenu.nama_varian')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('nama_menu_snapshot')

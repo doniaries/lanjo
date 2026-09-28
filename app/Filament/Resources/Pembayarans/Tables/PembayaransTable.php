@@ -13,8 +13,9 @@ class PembayaransTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn ($query) => $query->with(['pesanan', 'kasir']))
             ->columns([
-                TextColumn::make('pesanan_id')
+                TextColumn::make('pesanan.nomor_nota')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('metode')
@@ -28,7 +29,7 @@ class PembayaransTable
                 TextColumn::make('waktu_bayar')
                     ->dateTime()
                     ->sortable(),
-                TextColumn::make('kasir_id')
+                TextColumn::make('kasir.name')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('created_at')
