@@ -478,11 +478,11 @@
                     </div>
                 @endif
                 <div class="grid grid-cols-2 gap-3 mt-2">
-                    <button onclick="printStruk(58)" class="w-full py-3 rounded-2xl bg-surface border border-brand-500 text-brand-400 font-bold hover:bg-brand-500/10 transition flex items-center justify-center gap-2">
+                    <button onclick="printStruk(58, '{{ $nomorNotaSuccess }}')" class="w-full py-3 rounded-2xl bg-surface border border-brand-500 text-brand-400 font-bold hover:bg-brand-500/10 transition flex items-center justify-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
                         58mm
                     </button>
-                    <button onclick="printStruk(80)" class="w-full py-3 rounded-2xl bg-surface border border-brand-500 text-brand-400 font-bold hover:bg-brand-500/10 transition flex items-center justify-center gap-2">
+                    <button onclick="printStruk(80, '{{ $nomorNotaSuccess }}')" class="w-full py-3 rounded-2xl bg-surface border border-brand-500 text-brand-400 font-bold hover:bg-brand-500/10 transition flex items-center justify-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
                         80mm
                     </button>
@@ -775,7 +775,7 @@
             </div>
 
             <div class="p-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 rounded-b-2xl flex justify-between shrink-0">
-                <button onclick="printStruk('{{ $ukuranKertas }}')" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition font-medium flex items-center gap-2">
+                <button onclick="printStruk('{{ $ukuranKertas }}', '{{ $this->selectedPesananDetail->nomor_nota }}')" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition font-medium flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
                     Cetak Ulang Struk
                 </button>
@@ -787,15 +787,31 @@
     </div>
     @endif
     <script>
-        function printStruk(size) {
+        function printStruk(size, nota = 'Struk') {
             const pa = document.getElementById('print-area');
             if(pa) {
-                const printWindow = window.open('', '_blank', 'width=400,height=600');
+                // Hapus iframe lama jika ada
+                let oldFrame = document.getElementById('print-iframe');
+                if (oldFrame) {
+                    oldFrame.remove();
+                }
+
+                // Buat iframe tersembunyi baru
+                const iframe = document.createElement('iframe');
+                iframe.id = 'print-iframe';
+                iframe.style.position = 'fixed';
+                iframe.style.right = '0';
+                iframe.style.bottom = '0';
+                iframe.style.width = '0';
+                iframe.style.height = '0';
+                iframe.style.border = '0';
+                document.body.appendChild(iframe);
                 
                 let printHtml = `
+                    <!DOCTYPE html>
                     <html>
                     <head>
-                        <title>Cetak Struk</title>
+                        <title>${nota}</title>
                         <style>
                             @page { margin: 0; }
                             body { 
@@ -837,18 +853,21 @@
                         <div class="print-container">
                             ${pa.innerHTML}
                         </div>
-                        <script>
-                            window.onload = function() {
-                                window.print();
-                                setTimeout(function() { window.close(); }, 500);
-                            }
-                        <\/script>
                     </body>
                     </html>
                 `;
                 
-                printWindow.document.write(printHtml);
-                printWindow.document.close();
+                const doc = iframe.contentWindow.document;
+                doc.open();
+                doc.write(printHtml);
+                doc.close();
+
+                // Tambahkan delay sedikit agar CSS selesai di-render oleh browser
+                setTimeout(function() {
+                    iframe.contentWindow.focus();
+                    iframe.contentWindow.print();
+                }, 250);
+
             } else {
                 alert('Data struk tidak ditemukan!');
             }
