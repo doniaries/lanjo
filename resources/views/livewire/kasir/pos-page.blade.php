@@ -865,7 +865,15 @@
                 // Tambahkan delay sedikit agar CSS selesai di-render oleh browser
                 setTimeout(function() {
                     iframe.contentWindow.focus();
+                    
+                    // Simpan title asli window utama (karena browser mengambil nama file PDF dari parent window)
+                    const originalTitle = document.title;
+                    document.title = nota;
+                    
                     iframe.contentWindow.print();
+                    
+                    // Kembalikan title asli
+                    document.title = originalTitle;
                 }, 250);
 
             } else {
