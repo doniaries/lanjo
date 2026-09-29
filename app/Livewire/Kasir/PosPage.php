@@ -128,10 +128,16 @@ class PosPage extends Component
             : null;
     }
 
+    public function getUsahaIdProperty()
+    {
+        return request('tenant_id') ?? auth()->user()?->usaha_id;
+    }
+
     #[Computed]
     public function riwayatTransaksi()
     {
         return \App\Models\Pesanan::with('kasir')
+            ->when($this->usaha_id, fn ($q) => $q->where('usaha_id', $this->usaha_id))
             ->whereDate('tanggal', today())
             ->latest('tanggal')
             ->paginate(15);
@@ -141,10 +147,12 @@ class PosPage extends Component
     public function pendingTransaksi()
     {
         return \App\Models\Pesanan::with('kasir')
+            ->when($this->usaha_id, fn ($q) => $q->where('usaha_id', $this->usaha_id))
             ->where('status', 'baru')
             ->latest('tanggal')
             ->get();
     }
+
 
     // ──────────────────────────────────────────────────────────
     // Computed
@@ -152,19 +160,25 @@ class PosPage extends Component
     #[Computed]
     public function pengaturan()
     {
-        return Pengaturan::first();
+        return $this->usaha_id 
+            ? Pengaturan::where('usaha_id', $this->usaha_id)->first() 
+            : Pengaturan::first();
     }
 
     #[Computed]
     public function kategoris()
     {
-        return KategoriMenu::where('aktif', true)->orderBy('urutan')->get();
+        return KategoriMenu::where('aktif', true)
+            ->when($this->usaha_id, fn ($q) => $q->where('usaha_id', $this->usaha_id))
+            ->orderBy('urutan')
+            ->get();
     }
 
     #[Computed]
     public function menus()
     {
         return Menu::with('kategoriMenu')
+            ->when($this->usaha_id, fn ($q) => $q->where('usaha_id', $this->usaha_id))
             ->when($this->selectedKategori, fn ($q) => $q->where('kategori_menu_id', $this->selectedKategori))
             ->when($this->searchMenu, fn ($q) => $q->where('nama', 'like', "%{$this->searchMenu}%"))
             ->where('status_aktif', true)
@@ -175,7 +189,9 @@ class PosPage extends Component
     #[Computed]
     public function mejas()
     {
-        return Meja::orderBy('nomor_meja')->get();
+        return Meja::when($this->usaha_id, fn ($q) => $q->where('usaha_id', $this->usaha_id))
+            ->orderBy('nomor_meja')
+            ->get();
     }
 
     // ──────────────────────────────────────────────────────────
@@ -302,6 +318,7 @@ class PosPage extends Component
             $nomor = 'NOTA-' . $today . '-' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
 
             $pesanan = Pesanan::create([
+                'usaha_id'     => $this->usaha_id,
                 'nomor_nota'   => $nomor,
                 'tanggal'      => now(),
                 'meja_id'      => $this->selectedMeja ?: null,
@@ -317,6 +334,7 @@ class PosPage extends Component
 
             foreach ($this->cart as $menuId => $item) {
                 DetailPesanan::create([
+                    'usaha_id'              => $this->usaha_id,
                     'pesanan_id'            => $pesanan->id,
                     'menu_id'               => $menuId,
                     'nama_menu_snapshot'    => $item['nama'],
@@ -373,6 +391,7 @@ class PosPage extends Component
             $nomor = 'NOTA-' . $today . '-' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
 
             $pesanan = Pesanan::create([
+                'usaha_id'     => $this->usaha_id,
                 'nomor_nota'   => $nomor,
                 'tanggal'      => now(),
                 'meja_id'      => $this->selectedMeja ?: null,
@@ -388,6 +407,7 @@ class PosPage extends Component
 
             foreach ($this->cart as $menuId => $item) {
                 DetailPesanan::create([
+                    'usaha_id'              => $this->usaha_id,
                     'pesanan_id'            => $pesanan->id,
                     'menu_id'               => $menuId,
                     'nama_menu_snapshot'    => $item['nama'],
@@ -398,6 +418,7 @@ class PosPage extends Component
             }
 
             Pembayaran::create([
+                'usaha_id'     => $this->usaha_id,
                 'pesanan_id'   => $pesanan->id,
                 'metode'       => $this->metodePembayaran,
                 'jumlah_bayar' => $this->nominalBayar,

@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             ShieldSeeder::class,      // 1. Roles & permissions (harus pertama)
             SuperAdminSeeder::class,  // 2. Super admin (tidak terikat usaha)
             UsahaSeeder::class,       // 3. Usaha + user + data per tenant
+            MenuSeeder::class,        // 4. Menu untuk tiap usaha
         ]);
     }
 }

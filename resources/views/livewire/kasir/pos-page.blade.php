@@ -201,11 +201,9 @@
 
                             {{-- Info --}}
                             <div class="p-3">
-                                <p class="text-sm font-semibold text-white leading-tight truncate">{{ $menu->nama }}</p>
+                                <p class="text-sm font-semibold text-white leading-tight break-words">{{ $menu->nama }}</p>
                                 <p class="text-xs text-brand-400 font-bold mt-1">Rp {{ number_format($menu->harga_jual, 0, ',', '.') }}</p>
-                                @if($menu->stok <= 10)
-                                    <p class="text-xs text-amber-400 mt-1">Stok: {{ $menu->stok }}</p>
-                                @endif
+
                             </div>
                         </button>
                     @endforeach
