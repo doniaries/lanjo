@@ -343,7 +343,6 @@ class PosPage extends Component
 
             foreach ($this->cart as $menuId => $item) {
                 DetailPesanan::create([
-                    'usaha_id'              => $this->usaha_id,
                     'pesanan_id'            => $pesanan->id,
                     'menu_id'               => $menuId,
                     'nama_menu_snapshot'    => $item['nama'],
@@ -416,7 +415,6 @@ class PosPage extends Component
 
             foreach ($this->cart as $menuId => $item) {
                 DetailPesanan::create([
-                    'usaha_id'              => $this->usaha_id,
                     'pesanan_id'            => $pesanan->id,
                     'menu_id'               => $menuId,
                     'nama_menu_snapshot'    => $item['nama'],
@@ -427,7 +425,6 @@ class PosPage extends Component
             }
 
             Pembayaran::create([
-                'usaha_id'     => $this->usaha_id,
                 'pesanan_id'   => $pesanan->id,
                 'metode'       => $this->metodePembayaran,
                 'jumlah_bayar' => $this->nominalBayar,

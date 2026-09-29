@@ -13,7 +13,7 @@ class UserSeeder extends Seeder
     {
         // ================================================================
         // STARTER PACK — USER SEEDER
-        // 3 Role: super_admin | admin | member
+        // 3 Role: super_admin | admin | karyawan
         //
         // Ganti credential ini sebelum deploy ke production!
         // ================================================================
@@ -57,19 +57,19 @@ class UserSeeder extends Seeder
         $admin->syncRoles(['admin']);
 
         // ────────────────────────────────────────────────────────────────
-        // 3. MEMBER
+        // 3. KARYAWAN
         //    Akses terbatas: hanya dashboard & profil sendiri
-        //    Email  : member@local.com
-        //    Password: Member@123
+        //    Email  : karyawan@local.com
+        //    Password: Karyawan@123
         // ────────────────────────────────────────────────────────────────
-        $member = User::create([
-            'name'              => 'Member',
-            'email'             => 'member@local.com',
-            'password'          => Hash::make('Member@123'),
+        $karyawan = User::create([
+            'name'              => 'Karyawan',
+            'email'             => 'karyawan@local.com',
+            'password'          => Hash::make('Karyawan@123'),
             'is_active'         => true,
             'email_verified_at' => now(),
         ]);
-        $member->syncRoles(['member']);
+        $karyawan->syncRoles(['karyawan']);
 
         // ────────────────────────────────────────────────────────────────
         // 4. KARYAWAN (4 Orang)
@@ -81,7 +81,7 @@ class UserSeeder extends Seeder
             'is_active'         => true,
             'email_verified_at' => now(),
         ]);
-        $karyawan1->syncRoles(['member']);
+        $karyawan1->syncRoles(['karyawan']);
 
         $karyawan2 = User::create([
             'name'              => 'Siti (Karyawan)',
@@ -90,7 +90,7 @@ class UserSeeder extends Seeder
             'is_active'         => true,
             'email_verified_at' => now(),
         ]);
-        $karyawan2->syncRoles(['member']);
+        $karyawan2->syncRoles(['karyawan']);
 
         $karyawan3 = User::create([
             'name'              => 'Agus (Karyawan)',
@@ -99,7 +99,7 @@ class UserSeeder extends Seeder
             'is_active'         => true,
             'email_verified_at' => now(),
         ]);
-        $karyawan3->syncRoles(['member']);
+        $karyawan3->syncRoles(['karyawan']);
 
         $karyawan4 = User::create([
             'name'              => 'Dewi (Karyawan)',
@@ -108,7 +108,7 @@ class UserSeeder extends Seeder
             'is_active'         => true,
             'email_verified_at' => now(),
         ]);
-        $karyawan4->syncRoles(['member']);
+        $karyawan4->syncRoles(['karyawan']);
 
         // ────────────────────────────────────────────────────────────────
         // INFO SUMMARY
@@ -121,11 +121,11 @@ class UserSeeder extends Seeder
             [
                 [1, 'Super Admin',   'superadmin@gmail.com', 'super_admin', '@Iamsuperadmin'],
                 [2, 'Administrator', 'admin@local.com',      'admin',       'Admin@123'],
-                [3, 'Member',        'member@local.com',     'member',      'Member@123'],
-                [4, 'Budi',          'budi@local.com',       'member',      'Karyawan@123'],
-                [5, 'Siti',          'siti@local.com',       'member',      'Karyawan@123'],
-                [6, 'Agus',          'agus@local.com',       'member',      'Karyawan@123'],
-                [7, 'Dewi',          'dewi@local.com',       'member',      'Karyawan@123'],
+                [3, 'Karyawan',        'karyawan@local.com',     'karyawan',      'Karyawan@123'],
+                [4, 'Budi',          'budi@local.com',       'karyawan',      'Karyawan@123'],
+                [5, 'Siti',          'siti@local.com',       'karyawan',      'Karyawan@123'],
+                [6, 'Agus',          'agus@local.com',       'karyawan',      'Karyawan@123'],
+                [7, 'Dewi',          'dewi@local.com',       'karyawan',      'Karyawan@123'],
             ]
         );
         $this->command->newLine();

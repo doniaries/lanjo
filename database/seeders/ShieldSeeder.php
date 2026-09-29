@@ -93,11 +93,11 @@ class ShieldSeeder extends Seeder
             ],
 
             // ────────────────────────────────────────────────────────────
-            // MEMBER — hanya akses dashboard & profil sendiri
+            // KARYAWAN — hanya akses dashboard & profil sendiri
             // ────────────────────────────────────────────────────────────
             [
-                'name'        => 'member',
-                'description' => 'Member — akses terbatas hanya pada dashboard dan profil sendiri.',
+                'name'        => 'karyawan',
+                'description' => 'Karyawan — akses terbatas hanya pada dashboard dan profil sendiri.',
                 'permissions' => [
                     'page_Dashboard',
                     'widget_AccountWidget',
