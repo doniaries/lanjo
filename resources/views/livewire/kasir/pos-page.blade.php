@@ -110,7 +110,7 @@
             <div x-data="{
                 now: new Date(),
                 init() { setInterval(() => this.now = new Date(), 1000) },
-                get jam() { return this.now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }); },
+                get jam() { return String(this.now.getHours()).padStart(2, '0') + ':' + String(this.now.getMinutes()).padStart(2, '0'); },
                 get tanggal() { return this.now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }); }
             }" class="flex flex-col items-end">
                 <span x-text="jam" class="text-xl font-black text-main tracking-wider tabular-nums"></span>
