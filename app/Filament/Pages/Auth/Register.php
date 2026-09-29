@@ -80,7 +80,7 @@ class Register extends BaseRegister
                         TextInput::make('nama_usaha')
                             ->label('Nama Usaha')
                             ->required()
-                            ->live(debounce: 500)
+                            ->live(debounce: 200)
                             ->afterStateUpdated(fn (\Filament\Schemas\Components\Utilities\Set $set, ?string $state) => $set('slug', Str::slug($state ?? '')))
                             ->maxLength(255),
                         TextInput::make('slug')
