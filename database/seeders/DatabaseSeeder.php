@@ -9,14 +9,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            ShieldSeeder::class, // Roles & permissions
-            UserSeeder::class,   // Users: superadmin, admin, member
-            PengaturanSeeder::class,
-            KategoriMenuSeeder::class,
-            MenuSeeder::class,
-            VarianMenuSeeder::class,
-            ShiftSeeder::class,
-            MejaSeeder::class,
+            ShieldSeeder::class,      // 1. Roles & permissions (harus pertama)
+            SuperAdminSeeder::class,  // 2. Super admin (tidak terikat usaha)
+            UsahaSeeder::class,       // 3. Usaha + user + data per tenant
         ]);
     }
 }
