@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
+use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,10 +14,13 @@ use Spatie\Permission\Traits\HasRoles;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
 
-class User extends Authenticatable implements FilamentUser, HasAvatar
+class User extends Authenticatable implements FilamentUser, HasAvatar, HasTenants
 {
     use HasFactory, Notifiable, HasRoles, LogsActivity;
+
 
     protected $connection = 'mysql';
 
@@ -63,6 +67,22 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         return $this->tipe === 'pemilik';
     }
 
+    public function getTenants(Panel $panel): array|Collection
+    {
+        if ($this->isSuperadmin()) {
+            return Usaha::all();
+        }
+        return $this->usaha ? [$this->usaha] : [];
+    }
+
+    public function canAccessTenant(Model $tenant): bool
+    {
+        if ($this->isSuperadmin()) {
+            return true;
+        }
+        return $this->usaha_id === $tenant->id;
+    }
+
     // ─── Filament ────────────────────────────────────────────────────────
 
     public function canAccessPanel(Panel $panel): bool
@@ -79,9 +99,14 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
 
     public function getFilamentAvatarUrl(): ?string
     {
-        return $this->avatar_url
-            ? Storage::disk('public')->url($this->avatar_url)
-            : null;
+        if (! $this->avatar_url) {
+            return null;
+        }
+
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        $disk = Storage::disk('public');
+
+        return $disk->url($this->avatar_url);
     }
 
     protected static function booted(): void
@@ -95,4 +120,3 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         });
     }
 }
-

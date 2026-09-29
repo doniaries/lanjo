@@ -41,6 +41,9 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->tenant(\App\Models\Usaha::class, slugAttribute: 'slug')
+            ->tenantRegistration(\App\Filament\Pages\Tenancy\RegisterUsaha::class)
+            ->tenantProfile(\App\Filament\Pages\Tenancy\EditUsahaProfile::class)
             // ->registration(\App\Filament\Pages\Auth\Register::class)
             ->colors([
                 'danger' => Color::Rose,

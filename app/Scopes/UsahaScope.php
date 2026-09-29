@@ -14,14 +14,20 @@ class UsahaScope implements Scope
 {
     public function apply(Builder $builder, Model $model): void
     {
-        if (! auth()->check()) {
+        if (! \Illuminate\Support\Facades\Auth::check()) {
+            return;
+        }
+
+        // Cek jika kita di dalam konteks Filament dan tenant sudah dipilih
+        if (class_exists(\Filament\Facades\Filament::class) && \Filament\Facades\Filament::hasTenancy() && $tenant = \Filament\Facades\Filament::getTenant()) {
+            $builder->where($model->getTable() . '.usaha_id', $tenant->id);
             return;
         }
 
         /** @var \App\Models\User|null $user */
-        $user = auth()->user();
+        $user = \Illuminate\Support\Facades\Auth::user();
 
-        // Superadmin bisa lihat semua data
+        // Superadmin melihat semua (hanya jika di luar konteks Tenant)
         if ($user->tipe === 'superadmin') {
             return;
         }
