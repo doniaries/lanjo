@@ -45,7 +45,7 @@ class PengaturanForm
                     ->default(false),
                 TextInput::make('nama_pimpinan')
                     ->label('Nama Pimpinan')
-                    ->prefixIcon('heroicon-m-user-tie')
+                    ->prefixIcon('heroicon-m-user')
                     ->maxLength(255),
                 \Filament\Forms\Components\FileUpload::make('logo')
                     ->image()
