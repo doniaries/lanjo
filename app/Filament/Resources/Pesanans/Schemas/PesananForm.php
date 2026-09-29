@@ -41,11 +41,8 @@ class PesananForm
                     ->nullable()
                     ->placeholder('-- Pilih Meja (opsional) --'),
 
-                Select::make('tipe_pesanan')
-                    ->label('Tipe Pesanan')
-                    ->options(['dine_in' => '🍽 Dine In', 'take_away' => '🛍 Take Away'])
-                    ->default('dine_in')
-                    ->required(),
+                \Filament\Forms\Components\Hidden::make('tipe_pesanan')
+                    ->default('dine_in'),
 
                 Select::make('kasir_id')
                     ->label('Kasir')

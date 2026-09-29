@@ -43,12 +43,6 @@ class PesanansTable
                     ->color('info')
                     ->placeholder('Take Away'),
 
-                TextColumn::make('tipe_pesanan')
-                    ->label('Tipe')
-                    ->badge()
-                    ->color(fn($state) => $state === 'dine_in' ? 'success' : 'warning')
-                    ->formatStateUsing(fn($state) => $state === 'dine_in' ? 'Dine In' : 'Take Away'),
-
                 TextColumn::make('kasir.name')
                     ->label('Kasir')
                     ->sortable(),
@@ -85,12 +79,6 @@ class PesanansTable
                         'baru'    => 'Baru',
                         'selesai' => 'Selesai',
                         'batal'   => 'Batal',
-                    ]),
-                SelectFilter::make('tipe_pesanan')
-                    ->label('Tipe')
-                    ->options([
-                        'dine_in'   => 'Dine In',
-                        'take_away' => 'Take Away',
                     ]),
             ])
             ->recordActions([

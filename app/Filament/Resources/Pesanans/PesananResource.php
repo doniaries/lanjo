@@ -46,9 +46,6 @@ class PesananResource extends Resource
                         \Filament\Infolists\Components\TextEntry::make('nomor_nota')->label('No. Nota')->weight('bold'),
                         \Filament\Infolists\Components\TextEntry::make('tanggal')->dateTime('d M Y H:i'),
                         \Filament\Infolists\Components\TextEntry::make('meja.nomor_meja')->label('Meja')->default('-'),
-                        \Filament\Infolists\Components\TextEntry::make('tipe_pesanan')
-                            ->formatStateUsing(fn ($state) => $state === 'dine_in' ? 'Dine In' : 'Take Away')
-                            ->badge(),
                         \Filament\Infolists\Components\TextEntry::make('kasir.name')->label('Kasir'),
                         \Filament\Infolists\Components\TextEntry::make('status')
                             ->badge()

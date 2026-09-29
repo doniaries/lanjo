@@ -233,32 +233,19 @@
             @endif
         </div>
 
-        {{-- Tipe & Meja --}}
-        <div class="px-5 py-4 border-b border-surface-border space-y-3 shrink-0">
-            <div class="flex gap-2">
-                <button wire:click="$set('tipePesanan', 'dine_in')"
-                    class="flex-1 py-2 rounded-xl text-xs font-semibold transition
-                    {{ $tipePesanan === 'dine_in' ? 'bg-brand-600 text-white' : 'bg-surface border border-surface-border text-gray-500 dark:text-gray-300' }}">
-                    🍽 Dine In
-                </button>
-                <button wire:click="$set('tipePesanan', 'take_away')"
-                    class="flex-1 py-2 rounded-xl text-xs font-semibold transition
-                    {{ $tipePesanan === 'take_away' ? 'bg-brand-600 text-white' : 'bg-surface border border-surface-border text-gray-500 dark:text-gray-300' }}">
-                    🛍 Take Away
-                </button>
-            </div>
 
-            @if($tipePesanan === 'dine_in')
-                <select wire:model="selectedMeja"
-                    class="w-full bg-surface border border-surface-border rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
-                    <option value="">-- Pilih Meja --</option>
-                    @foreach($this->mejas as $meja)
-                        <option value="{{ $meja->id }}">Meja {{ $meja->nomor_meja }}
-                            @if($meja->status !== 'kosong') ({{ $meja->status }}) @endif
-                        </option>
-                    @endforeach
-                </select>
-            @endif
+
+        {{-- Meja --}}
+        <div class="px-5 py-4 border-b border-surface-border space-y-3 shrink-0">
+            <select wire:model="selectedMeja"
+                class="w-full bg-surface border border-surface-border rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                <option value="">-- Pilih Meja --</option>
+                @foreach($this->mejas as $meja)
+                    <option value="{{ $meja->id }}">Meja {{ $meja->nomor_meja }}
+                        @if($meja->status !== 'kosong') ({{ $meja->status }}) @endif
+                    </option>
+                @endforeach
+            </select>
         </div>
 
         {{-- Cart Items --}}
