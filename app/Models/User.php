@@ -6,6 +6,7 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -20,6 +21,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     protected $connection = 'mysql';
 
     protected $fillable = [
+        'usaha_id',
         'name',
         'email',
         'password',
@@ -27,6 +29,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         'kontak',
         'avatar_url',
         'email_verified_at',
+        'tipe',
     ];
 
     protected $hidden = [
@@ -42,6 +45,25 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
             'is_active'         => 'boolean',
         ];
     }
+
+    // ─── Multi-tenant ────────────────────────────────────────────────────
+
+    public function usaha(): BelongsTo
+    {
+        return $this->belongsTo(Usaha::class);
+    }
+
+    public function isSuperadmin(): bool
+    {
+        return $this->tipe === 'superadmin';
+    }
+
+    public function isPemilik(): bool
+    {
+        return $this->tipe === 'pemilik';
+    }
+
+    // ─── Filament ────────────────────────────────────────────────────────
 
     public function canAccessPanel(Panel $panel): bool
     {
@@ -73,3 +95,4 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         });
     }
 }
+

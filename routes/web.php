@@ -2,7 +2,14 @@
 
 use App\Livewire\Kasir\PosPage;
 use App\Livewire\Kasir\RiwayatPage;
+use App\Livewire\RegistrasiWizard;
 use Illuminate\Support\Facades\Route;
+
+// ─── Registrasi Usaha (multi-tenant) ──────────────────────────────────────────
+Route::get('/daftar', RegistrasiWizard::class)
+    ->middleware('guest')
+    ->name('registrasi');
+
 
 Route::get('/', function () {
     return redirect('/admin');
