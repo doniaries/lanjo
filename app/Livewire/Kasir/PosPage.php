@@ -112,6 +112,7 @@ class PosPage extends Component
                 'bank_pengirim'  => '',
                 'tipe_pesanan'   => $pesanan->tipe_pesanan,
                 'catatan'        => $pesanan->catatan ?? '',
+                'footer_struk'   => $this->pengaturan?->footer_struk ?? '',
             ];
         }
     }
@@ -454,6 +455,7 @@ class PosPage extends Component
                 'bank_pengirim'  => $this->bankPengirim,
                 'tipe_pesanan'   => $this->tipePesanan,
                 'catatan'        => $this->catatan,
+                'footer_struk'   => $this->pengaturan?->footer_struk ?? '',
             ];
 
             $this->nomorNotaSuccess = $nomor;

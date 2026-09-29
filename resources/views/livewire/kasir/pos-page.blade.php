@@ -567,8 +567,12 @@
         </div>
 
         <div class="text-center text-xs mt-4 mb-8">
-            <p>Terima Kasih</p>
-            <p>Selamat Datang Kembali</p>
+            @if(!empty($notaData['footer_struk']))
+                {!! nl2br(e($notaData['footer_struk'])) !!}
+            @else
+                <p>Terima Kasih</p>
+                <p>Selamat Datang Kembali</p>
+            @endif
         </div>
     </div>
     @endif

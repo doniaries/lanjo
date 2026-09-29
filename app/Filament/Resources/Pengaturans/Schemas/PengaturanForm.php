@@ -47,6 +47,10 @@ class PengaturanForm
                     ->label('Nama Pimpinan')
                     ->prefixIcon('heroicon-m-user')
                     ->maxLength(255),
+                Textarea::make('footer_struk')
+                    ->label('Footer Struk')
+                    ->columnSpanFull()
+                    ->placeholder('Contoh: Terima kasih atas kunjungan Anda...'),
                 \Filament\Forms\Components\FileUpload::make('logo')
                     ->image()
                     ->disk('public')

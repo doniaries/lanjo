@@ -59,6 +59,7 @@ class RiwayatPage extends Component
             'bank_pengirim'  => $pesanan->bank_pengirim ?? '',
             'tipe_pesanan'   => $pesanan->tipe_pesanan,
             'catatan'        => $pesanan->catatan ?? '',
+            'footer_struk'   => $pengaturan?->footer_struk ?? '',
         ];
 
         // Trigger the print event in the browser. 
