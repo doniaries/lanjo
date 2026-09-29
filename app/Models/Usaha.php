@@ -4,9 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Filament\Models\Contracts\HasName;
 use Illuminate\Support\Str;
 
-class Usaha extends Model
+class Usaha extends Model implements HasName
 {
     protected $guarded = [];
 
@@ -15,6 +16,11 @@ class Usaha extends Model
         'pajak_aktif'  => 'boolean',
         'pajak_default' => 'decimal:2',
     ];
+
+    public function getFilamentName(): string
+    {
+        return $this->nama_usaha ?? 'Tanpa Nama';
+    }
 
     // ─── Boot: auto-generate slug ─────────────────────────────────────────
     protected static function booted(): void

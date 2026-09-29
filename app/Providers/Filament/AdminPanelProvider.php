@@ -41,7 +41,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->tenant(\App\Models\Usaha::class, slugAttribute: 'slug')
+            ->tenant(\App\Models\Usaha::class, slugAttribute: 'slug', ownershipRelationship: 'usaha')
             ->tenantRegistration(\App\Filament\Pages\Tenancy\RegisterUsaha::class)
             ->tenantProfile(\App\Filament\Pages\Tenancy\EditUsahaProfile::class)
             // ->registration(\App\Filament\Pages\Auth\Register::class)
@@ -106,7 +106,8 @@ class AdminPanelProvider extends PanelProvider
                     ->resourceCheckboxListColumns([
                         'default' => 1,
                         'sm' => 2,
-                    ]),
+                    ])
+                    ->scopeToTenant(false),
                 FilamentDeveloperLoginsPlugin::make()
                     ->enabled(app()->environment('local'))
                     ->users([

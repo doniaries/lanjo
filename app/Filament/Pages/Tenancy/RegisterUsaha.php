@@ -5,7 +5,7 @@ namespace App\Filament\Pages\Tenancy;
 use App\Models\Usaha;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Wizard;
+use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Schema;
 use Filament\Pages\Tenancy\RegisterTenant;
 use Illuminate\Database\Eloquent\Model;
@@ -30,7 +30,7 @@ class RegisterUsaha extends RegisterTenant
                                 ->label('Nama Usaha')
                                 ->required()
                                 ->live(onBlur: true)
-                                ->afterStateUpdated(fn (string $operation, $state, \Filament\Forms\Set $set) => $set('slug', Str::slug($state)))
+                                ->afterStateUpdated(fn (string $operation, $state, $set) => $set('slug', Str::slug($state)))
                                 ->maxLength(255),
                             TextInput::make('slug')
                                 ->label('Slug Usaha')
@@ -51,7 +51,7 @@ class RegisterUsaha extends RegisterTenant
                             // Karena user sudah terdaftar di auth, kita bisa mengizinkan update nama pengguna
                             TextInput::make('nama_pengguna')
                                 ->label('Nama Lengkap')
-                                ->default(fn () => auth()->user()->name)
+                                ->default(fn () => \Illuminate\Support\Facades\Auth::user()?->name)
                                 ->required()
                                 ->maxLength(255),
                             Select::make('status')
@@ -80,14 +80,15 @@ class RegisterUsaha extends RegisterTenant
         ]);
 
         // 2. Update Data User
-        /** @var \App\Models\User $user */
-        $user = auth()->user();
+        $user = \App\Models\User::find(\Illuminate\Support\Facades\Auth::id());
         
-        $user->update([
-            'usaha_id' => $usaha->id,
-            'name'     => $data['nama_pengguna'],
-            'tipe'     => $data['status'],
-        ]);
+        if ($user) {
+            $user->update([
+                'usaha_id' => $usaha->id,
+                'name'     => $data['nama_pengguna'],
+                'tipe'     => $data['status'],
+            ]);
+        }
 
         return $usaha;
     }

@@ -7,7 +7,7 @@ use Filament\Schemas\Schema;
 use Filament\Pages\Tenancy\EditTenantProfile;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\Section;
+use Filament\Schemas\Components\Section;
 
 class EditUsahaProfile extends EditTenantProfile
 {
