@@ -28,13 +28,19 @@ class Register extends BaseRegister
                         $this->getEmailFormComponent()
                             ->placeholder('contoh@email.com'),
                         TextInput::make('kontak')
-                            ->label('Nomor WhatsApp / HP Anda')
-                            ->placeholder('+6281234567890 atau 081234567890')
+                            ->label('Nomor WhatsApp (Wajib Aktif)')
+                            ->placeholder('Contoh: 081234567890')
+                            ->tel()
                             ->required()
-                            ->regex('/^\+?[0-9]{8,15}$/') // Allows optional + and 8-15 digits
-                            ->validationMessages([
-                                'regex' => 'Nomor WhatsApp tidak valid. Gunakan format angka dan boleh diawali dengan + (misal: +62812... atau 0812...).',
-                            ]),
+                            ->dehydrateStateUsing(function (string $state) {
+                                // Hapus karakter non-angka (seperti spasi, +, strip)
+                                $number = preg_replace('/[^0-9]/', '', $state);
+                                // Ubah awalan 0 menjadi 62
+                                if (str_starts_with($number, '0')) {
+                                    return '62' . substr($number, 1);
+                                }
+                                return $number;
+                            }),
                         $this->getPasswordFormComponent()
                             ->label('Kata Sandi')
                             ->placeholder('Masukan minimal 8 karakter')
@@ -75,7 +81,7 @@ class Register extends BaseRegister
                             ->label('Nama Usaha')
                             ->required()
                             ->live(debounce: 500)
-                            ->afterStateUpdated(fn (\Filament\Forms\Set $set, ?string $state) => $set('slug', Str::slug($state ?? '')))
+                            ->afterStateUpdated(fn (\Filament\Schemas\Components\Utilities\Set $set, ?string $state) => $set('slug', Str::slug($state ?? '')))
                             ->maxLength(255),
                         TextInput::make('slug')
                             ->label('Slug Usaha')
