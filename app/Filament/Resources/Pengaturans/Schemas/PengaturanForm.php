@@ -14,17 +14,30 @@ class PengaturanForm
         return $schema
             ->components([
                 TextInput::make('nama_toko')
-                    ->required(),
+                    ->required()
+                    ->prefixIcon('heroicon-m-building-storefront')
+                    ->unique(ignoreRecord: true)
+                    ->validationMessages([
+                        'unique' => 'Nama toko ini sudah ada, mohon gunakan nama lain.',
+                    ])
+                    ->maxLength(255),
                 Textarea::make('alamat')
                     ->columnSpanFull(),
                 TextInput::make('telepon')
-                    ->tel(),
+                    ->tel()
+                    ->prefixIcon('heroicon-m-phone')
+                    ->regex('/^(0|62|\+62)8[1-9][0-9]{6,10}$/')
+                    ->validationMessages([
+                        'regex' => 'Format nomor tidak valid. Pastikan dimulai dengan 08 atau 628 dan berisi 10-14 digit angka.',
+                    ]),
                 Select::make('tipe_toko')
+                    ->prefixIcon('heroicon-m-tag')
                     ->options(['restoran' => 'Restoran', 'katering' => 'Katering'])
                     ->default('restoran')
                     ->required(),
                 TextInput::make('pajak_default')
                     ->required()
+                    ->prefixIcon('heroicon-m-receipt-percent')
                     ->numeric()
                     ->default(0.0),
                 \Filament\Forms\Components\Toggle::make('pajak_aktif')
@@ -32,6 +45,7 @@ class PengaturanForm
                     ->default(false),
                 TextInput::make('nama_pimpinan')
                     ->label('Nama Pimpinan')
+                    ->prefixIcon('heroicon-m-user-tie')
                     ->maxLength(255),
                 \Filament\Forms\Components\FileUpload::make('logo')
                     ->image()

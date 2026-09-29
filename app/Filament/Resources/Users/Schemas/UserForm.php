@@ -27,20 +27,45 @@ class UserForm
                             ->schema([
                                 TextInput::make('name')
                                     ->label('Nama Lengkap')
+                                    ->prefixIcon('heroicon-m-user')
+                                    ->unique(ignoreRecord: true)
+                                    ->validationMessages([
+                                        'unique' => 'Nama karyawan ini sudah ada.',
+                                    ])
                                     ->required(),
                                 TextInput::make('email')
                                     ->label('Alamat Email')
+                                    ->prefixIcon('heroicon-m-envelope')
+                                    ->unique(ignoreRecord: true)
+                                    ->validationMessages([
+                                        'unique' => 'Email ini sudah terdaftar.',
+                                    ])
                                     ->email()
                                     ->required(),
                                 TextInput::make('kontak')
-                                    ->label('Nomor Kontak')
-                                    ->prefix('+62')
-                                    ->tel(),
+                                    ->label('Nomor WhatsApp (Wajib Aktif)')
+                                    ->placeholder('Contoh: 081234567890')
+                                    ->prefixIcon('heroicon-m-phone')
+                                    ->tel()
+                                    ->unique(ignoreRecord: true)
+                                    ->regex('/^(0|62|\+62)8[1-9][0-9]{6,10}$/')
+                                    ->validationMessages([
+                                        'unique' => 'Nomor WhatsApp ini sudah digunakan.',
+                                        'regex' => 'Format nomor WhatsApp tidak valid. Pastikan dimulai dengan 08 atau 628 dan berisi 10-14 digit angka.',
+                                    ])
+                                    ->dehydrateStateUsing(function (string $state) {
+                                        $number = preg_replace('/[^0-9]/', '', $state);
+                                        if (str_starts_with($number, '0')) {
+                                            return '62' . substr($number, 1);
+                                        }
+                                        return $number;
+                                    }),
                                 Grid::make(2)
                                     ->schema([
                                         TextInput::make('password')
                                             ->label('Password')
                                             ->helperText('Kosongkan jika tidak ingin mengubah password')
+                                            ->prefixIcon('heroicon-m-lock-closed')
                                             ->password()
                                             ->revealable()
                                             ->autocomplete('new-password')
@@ -51,6 +76,7 @@ class UserForm
                                         TextInput::make('password_confirmation')
                                             ->label('Konfirmasi Password')
                                             ->helperText('Kosongkan jika tidak ingin mengubah password')
+                                            ->prefixIcon('heroicon-m-lock-closed')
                                             ->password()
                                             ->revealable()
                                             ->autocomplete('new-password')
