@@ -23,10 +23,10 @@
             {{-- Logo & Nama Toko --}}
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
-                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                    <svg class="w-4 h-4 text-main" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
                 </div>
                 <div>
-                    <p class="text-sm font-bold text-white leading-tight">{{ $this->pengaturan?->nama_toko ?? config('app.name') }}</p>
+                    <p class="text-sm font-bold text-main leading-tight">{{ $this->pengaturan?->nama_toko ?? config('app.name') }}</p>
                 </div>
             </div>
 
@@ -95,10 +95,10 @@
 
                 {{-- Kasir info --}}
                 <div class="flex items-center gap-2">
-                    <div class="w-7 h-7 bg-brand-700 rounded-full flex items-center justify-center text-xs font-bold text-white">
+                    <div class="w-7 h-7 bg-brand-700 rounded-full flex items-center justify-center text-xs font-bold text-main">
                         {{ substr(auth()->user()->name, 0, 1) }}
                     </div>
-                    <span class="text-xs text-white font-medium">{{ auth()->user()->name }}</span>
+                    <span class="text-xs text-main font-medium">{{ auth()->user()->name }}</span>
                     <a href="{{ route('filament.admin.auth.logout') }}"
                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                         class="text-xs text-gray-500 dark:text-gray-300 hover:text-red-400 transition">Keluar</a>
@@ -113,8 +113,8 @@
                 get jam() { return this.now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }); },
                 get tanggal() { return this.now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }); }
             }" class="flex flex-col items-end">
-                <span x-text="jam" class="text-xl font-black text-white tracking-wider tabular-nums"></span>
-                <span x-text="tanggal" class="text-[11px] text-white opacity-80 font-medium"></span>
+                <span x-text="jam" class="text-xl font-black text-main tracking-wider tabular-nums"></span>
+                <span x-text="tanggal" class="text-[11px] text-main opacity-80 font-medium"></span>
             </div>
         </div>
 
@@ -152,7 +152,7 @@
             <div class="relative shrink-0 w-56">
                 <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 <input wire:model.live.debounce.300ms="searchMenu" type="text" placeholder="Cari menu..."
-                    class="w-full bg-surface border border-surface-border rounded-xl pl-10 pr-4 py-2 text-sm text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-brand-500 transition">
+                    class="w-full bg-surface border border-surface-border rounded-xl pl-10 pr-4 py-2 text-sm text-main placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-brand-500 transition">
             </div>
         </div>
 
@@ -194,14 +194,14 @@
                                 {{-- Add overlay --}}
                                 <div class="absolute inset-0 bg-brand-600/0 group-hover:bg-brand-600/10 transition flex items-center justify-center">
                                     <div class="opacity-0 group-hover:opacity-100 transition bg-brand-600 rounded-full p-2 shadow-lg">
-                                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                                        <svg class="w-5 h-5 text-main" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
                                     </div>
                                 </div>
                             </div>
 
                             {{-- Info --}}
                             <div class="p-3">
-                                <p class="text-sm font-semibold text-white leading-tight break-words">{{ $menu->nama }}</p>
+                                <p class="text-sm font-semibold text-main leading-tight break-words">{{ $menu->nama }}</p>
                                 <p class="text-xs text-brand-400 font-bold mt-1">Rp {{ number_format($menu->harga_jual, 0, ',', '.') }}</p>
 
                             </div>
@@ -221,7 +221,7 @@
         <div class="flex items-center justify-between px-5 py-4 border-b border-surface-border">
             <div class="flex items-center gap-2">
                 <svg class="w-5 h-5 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                <span class="font-bold text-white">Pesanan</span>
+                <span class="font-bold text-main">Pesanan</span>
                 @if(!empty($cart))
                     <span class="bg-brand-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
                         {{ collect($cart)->sum('qty') }}
@@ -238,7 +238,7 @@
         {{-- Meja --}}
         <div class="px-5 py-4 border-b border-surface-border space-y-3 shrink-0">
             <select wire:model="selectedMeja"
-                class="w-full bg-surface border border-surface-border rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                class="w-full bg-surface border border-surface-border rounded-xl px-3 py-2 text-sm text-main focus:outline-none focus:border-brand-500">
                 <option value="">-- Pilih Meja --</option>
                 @foreach($this->mejas as $meja)
                     <option value="{{ $meja->id }}">Meja {{ $meja->nomor_meja }}
@@ -263,20 +263,20 @@
                     @endif
 
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium text-white truncate">{{ $item['nama'] }}</p>
+                        <p class="text-sm font-medium text-main truncate">{{ $item['nama'] }}</p>
                         <p class="text-xs text-brand-400">Rp {{ number_format($item['harga'], 0, ',', '.') }}</p>
                     </div>
 
                     {{-- Qty controls --}}
                     <div class="flex items-center gap-2 shrink-0">
                         <button wire:click="decreaseQty({{ $menuId }})"
-                            class="btn-qty w-7 h-7 bg-surface border border-surface-border rounded-full flex items-center justify-center text-white hover:border-red-400 hover:text-red-400 transition text-base leading-none">−</button>
+                            class="btn-qty w-7 h-7 bg-surface border border-surface-border rounded-full flex items-center justify-center text-main hover:border-red-400 hover:text-red-400 transition text-base leading-none">−</button>
                         <span class="text-sm font-bold w-5 text-center">{{ $item['qty'] }}</span>
                         <button wire:click="increaseQty({{ $menuId }})"
-                            class="btn-qty w-7 h-7 bg-surface border border-surface-border rounded-full flex items-center justify-center text-white hover:border-brand-400 hover:text-brand-400 transition text-base leading-none">+</button>
+                            class="btn-qty w-7 h-7 bg-surface border border-surface-border rounded-full flex items-center justify-center text-main hover:border-brand-400 hover:text-brand-400 transition text-base leading-none">+</button>
                     </div>
 
-                    <div class="text-sm font-semibold text-white w-20 text-right shrink-0">
+                    <div class="text-sm font-semibold text-main w-20 text-right shrink-0">
                         Rp {{ number_format($item['harga'] * $item['qty'], 0, ',', '.') }}
                     </div>
                 </div>
@@ -293,7 +293,7 @@
             <div class="px-5 py-3 border-t border-surface-border">
                 <textarea wire:model.lazy="catatan" placeholder="Catatan pesanan..."
                     rows="2"
-                    class="w-full bg-surface border border-surface-border rounded-xl px-3 py-2 text-sm text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-brand-500 resize-none"></textarea>
+                    class="w-full bg-surface border border-surface-border rounded-xl px-3 py-2 text-sm text-main placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-brand-500 resize-none"></textarea>
             </div>
         @endif
 
@@ -301,7 +301,7 @@
         <div class="px-5 py-4 border-t border-surface-border bg-surface-card space-y-2 shrink-0">
             <div class="flex justify-between text-sm text-gray-500 dark:text-gray-300">
                 <span>Subtotal</span>
-                <span class="text-white">Rp {{ number_format($this->subtotal, 0, ',', '.') }}</span>
+                <span class="text-main">Rp {{ number_format($this->subtotal, 0, ',', '.') }}</span>
             </div>
             @if(($this->pengaturan?->pajak_aktif ?? false) && ($this->pengaturan?->pajak_default ?? 0) > 0)
                 <div class="flex justify-between items-center text-sm text-gray-500 dark:text-gray-300">
@@ -315,7 +315,7 @@
                     <span class="text-green-400">-Rp {{ number_format($this->diskon, 0, ',', '.') }}</span>
                 </div>
             @endif
-            <div class="flex justify-between text-base font-bold text-white pt-2 border-t border-surface-border">
+            <div class="flex justify-between text-base font-bold text-main pt-2 border-t border-surface-border">
                 <span>Total</span>
                 <span class="text-brand-400 text-lg">Rp {{ number_format($this->total, 0, ',', '.') }}</span>
             </div>
@@ -339,7 +339,7 @@
             wire:click.self="$set('showCheckout', false)">
             <div class="bg-surface-card border border-surface-border rounded-3xl w-full max-w-md p-6 space-y-5 fade-up shadow-2xl">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-lg font-bold text-white">Konfirmasi Pembayaran</h2>
+                    <h2 class="text-lg font-bold text-main">Konfirmasi Pembayaran</h2>
                     <button wire:click="$set('showCheckout', false)" class="text-gray-500 dark:text-gray-300 hover:text-white">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                     </button>
@@ -399,7 +399,7 @@
                                 x-model="display"
                                 @input="onInput($event)"
                                 @focus="$event.target.select()"
-                                class="w-full bg-surface border border-surface-border rounded-xl pl-12 pr-4 py-3 text-2xl font-black text-white focus:outline-none focus:border-brand-500 text-right tabular-nums">
+                                class="w-full bg-surface border border-surface-border rounded-xl pl-12 pr-4 py-3 text-2xl font-black text-main focus:outline-none focus:border-brand-500 text-right tabular-nums">
                         </div>
 
                         {{-- Quick amounts dari total --}}
@@ -417,7 +417,7 @@
                         <div class="flex flex-wrap gap-2">
                             @foreach($quickAmounts as $amount)
                                 <button @click="setVal({{ $amount }})"
-                                    class="px-4 py-2 bg-surface border border-surface-border rounded-xl text-sm font-bold text-white hover:border-brand-500 hover:text-brand-400 transition">
+                                    class="px-4 py-2 bg-surface border border-surface-border rounded-xl text-sm font-bold text-main hover:border-brand-500 hover:text-brand-400 transition">
                                     {{ number_format($amount, 0, ',', '.') }}
                                 </button>
                             @endforeach
@@ -462,8 +462,8 @@
                     <svg class="w-10 h-10 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                 </div>
                 <div>
-                    <h2 class="text-xl font-black text-white">Transaksi Berhasil!</h2>
-                    <p class="text-sm text-white opacity-70 mt-1 font-medium tracking-wide">{{ $nomorNotaSuccess }}</p>
+                    <h2 class="text-xl font-black text-main">Transaksi Berhasil!</h2>
+                    <p class="text-sm text-main opacity-70 mt-1 font-medium tracking-wide">{{ $nomorNotaSuccess }}</p>
                 </div>
                 @if($kembalianSuccess > 0)
                     <div class="bg-green-500/10 border border-green-500/20 rounded-2xl px-6 py-4">

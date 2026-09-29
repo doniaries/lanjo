@@ -12,22 +12,39 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
                         brand: { 50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',300:'#93c5fd',400:'#60a5fa',500:'#3b82f6',600:'#2563eb',700:'#1d4ed8',800:'#1e40af',900:'#1e3a8a' },
-                        surface: { DEFAULT:'#0f172a', card:'#1e293b', border:'#334155', muted:'#475569' },
+                        surface: { DEFAULT:'var(--surface)', card:'var(--surface-card)', border:'var(--surface-border)', muted:'var(--surface-muted)' },
+                        main: 'var(--text-main)',
                     }
                 }
             }
         }
     </script>
     <style>
+        :root {
+            --surface: #f8fafc;
+            --surface-card: #ffffff;
+            --surface-border: #e2e8f0;
+            --surface-muted: #64748b;
+            --text-main: #0f172a;
+        }
+        .dark {
+            --surface: #0f172a;
+            --surface-card: #1e293b;
+            --surface-border: #334155;
+            --surface-muted: #475569;
+            --text-main: #ffffff;
+        }
         * { -webkit-tap-highlight-color: transparent; }
+        body { color: var(--text-main); }
         ::-webkit-scrollbar { width: 4px; height: 4px; }
-        ::-webkit-scrollbar-track { background: #1e293b; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 99px; }
+        ::-webkit-scrollbar-track { background: var(--surface-card); }
+        ::-webkit-scrollbar-thumb { background: var(--surface-border); border-radius: 99px; }
         .menu-card:active { transform: scale(0.97); }
         .btn-qty:active { transform: scale(0.9); }
         @keyframes slideIn { from { transform: translateX(100%); opacity:0; } to { transform: translateX(0); opacity:1; } }
@@ -37,8 +54,18 @@
     </style>
     @livewireStyles
 </head>
-<body class="h-full bg-surface font-sans text-white overflow-hidden">
+<body class="h-full bg-surface font-sans overflow-hidden transition-colors duration-200">
     {{ $slot }}
     @livewireScripts
+    <script>
+        // Init theme on load
+        if (localStorage.getItem('theme') === 'light') {
+            document.documentElement.classList.add('light');
+            document.documentElement.classList.remove('dark');
+        } else {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+        }
+    </script>
 </body>
 </html>
