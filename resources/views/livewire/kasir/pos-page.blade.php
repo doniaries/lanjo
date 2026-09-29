@@ -625,7 +625,6 @@
                         <tr>
                             <th class="px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Waktu</th>
                             <th class="px-4 py-3 font-medium text-gray-600 dark:text-gray-400">No. Nota</th>
-                            <th class="px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Tipe</th>
                             <th class="px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Kasir</th>
                             <th class="px-4 py-3 font-medium text-gray-600 dark:text-gray-400 text-right">Total</th>
                             <th class="px-4 py-3 font-medium text-gray-600 dark:text-gray-400 text-center">Status</th>
@@ -637,7 +636,6 @@
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition cursor-pointer" wire:click="viewPesananDetail({{ $rt->id }})">
                             <td class="px-4 py-3">{{ \Carbon\Carbon::parse($rt->tanggal)->format('H:i') }}</td>
                             <td class="px-4 py-3 font-mono text-emerald-600 dark:text-emerald-400 font-semibold underline decoration-emerald-600/30 underline-offset-2">{{ $rt->nomor_nota }}</td>
-                            <td class="px-4 py-3">{{ $rt->tipe_pesanan === 'dine_in' ? 'Dine In' : 'Take Away' }}</td>
                             <td class="px-4 py-3">{{ $rt->kasir?->name }}</td>
                             <td class="px-4 py-3 text-right font-semibold">Rp {{ number_format($rt->total_akhir, 0, ',', '.') }}</td>
                             <td class="px-4 py-3 text-center">
@@ -690,10 +688,6 @@
                     <div>
                         <p class="text-gray-500 dark:text-gray-400">Kasir</p>
                         <p class="font-medium text-gray-900 dark:text-white">{{ $this->selectedPesananDetail->kasir?->name ?? '-' }}</p>
-                    </div>
-                    <div>
-                        <p class="text-gray-500 dark:text-gray-400">Tipe Pesanan</p>
-                        <p class="font-medium text-gray-900 dark:text-white">{{ $this->selectedPesananDetail->tipe_pesanan === 'dine_in' ? 'Dine In' : 'Take Away' }}</p>
                     </div>
                     <div>
                         <p class="text-gray-500 dark:text-gray-400">Status</p>
@@ -803,7 +797,6 @@
                         <tr>
                             <th class="px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Waktu</th>
                             <th class="px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Kasir</th>
-                            <th class="px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Tipe</th>
                             <th class="px-4 py-3 font-medium text-gray-600 dark:text-gray-400 text-right">Total</th>
                             <th class="px-4 py-3 font-medium text-gray-600 dark:text-gray-400 text-right">Aksi</th>
                         </tr>
@@ -813,7 +806,6 @@
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
                             <td class="px-4 py-3">{{ \Carbon\Carbon::parse($pt->tanggal)->format('d/m/Y H:i') }}</td>
                             <td class="px-4 py-3">{{ $pt->kasir?->name }}</td>
-                            <td class="px-4 py-3">{{ $pt->tipe_pesanan === 'dine_in' ? 'Dine In' : 'Take Away' }}</td>
                             <td class="px-4 py-3 text-right font-semibold">Rp {{ number_format($pt->total_akhir, 0, ',', '.') }}</td>
                             <td class="px-4 py-3 text-right">
                                 <button wire:click="loadPending({{ $pt->id }})" class="px-3 py-1.5 bg-amber-100 dark:bg-amber-500/10 hover:bg-amber-200 dark:hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 rounded-lg font-medium transition text-xs border border-amber-200 dark:border-amber-500/20">

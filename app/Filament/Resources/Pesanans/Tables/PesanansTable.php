@@ -41,7 +41,7 @@ class PesanansTable
                     ->label('Meja')
                     ->badge()
                     ->color('info')
-                    ->placeholder('Take Away'),
+                    ->placeholder('-'),
 
                 TextColumn::make('kasir.name')
                     ->label('Kasir')

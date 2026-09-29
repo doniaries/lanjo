@@ -14,7 +14,6 @@
                         <tr>
                             <th class="px-4 py-4 font-medium text-gray-600 dark:text-gray-400">Waktu</th>
                             <th class="px-4 py-4 font-medium text-gray-600 dark:text-gray-400">No. Nota</th>
-                            <th class="px-4 py-4 font-medium text-gray-600 dark:text-gray-400">Tipe</th>
                             <th class="px-4 py-4 font-medium text-gray-600 dark:text-gray-400">Kasir</th>
                             <th class="px-4 py-4 font-medium text-gray-600 dark:text-gray-400 text-right">Total</th>
                             <th class="px-4 py-4 font-medium text-gray-600 dark:text-gray-400 text-center">Status</th>
@@ -26,7 +25,6 @@
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
                             <td class="px-4 py-3">{{ \Carbon\Carbon::parse($rt->tanggal)->format('d M Y H:i') }}</td>
                             <td class="px-4 py-3 font-mono text-emerald-600 dark:text-emerald-400 font-semibold underline decoration-emerald-600/30 underline-offset-2">{{ $rt->nomor_nota }}</td>
-                            <td class="px-4 py-3">{{ $rt->tipe_pesanan === 'dine_in' ? 'Dine In' : 'Take Away' }}</td>
                             <td class="px-4 py-3">{{ $rt->kasir?->name }}</td>
                             <td class="px-4 py-3 text-right font-semibold">Rp {{ number_format($rt->total_akhir, 0, ',', '.') }}</td>
                             <td class="px-4 py-3 text-center">
