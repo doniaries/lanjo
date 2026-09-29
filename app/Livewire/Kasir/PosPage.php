@@ -18,6 +18,9 @@ class PosPage extends Component
 {
     use WithPagination;
 
+    #[\Livewire\Attributes\Url]
+    public ?int $tenant_id = null;
+
     // State
     public ?int    $selectedKategori = null;
     public string  $searchMenu       = '';
@@ -130,7 +133,13 @@ class PosPage extends Component
 
     public function getUsahaIdProperty()
     {
-        return request('tenant_id') ?? auth()->user()?->usaha_id;
+        $id = $this->tenant_id ?? auth()->user()?->usaha_id;
+        
+        if (!$id && auth()->user()?->tipe === 'superadmin') {
+            $id = \App\Models\Usaha::first()?->id;
+        }
+        
+        return $id;
     }
 
     #[Computed]
