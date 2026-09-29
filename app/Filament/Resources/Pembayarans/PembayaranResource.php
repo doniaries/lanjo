@@ -20,6 +20,7 @@ class PembayaranResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-credit-card';
     protected static bool $shouldRegisterNavigation = false;
+    protected static bool $isScopedToTenant = false;
 
     public static function getNavigationGroup(): ?string
     {

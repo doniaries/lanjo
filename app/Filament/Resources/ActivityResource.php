@@ -21,6 +21,7 @@ class ActivityResource extends Resource
     protected static ?string $pluralModelLabel = 'Log Aktivitas';
 
     protected static ?int $navigationSort = 10;
+    protected static bool $isScopedToTenant = false;
 
     public static function canCreate(): bool
     {
