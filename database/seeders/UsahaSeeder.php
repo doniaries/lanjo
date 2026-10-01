@@ -65,7 +65,7 @@ class UsahaSeeder extends Seeder
             'is_active'         => true,
             'email_verified_at' => now(),
         ]);
-        $karyawan1a->syncRoles(['member']);
+        $karyawan1a->syncRoles(['karyawan']);
 
         $karyawan1b = User::create([
             'usaha_id'          => $usaha1->id,
@@ -77,7 +77,7 @@ class UsahaSeeder extends Seeder
             'is_active'         => true,
             'email_verified_at' => now(),
         ]);
-        $karyawan1b->syncRoles(['member']);
+        $karyawan1b->syncRoles(['karyawan']);
 
         // Pemilik Usaha 2
         $pemilik2 = User::create([
@@ -103,7 +103,7 @@ class UsahaSeeder extends Seeder
             'is_active'         => true,
             'email_verified_at' => now(),
         ]);
-        $karyawan2a->syncRoles(['member']);
+        $karyawan2a->syncRoles(['karyawan']);
 
         // ─── Pengaturan per Usaha ──────────────────────────────────────────
         // Dibuat tanpa BelongsToUsaha scope (scope butuh auth, seeder tidak login)
