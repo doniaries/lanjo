@@ -25,9 +25,10 @@ class Dashboard extends BaseDashboard
                 ->modalHeading('Preview Laporan Transaksi')
                 ->modalWidth('4xl')
                 ->modalContent(function () {
-                    $periode = $this->filters['periode'] ?? 'hari_ini';
-                    $start = $this->filters['tanggal_mulai'] ?? '';
-                    $end = $this->filters['tanggal_selesai'] ?? '';
+                    $filters = $this->filters ?? [];
+                    $periode = $filters['periode'] ?? 'hari_ini';
+                    $start = $filters['tanggal_mulai'] ?? '';
+                    $end = $filters['tanggal_selesai'] ?? '';
                     $url = route('laporan.cetak', [
                         'periode' => $periode,
                         'start' => $start,
@@ -38,9 +39,10 @@ class Dashboard extends BaseDashboard
                 })
                 ->modalSubmitActionLabel('Cetak Sekarang')
                 ->action(function () {
-                    $periode = $this->filters['periode'] ?? 'hari_ini';
-                    $start = $this->filters['tanggal_mulai'] ?? '';
-                    $end = $this->filters['tanggal_selesai'] ?? '';
+                    $filters = $this->filters ?? [];
+                    $periode = $filters['periode'] ?? 'hari_ini';
+                    $start = $filters['tanggal_mulai'] ?? '';
+                    $end = $filters['tanggal_selesai'] ?? '';
                     $url = route('laporan.cetak', [
                         'periode' => $periode,
                         'start' => $start,

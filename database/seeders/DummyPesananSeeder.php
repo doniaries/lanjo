@@ -23,6 +23,9 @@ class DummyPesananSeeder extends Seeder
             return;
         }
 
+        // Hapus data dummy lama agar tidak menumpuk saat di run berulang
+        Pesanan::where('catatan', 'Dummy seeder data')->delete();
+
         $kasir = User::whereHas('roles', function($q) {
             $q->where('name', 'kasir');
         })->first() ?? User::first();

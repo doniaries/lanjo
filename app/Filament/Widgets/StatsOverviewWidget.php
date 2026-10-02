@@ -17,7 +17,8 @@ class StatsOverviewWidget extends BaseStatsOverviewWidget
 
     protected function getStats(): array
     {
-        $periode = $this->filters['periode'] ?? 'hari_ini';
+        $filters = $this->pageFilters ?? [];
+        $periode = $filters['periode'] ?? 'hari_ini';
         
         $startDate = Carbon::today();
         $endDate = Carbon::today()->endOfDay();
@@ -36,8 +37,8 @@ class StatsOverviewWidget extends BaseStatsOverviewWidget
             $endDate = Carbon::now()->endOfMonth();
             $labelSuffix = 'Bulan Ini';
         } elseif ($periode === 'custom') {
-            $startDate = Carbon::parse($this->filters['tanggal_mulai'] ?? Carbon::today());
-            $endDate = Carbon::parse($this->filters['tanggal_selesai'] ?? Carbon::today())->endOfDay();
+            $startDate = Carbon::parse($filters['tanggal_mulai'] ?? Carbon::today());
+            $endDate = Carbon::parse($filters['tanggal_selesai'] ?? Carbon::today())->endOfDay();
             $labelSuffix = $startDate->format('d/m/Y') . ' - ' . $endDate->format('d/m/Y');
         }
 
