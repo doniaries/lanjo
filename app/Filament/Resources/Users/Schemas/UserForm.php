@@ -94,15 +94,7 @@ class UserForm
                         Section::make('Akses & Status')
                             ->icon('heroicon-o-lock-closed')
                             ->schema([
-                                FileUpload::make('avatar_url')
-                                    ->label('Foto Profil')
-                                    ->avatar()
-                                    ->imageEditor()
-                                    ->circleCropper()
-                                    ->directory('photo profil')
-                                    ->disk('public')
-                                    ->image()
-                                    ->maxSize(1024),
+
                                 \Filament\Forms\Components\Select::make('roles')
                                     ->label('Peran / Role')
                                     ->relationship('roles', 'name')

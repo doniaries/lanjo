@@ -43,6 +43,15 @@ class RegisterUsaha extends RegisterTenant
                                 ->searchable()
                                 ->preload()
                                 ->required(),
+                            \Filament\Forms\Components\FileUpload::make('logo')
+                                ->label('Logo Usaha')
+                                ->image()
+                                ->imageEditor()
+                                ->directory('logos')
+                                ->maxSize(2048) // max 2MB
+                                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                                ->rules(['mimetypes:image/jpeg,image/png,image/webp']) // extra security rule
+                                ->helperText('Hanya file JPG, PNG, WEBP. Maksimal 2MB.'),
                         ]),
                     Wizard\Step::make('Detail Profil')
                         ->description('Atur identitas Anda.')
@@ -73,7 +82,8 @@ class RegisterUsaha extends RegisterTenant
         $usaha = Usaha::create([
             'nama_usaha' => $data['nama_usaha'],
             'slug'       => $data['slug'],
-            'tipe_usaha' => $data['tipe_usaha'],
+            'tipe_usaha_id' => $data['tipe_usaha_id'],
+            'logo'       => $data['logo'] ?? null,
             'pajak_aktif' => false,
             'pajak_default' => 0,
         ]);

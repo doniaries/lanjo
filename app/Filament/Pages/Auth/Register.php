@@ -73,14 +73,6 @@ class Register extends BaseRegister
                             'required' => 'Konfirmasi kata sandi wajib diisi.',
                             'same' => 'Konfirmasi kata sandi tidak cocok dengan kata sandi awal.',
                         ]),
-                    FileUpload::make('avatar_url')
-                        ->label('Foto Profil (Opsional)')
-                        ->avatar()
-                        ->imageEditor()
-                        ->circleCropper()
-                        ->disk('profile-photos')
-                        ->image()
-                        ->maxSize(1024),
                 ]),
 
             Section::make('Data Usaha')
@@ -95,14 +87,22 @@ class Register extends BaseRegister
                             'unique' => 'Nama Usaha ini sudah terdaftar. Silakan pilih nama lain.',
                         ])
                         ->maxLength(255),
-                    Select::make('tipe_usaha')
+                    Select::make('tipe_usaha_id')
                         ->label('Tipe Usaha')
+                        ->relationship('tipeUsaha', 'nama')
                         ->prefixIcon('heroicon-m-tag')
-                        ->options([
-                            'restoran' => 'Restoran / Rumah Makan',
-                            'katering' => 'Katering',
-                        ])
+                        ->searchable()
+                        ->preload()
                         ->required(),
+                    FileUpload::make('logo')
+                        ->label('Logo Usaha (Opsional)')
+                        ->image()
+                        ->imageEditor()
+                        ->directory('logos')
+                        ->maxSize(2048) // max 2MB
+                        ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                        ->rules(['mimetypes:image/jpeg,image/png,image/webp']) // extra security rule
+                        ->helperText('Hanya file JPG, PNG, WEBP. Maksimal 2MB.'),
                 ]),
         ]);
     }
@@ -123,7 +123,8 @@ class Register extends BaseRegister
         $usaha = Usaha::create([
             'nama_usaha' => $data['nama_usaha'],
             'slug'       => $data['slug'],
-            'tipe_usaha' => $data['tipe_usaha'],
+            'tipe_usaha_id' => $data['tipe_usaha_id'],
+            'logo'       => $data['logo'] ?? null,
             'pajak_aktif' => false,
             'pajak_default' => 0,
         ]);
@@ -133,7 +134,6 @@ class Register extends BaseRegister
             'usaha_id'      => $usaha->id,
             'nama_toko'     => $data['nama_usaha'],
             'telepon'       => $data['kontak'],
-            'tipe_toko'     => $data['tipe_usaha'],
             'nama_pimpinan' => $data['name'],
             'pajak_aktif'   => false,
             'pajak_default' => 0,
@@ -145,7 +145,7 @@ class Register extends BaseRegister
         $data['usaha_id'] = $usaha->id;
 
         // Hilangkan data Usaha dari array $data sebelum create User
-        unset($data['nama_usaha'], $data['slug'], $data['tipe_usaha']);
+        unset($data['nama_usaha'], $data['slug'], $data['tipe_usaha_id'], $data['logo']);
 
         $user = $this->getUserModel()::create($data);
 
