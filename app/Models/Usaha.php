@@ -68,4 +68,9 @@ class Usaha extends Model implements HasName
     {
         return $this->hasMany(Shift::class);
     }
+
+    public function tipeUsaha()
+    {
+        return $this->belongsTo(TipeUsaha::class, 'tipe_usaha_id');
+    }
 }

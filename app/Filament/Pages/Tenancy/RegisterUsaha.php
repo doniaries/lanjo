@@ -37,12 +37,11 @@ class RegisterUsaha extends RegisterTenant
                                 ->required()
                                 ->unique('usahas', 'slug')
                                 ->maxLength(255),
-                            Select::make('tipe_usaha')
+                            Select::make('tipe_usaha_id')
                                 ->label('Tipe Usaha')
-                                ->options([
-                                    'restoran' => 'Restoran / Rumah Makan',
-                                    'katering' => 'Katering',
-                                ])
+                                ->relationship('tipeUsaha', 'nama')
+                                ->searchable()
+                                ->preload()
                                 ->required(),
                         ]),
                     Wizard\Step::make('Detail Profil')
