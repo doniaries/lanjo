@@ -32,7 +32,7 @@ class LaporanController extends Controller
         } elseif ($periode === 'custom') {
             $startDate = Carbon::parse($request->query('start', Carbon::today()));
             $endDate = Carbon::parse($request->query('end', Carbon::today()))->endOfDay();
-            $labelSuffix = $startDate->format('d/m/Y') . ' - ' . $endDate->format('d/m/Y');
+            $labelSuffix = $startDate->translatedFormat('d F Y') . ' - ' . $endDate->translatedFormat('d F Y');
         }
 
         $query = Pesanan::query()

@@ -82,11 +82,11 @@
                 @php $totalSemua += $pesanan->total_akhir; @endphp
                 <tr>
                     <td class="text-center">{{ $index + 1 }}</td>
-                    <td>{{ \Carbon\Carbon::parse($pesanan->tanggal)->format('d/m/Y H:i') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($pesanan->tanggal)->translatedFormat('d F Y H:i') }}</td>
                     <td>{{ $pesanan->nomor_nota }}</td>
                     <td>{{ $pesanan->kasir->name ?? '-' }}</td>
-                    <td>Rp {{ number_format($pesanan->subtotal, 0, ',', '.') }}</td>
-                    <td class="text-right">Rp {{ number_format($pesanan->total_akhir, 0, ',', '.') }}</td>
+                    <td>{{ format_rupiah($pesanan->subtotal) }}</td>
+                    <td class="text-right">{{ format_rupiah($pesanan->total_akhir) }}</td>
                 </tr>
             @empty
                 <tr>
@@ -97,13 +97,13 @@
         <tfoot>
             <tr>
                 <th colspan="5" class="text-right">Total Pendapatan:</th>
-                <th class="text-right">Rp {{ number_format($totalSemua, 0, ',', '.') }}</th>
+                <th class="text-right">{{ format_rupiah($totalSemua) }}</th>
             </tr>
         </tfoot>
     </table>
 
     <div class="footer">
-        <p>Dicetak pada: {{ now()->format('d/m/Y H:i') }}</p>
+        <p>Dicetak pada: {{ now()->translatedFormat('d F Y H:i') }}</p>
     </div>
 </body>
 </html>

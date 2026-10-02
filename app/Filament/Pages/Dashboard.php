@@ -43,12 +43,15 @@ class Dashboard extends BaseDashboard
                             ->columnSpan(1),
                         DatePicker::make('tanggal_mulai')
                             ->native(false)
+                            ->displayFormat('d/m/Y')
                             ->label('Dari Tanggal')
                             ->visible(fn(Get $get) => $get('periode') === 'custom')
                             ->required(fn(Get $get) => $get('periode') === 'custom')
                             ->columnSpan(1),
                         DatePicker::make('tanggal_selesai')
                             ->label('Sampai Tanggal')
+                            ->native(false)
+                            ->displayFormat('d/m/Y')
                             ->visible(fn(Get $get) => $get('periode') === 'custom')
                             ->required(fn(Get $get) => $get('periode') === 'custom')
                             ->columnSpan(1),

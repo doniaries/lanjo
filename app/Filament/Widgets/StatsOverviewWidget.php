@@ -39,7 +39,7 @@ class StatsOverviewWidget extends BaseStatsOverviewWidget
         } elseif ($periode === 'custom') {
             $startDate = Carbon::parse($filters['tanggal_mulai'] ?? Carbon::today());
             $endDate = Carbon::parse($filters['tanggal_selesai'] ?? Carbon::today())->endOfDay();
-            $labelSuffix = $startDate->format('d/m/Y') . ' - ' . $endDate->format('d/m/Y');
+            $labelSuffix = $startDate->translatedFormat('d F Y') . ' - ' . $endDate->translatedFormat('d F Y');
         }
 
         $tenantId = \Filament\Facades\Filament::getTenant()?->id;
