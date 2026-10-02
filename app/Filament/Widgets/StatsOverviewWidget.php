@@ -22,23 +22,24 @@ class StatsOverviewWidget extends BaseStatsOverviewWidget
         
         $startDate = Carbon::today();
         $endDate = Carbon::today()->endOfDay();
-        $labelSuffix = 'Hari Ini';
 
         if ($periode === 'kemarin') {
             $startDate = Carbon::yesterday();
             $endDate = Carbon::yesterday()->endOfDay();
-            $labelSuffix = 'Kemarin';
         } elseif ($periode === 'minggu_ini') {
             $startDate = Carbon::now()->startOfWeek();
             $endDate = Carbon::now()->endOfWeek();
-            $labelSuffix = 'Minggu Ini';
         } elseif ($periode === 'bulan_ini') {
             $startDate = Carbon::now()->startOfMonth();
             $endDate = Carbon::now()->endOfMonth();
-            $labelSuffix = 'Bulan Ini';
         } elseif ($periode === 'custom') {
             $startDate = Carbon::parse($filters['tanggal_mulai'] ?? Carbon::today());
             $endDate = Carbon::parse($filters['tanggal_selesai'] ?? Carbon::today())->endOfDay();
+        }
+
+        if ($startDate->isSameDay($endDate)) {
+            $labelSuffix = $startDate->translatedFormat('d F Y');
+        } else {
             $labelSuffix = $startDate->translatedFormat('d F Y') . ' - ' . $endDate->translatedFormat('d F Y');
         }
 
