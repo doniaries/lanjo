@@ -2,30 +2,120 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\User;
+use App\Models\Pesanan;
+use App\Models\DetailPesanan;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Filament\Widgets\StatsOverviewWidget as BaseStatsOverviewWidget;
-use Spatie\Permission\Models\Role;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
+use Illuminate\Support\Carbon;
 
 class StatsOverviewWidget extends BaseStatsOverviewWidget
 {
+    use InteractsWithPageFilters;
+
+    protected static ?int $sort = 1;
+
     protected function getStats(): array
     {
-        return [
-            Stat::make('Pemasukan Hari Ini', format_rupiah(\App\Models\Pesanan::whereDate('tanggal', today())->where('status', 'selesai')->sum('total_akhir')))
-                ->description('Total pendapatan pesanan selesai')
-                ->descriptionIcon('heroicon-m-banknotes')
-                ->color('success'),
+        $periode = $this->filters['periode'] ?? 'hari_ini';
+        
+        $startDate = Carbon::today();
+        $endDate = Carbon::today()->endOfDay();
+        $labelSuffix = 'Hari Ini';
 
-            Stat::make('Produk Terjual Hari Ini', \App\Models\DetailPesanan::whereHas('pesanan', function($q) {
-                    $q->whereDate('tanggal', today())->where('status', 'selesai');
-                })->sum('jumlah') . ' Item')
-                ->description('Jumlah menu terjual')
+        if ($periode === 'kemarin') {
+            $startDate = Carbon::yesterday();
+            $endDate = Carbon::yesterday()->endOfDay();
+            $labelSuffix = 'Kemarin';
+        } elseif ($periode === 'minggu_ini') {
+            $startDate = Carbon::now()->startOfWeek();
+            $endDate = Carbon::now()->endOfWeek();
+            $labelSuffix = 'Minggu Ini';
+        } elseif ($periode === 'bulan_ini') {
+            $startDate = Carbon::now()->startOfMonth();
+            $endDate = Carbon::now()->endOfMonth();
+            $labelSuffix = 'Bulan Ini';
+        } elseif ($periode === 'custom') {
+            $startDate = Carbon::parse($this->filters['tanggal_mulai'] ?? Carbon::today());
+            $endDate = Carbon::parse($this->filters['tanggal_selesai'] ?? Carbon::today())->endOfDay();
+            $labelSuffix = $startDate->format('d/m/Y') . ' - ' . $endDate->format('d/m/Y');
+        }
+
+        $tenantId = \Filament\Facades\Filament::getTenant()?->id;
+
+        // Pemasukan
+        $queryPemasukan = Pesanan::query()
+            ->whereBetween('tanggal', [$startDate, $endDate])
+            ->where('status', 'selesai');
+        
+        if ($tenantId) {
+            $queryPemasukan->where('usaha_id', $tenantId);
+        }
+        $pemasukan = $queryPemasukan->sum('total_akhir');
+
+        // Produk Terjual
+        $queryProduk = DetailPesanan::query()->whereHas('pesanan', function($q) use ($startDate, $endDate, $tenantId) {
+            $q->whereBetween('tanggal', [$startDate, $endDate])->where('status', 'selesai');
+            if ($tenantId) {
+                $q->where('usaha_id', $tenantId);
+            }
+        });
+        $produkTerjual = $queryProduk->sum('jumlah');
+
+        // Pesanan (semua pesanan)
+        $queryPesanan = Pesanan::query()
+            ->whereBetween('tanggal', [$startDate, $endDate]);
+        
+        if ($tenantId) {
+            $queryPesanan->where('usaha_id', $tenantId);
+        }
+        $pesananCount = $queryPesanan->count();
+
+        // Trend calculation for Pemasukan
+        $prevStartDate = clone $startDate;
+        $prevEndDate = clone $endDate;
+        $diffInDays = $startDate->diffInDays($endDate) + 1;
+        
+        if ($periode === 'hari_ini' || $periode === 'kemarin') {
+            $prevStartDate->subDay();
+            $prevEndDate->subDay();
+        } elseif ($periode === 'minggu_ini') {
+            $prevStartDate->subWeek();
+            $prevEndDate->subWeek();
+        } elseif ($periode === 'bulan_ini') {
+            $prevStartDate->subMonth();
+            $prevEndDate->subMonth();
+        } else {
+            $prevStartDate->subDays($diffInDays);
+            $prevEndDate->subDays($diffInDays);
+        }
+
+        $prevQuery = Pesanan::query()
+            ->where('status', 'selesai')
+            ->whereBetween('tanggal', [$prevStartDate, $prevEndDate]);
+            
+        if ($tenantId) {
+            $prevQuery->where('usaha_id', $tenantId);
+        }
+        
+        $prevPendapatan = $prevQuery->sum('total_akhir');
+        $trendIcon = $pemasukan >= $prevPendapatan ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down';
+        $trendColor = $pemasukan >= $prevPendapatan ? 'success' : 'danger';
+        $trendDescription = $pemasukan >= $prevPendapatan ? 'Meningkat dari periode sebelumnya' : 'Menurun dari periode sebelumnya';
+
+        return [
+            Stat::make('Pemasukan ' . $labelSuffix, format_rupiah($pemasukan))
+                ->description($trendDescription)
+                ->descriptionIcon($trendIcon)
+                ->color($trendColor),
+
+            Stat::make('Produk Terjual ' . $labelSuffix, $produkTerjual . ' Item')
+                ->description('Jumlah menu terjual (' . strtolower($labelSuffix) . ')')
                 ->descriptionIcon('heroicon-m-shopping-bag')
                 ->color('primary'),
 
-            Stat::make('Pesanan Hari Ini', \App\Models\Pesanan::whereDate('tanggal', today())->count() . ' Pesanan')
-                ->description('Total pesanan masuk hari ini')
+            Stat::make('Pesanan ' . $labelSuffix, $pesananCount . ' Pesanan')
+                ->description('Total pesanan masuk (' . strtolower($labelSuffix) . ')')
                 ->descriptionIcon('heroicon-m-shopping-cart')
                 ->color('warning'),
         ];
