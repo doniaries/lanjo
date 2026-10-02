@@ -14,11 +14,20 @@ class Dashboard extends BaseDashboard
 {
     use HasFiltersForm;
 
+    public function getHeaderWidgets(): array
+    {
+        return [
+            \Filament\Widgets\AccountWidget::class,
+            \Filament\Widgets\FilamentInfoWidget::class,
+        ];
+    }
+
     public function filtersForm(Schema $schema): Schema
     {
         return $schema
             ->schema([
                 Section::make('Filter Laporan')
+                    ->columnSpan('full')
                     ->schema([
                         Select::make('periode')
                             ->options([
