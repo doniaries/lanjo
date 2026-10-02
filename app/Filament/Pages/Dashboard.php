@@ -60,31 +60,21 @@ class Dashboard extends BaseDashboard
                                 ->label('Cetak Laporan')
                                 ->icon('heroicon-o-printer')
                                 ->color('primary')
-                                ->action(function () {
+                                ->url(function () {
                                     $filters = $this->filters ?? [];
                                     $periode = $filters['periode'] ?? 'hari_ini';
                                     $start = $filters['tanggal_mulai'] ?? '';
                                     $end = $filters['tanggal_selesai'] ?? '';
-                                    $url = route('laporan.cetak', [
+                                    return route('laporan.cetak', [
                                         'periode' => $periode,
                                         'start' => $start,
                                         'end' => $end,
                                         'tenant_id' => \Filament\Facades\Filament::getTenant()?->id,
                                     ]);
-
-                                    $this->js("
-                                        let printFrame = document.getElementById('print-frame');
-                                        if (!printFrame) {
-                                            printFrame = document.createElement('iframe');
-                                            printFrame.id = 'print-frame';
-                                            printFrame.style.position = 'absolute';
-                                            printFrame.style.top = '-10000px';
-                                            printFrame.style.left = '-10000px';
-                                            document.body.appendChild(printFrame);
-                                        }
-                                        printFrame.src = '{$url}';
-                                    ");
                                 })
+                                ->extraAttributes([
+                                    'onclick' => "event.preventDefault(); let w = 800; let h = 600; let left = (screen.width/2)-(w/2); let top = (screen.height/2)-(h/2); window.open(this.href, 'CetakLaporan', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);"
+                                ])
                         ])->columnSpan(1)
                     ])
                     ->columns(4), // Ubah kolom dari 3 ke 4
