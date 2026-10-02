@@ -30,7 +30,7 @@ class UserForm
                                     ->prefixIcon('heroicon-m-user')
                                     ->unique(ignoreRecord: true)
                                     ->validationMessages([
-                                        'unique' => 'Nama karyawan ini sudah ada.',
+                                        'unique' => 'Nama sudah digunakan.',
                                     ])
                                     ->required(),
                                 TextInput::make('email')

@@ -22,7 +22,7 @@ class Register extends BaseRegister
                 ->description('Informasi akun Anda')
                 ->schema([
                     $this->getNameFormComponent()
-                        ->label('Nama Lengkap')
+                        ->label('Nama Lengkap Pemilik')
                         ->placeholder('Contoh: Budi Santoso')
                         ->prefixIcon('heroicon-m-user'),
                     $this->getEmailFormComponent()
@@ -161,7 +161,7 @@ class Register extends BaseRegister
     {
         /** @var \App\Models\User $user */
         $user = auth()->user();
-        
+
         $user?->load('usaha');
 
         if ($user && $user->usaha) {

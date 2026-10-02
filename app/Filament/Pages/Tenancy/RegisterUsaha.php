@@ -30,7 +30,7 @@ class RegisterUsaha extends RegisterTenant
                                 ->label('Nama Usaha')
                                 ->required()
                                 ->live(onBlur: true)
-                                ->afterStateUpdated(fn (string $operation, $state, $set) => $set('slug', Str::slug($state)))
+                                ->afterStateUpdated(fn(string $operation, $state, $set) => $set('slug', Str::slug($state)))
                                 ->maxLength(255),
                             TextInput::make('slug')
                                 ->label('Slug Usaha')
@@ -50,8 +50,8 @@ class RegisterUsaha extends RegisterTenant
                         ->schema([
                             // Karena user sudah terdaftar di auth, kita bisa mengizinkan update nama pengguna
                             TextInput::make('nama_pengguna')
-                                ->label('Nama Lengkap')
-                                ->default(fn () => \Illuminate\Support\Facades\Auth::user()?->name)
+                                ->label('Nama Lengkap Pemilik')
+                                ->default(fn() => \Illuminate\Support\Facades\Auth::user()?->name)
                                 ->required()
                                 ->maxLength(255),
                             Select::make('status')
@@ -64,7 +64,7 @@ class RegisterUsaha extends RegisterTenant
                                 ->required(),
                         ]),
                 ])
-                ->submitAction(new \Illuminate\Support\HtmlString('<button type="submit" class="fi-btn fi-btn-size-md fi-btn-color-primary fi-btn-labeled">Daftar Usaha</button>')),
+                    ->submitAction(new \Illuminate\Support\HtmlString('<button type="submit" class="fi-btn fi-btn-size-md fi-btn-color-primary fi-btn-labeled">Daftar Usaha</button>')),
             ]);
     }
 
@@ -81,7 +81,7 @@ class RegisterUsaha extends RegisterTenant
 
         // 2. Update Data User
         $user = \App\Models\User::find(\Illuminate\Support\Facades\Auth::id());
-        
+
         if ($user) {
             $user->update([
                 'usaha_id' => $usaha->id,
