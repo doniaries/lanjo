@@ -1,7 +1,7 @@
 const CACHE_NAME = 'lanjo-pwa-v1';
 const urlsToCache = [
     '/',
-    '/images/logo.png',
+    '/images/pwa-icon.svg',
     '/manifest.json'
 ];
 
