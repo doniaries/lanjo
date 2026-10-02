@@ -159,7 +159,7 @@ class Register extends BaseRegister
 
     public function getRedirectUrl(): string
     {
-        /** @var \App\Models\User $user */
+        /** @var \App\Models\User|null $user */
         $user = auth()->user();
 
         $user?->load('usaha');

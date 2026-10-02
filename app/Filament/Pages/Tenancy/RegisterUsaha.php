@@ -90,7 +90,8 @@ class RegisterUsaha extends RegisterTenant
         ]);
 
         // 2. Update Data User
-        $user = \App\Models\User::find(Auth::id());
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
 
         if ($user) {
             $user->update([
