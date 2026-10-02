@@ -21,7 +21,7 @@ class MejaResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-squares-2x2';
     public static function getNavigationGroup(): ?string
     {
-        return 'Master Data';
+        return 'Meja';
     }
     protected static ?int $navigationSort = 1;
 
