@@ -11,7 +11,7 @@ class TransaksiChart extends ChartWidget
 {
     use InteractsWithPageFilters;
 
-    protected static ?string $heading = 'Grafik Transaksi';
+    protected ?string $heading = 'Grafik Transaksi';
     protected static ?int $sort = 2;
     protected int | string | array $columnSpan = 'full';
 
