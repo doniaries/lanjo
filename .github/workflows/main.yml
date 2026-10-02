@@ -72,9 +72,12 @@ jobs:
             vite.config.js
             README.md
             *.md
-            .antigravity/
+            .antigravity
+            scratch/**
             load-test.js
             phpunit.xml
             .editorconfig
             .gitattributes
             .github/**
+            debug_multitenant.php
+            fix-theme.cjs
