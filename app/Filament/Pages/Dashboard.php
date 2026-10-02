@@ -71,7 +71,18 @@ class Dashboard extends BaseDashboard
                                         'end' => $end,
                                     ]);
 
-                                    $this->js("window.open('{$url}', '_blank');");
+                                    $this->js("
+                                        let printFrame = document.getElementById('print-frame');
+                                        if (!printFrame) {
+                                            printFrame = document.createElement('iframe');
+                                            printFrame.id = 'print-frame';
+                                            printFrame.style.position = 'absolute';
+                                            printFrame.style.top = '-10000px';
+                                            printFrame.style.left = '-10000px';
+                                            document.body.appendChild(printFrame);
+                                        }
+                                        printFrame.src = '{$url}';
+                                    ");
                                 })
                         ])->columnSpan(1)
                     ])
