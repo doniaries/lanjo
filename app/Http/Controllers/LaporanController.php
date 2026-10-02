@@ -46,12 +46,24 @@ class LaporanController extends Controller
 
         $pesanans = $query->orderBy('tanggal', 'asc')->get();
 
+        $namaUsaha = 'Laporan Transaksi Penjualan';
+        if ($tenantId) {
+            $usaha = \App\Models\Usaha::find($tenantId);
+            if ($usaha) {
+                $namaUsaha = $usaha->nama_usaha;
+            }
+        }
+
+        $namaKasir = auth()->user()?->name ?? 'Kasir / Karyawan';
+
         return view('reports.cetak-transaksi', [
             'pesanans' => $pesanans,
             'labelSuffix' => $labelSuffix,
             'startDate' => $startDate,
             'endDate' => $endDate,
             'isPreview' => $request->query('preview', 0),
+            'namaUsaha' => $namaUsaha,
+            'namaKasir' => $namaKasir,
         ]);
     }
 }

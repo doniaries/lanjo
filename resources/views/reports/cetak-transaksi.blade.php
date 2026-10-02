@@ -61,8 +61,9 @@
     @endif
 
     <div class="header">
-        <h2>Laporan Transaksi Penjualan</h2>
+        <h2>{{ $namaUsaha }}</h2>
         <p>Periode: {{ $labelSuffix }}</p>
+        <p>Dicetak oleh: {{ $namaKasir }}</p>
     </div>
 
     <table>

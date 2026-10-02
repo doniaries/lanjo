@@ -69,6 +69,7 @@ class Dashboard extends BaseDashboard
                                         'periode' => $periode,
                                         'start' => $start,
                                         'end' => $end,
+                                        'tenant_id' => \Filament\Facades\Filament::getTenant()?->id,
                                     ]);
 
                                     $this->js("
