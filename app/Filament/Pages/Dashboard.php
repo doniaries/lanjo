@@ -42,14 +42,15 @@ class Dashboard extends BaseDashboard
                             ->live()
                             ->columnSpan(1),
                         DatePicker::make('tanggal_mulai')
+                            ->native(false)
                             ->label('Dari Tanggal')
-                            ->visible(fn (Get $get) => $get('periode') === 'custom')
-                            ->required(fn (Get $get) => $get('periode') === 'custom')
+                            ->visible(fn(Get $get) => $get('periode') === 'custom')
+                            ->required(fn(Get $get) => $get('periode') === 'custom')
                             ->columnSpan(1),
                         DatePicker::make('tanggal_selesai')
                             ->label('Sampai Tanggal')
-                            ->visible(fn (Get $get) => $get('periode') === 'custom')
-                            ->required(fn (Get $get) => $get('periode') === 'custom')
+                            ->visible(fn(Get $get) => $get('periode') === 'custom')
+                            ->required(fn(Get $get) => $get('periode') === 'custom')
                             ->columnSpan(1),
                         \Filament\Schemas\Components\Actions::make([
                             Action::make('cetak_laporan')
@@ -82,7 +83,7 @@ class Dashboard extends BaseDashboard
                                         'start' => $start,
                                         'end' => $end,
                                     ]);
-                                    
+
                                     $this->js("window.open('{$url}', '_blank');");
                                 })
                         ])->columnSpan(1)
