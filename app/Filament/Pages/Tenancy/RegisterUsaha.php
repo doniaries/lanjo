@@ -94,11 +94,11 @@ class RegisterUsaha extends RegisterTenant
         $user = Auth::user();
 
         if ($user) {
-            $user->update([
+            $user->fill([
                 'usaha_id' => $usaha->id,
                 'name'     => $data['nama_pengguna'],
                 'tipe'     => $data['status'],
-            ]);
+            ])->save();
         }
 
         return $usaha;
