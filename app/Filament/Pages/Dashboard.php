@@ -15,45 +15,6 @@ class Dashboard extends BaseDashboard
 {
     use HasFiltersForm;
 
-    protected function getHeaderActions(): array
-    {
-        return [
-            Action::make('cetak_laporan')
-                ->label('Cetak Laporan')
-                ->icon('heroicon-o-printer')
-                ->color('primary')
-                ->modalHeading('Preview Laporan Transaksi')
-                ->modalWidth('4xl')
-                ->modalContent(function () {
-                    $filters = $this->filters ?? [];
-                    $periode = $filters['periode'] ?? 'hari_ini';
-                    $start = $filters['tanggal_mulai'] ?? '';
-                    $end = $filters['tanggal_selesai'] ?? '';
-                    $url = route('laporan.cetak', [
-                        'periode' => $periode,
-                        'start' => $start,
-                        'end' => $end,
-                        'preview' => 1
-                    ]);
-                    return view('reports.preview-transaksi', ['url' => $url]);
-                })
-                ->modalSubmitActionLabel('Cetak Sekarang')
-                ->action(function () {
-                    $filters = $this->filters ?? [];
-                    $periode = $filters['periode'] ?? 'hari_ini';
-                    $start = $filters['tanggal_mulai'] ?? '';
-                    $end = $filters['tanggal_selesai'] ?? '';
-                    $url = route('laporan.cetak', [
-                        'periode' => $periode,
-                        'start' => $start,
-                        'end' => $end,
-                    ]);
-                    
-                    $this->js("window.open('{$url}', '_blank');");
-                })
-        ];
-    }
-
     public function getHeaderWidgets(): array
     {
         return [
@@ -90,8 +51,43 @@ class Dashboard extends BaseDashboard
                             ->visible(fn (Get $get) => $get('periode') === 'custom')
                             ->required(fn (Get $get) => $get('periode') === 'custom')
                             ->columnSpan(1),
+                        \Filament\Schemas\Components\Actions::make([
+                            Action::make('cetak_laporan')
+                                ->label('Cetak Laporan')
+                                ->icon('heroicon-o-printer')
+                                ->color('primary')
+                                ->modalHeading('Preview Laporan Transaksi')
+                                ->modalWidth('4xl')
+                                ->modalContent(function () {
+                                    $filters = $this->filters ?? [];
+                                    $periode = $filters['periode'] ?? 'hari_ini';
+                                    $start = $filters['tanggal_mulai'] ?? '';
+                                    $end = $filters['tanggal_selesai'] ?? '';
+                                    $url = route('laporan.cetak', [
+                                        'periode' => $periode,
+                                        'start' => $start,
+                                        'end' => $end,
+                                        'preview' => 1
+                                    ]);
+                                    return view('reports.preview-transaksi', ['url' => $url]);
+                                })
+                                ->modalSubmitActionLabel('Cetak Sekarang')
+                                ->action(function () {
+                                    $filters = $this->filters ?? [];
+                                    $periode = $filters['periode'] ?? 'hari_ini';
+                                    $start = $filters['tanggal_mulai'] ?? '';
+                                    $end = $filters['tanggal_selesai'] ?? '';
+                                    $url = route('laporan.cetak', [
+                                        'periode' => $periode,
+                                        'start' => $start,
+                                        'end' => $end,
+                                    ]);
+                                    
+                                    $this->js("window.open('{$url}', '_blank');");
+                                })
+                        ])->columnSpan(1)
                     ])
-                    ->columns(3),
+                    ->columns(4), // Ubah kolom dari 3 ke 4
             ]);
     }
 }
