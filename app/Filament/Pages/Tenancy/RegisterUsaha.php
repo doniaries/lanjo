@@ -39,7 +39,7 @@ class RegisterUsaha extends RegisterTenant
                                 ->maxLength(255),
                             Select::make('tipe_usaha_id')
                                 ->label('Tipe Usaha')
-                                ->relationship('tipeUsaha', 'nama')
+                                ->options(\App\Models\TipeUsaha::pluck('nama', 'id'))
                                 ->searchable()
                                 ->preload()
                                 ->required(),

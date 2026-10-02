@@ -89,7 +89,7 @@ class Register extends BaseRegister
                         ->maxLength(255),
                     Select::make('tipe_usaha_id')
                         ->label('Tipe Usaha')
-                        ->relationship('tipeUsaha', 'nama')
+                        ->options(\App\Models\TipeUsaha::pluck('nama', 'id'))
                         ->prefixIcon('heroicon-m-tag')
                         ->searchable()
                         ->preload()
