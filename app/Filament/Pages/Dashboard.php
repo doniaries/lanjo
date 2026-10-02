@@ -60,22 +60,6 @@ class Dashboard extends BaseDashboard
                                 ->label('Cetak Laporan')
                                 ->icon('heroicon-o-printer')
                                 ->color('primary')
-                                ->modalHeading('Preview Laporan Transaksi')
-                                ->modalWidth('4xl')
-                                ->modalContent(function () {
-                                    $filters = $this->filters ?? [];
-                                    $periode = $filters['periode'] ?? 'hari_ini';
-                                    $start = $filters['tanggal_mulai'] ?? '';
-                                    $end = $filters['tanggal_selesai'] ?? '';
-                                    $url = route('laporan.cetak', [
-                                        'periode' => $periode,
-                                        'start' => $start,
-                                        'end' => $end,
-                                        'preview' => 1
-                                    ]);
-                                    return view('reports.preview-transaksi', ['url' => $url]);
-                                })
-                                ->modalSubmitActionLabel('Cetak Sekarang')
                                 ->action(function () {
                                     $filters = $this->filters ?? [];
                                     $periode = $filters['periode'] ?? 'hari_ini';
