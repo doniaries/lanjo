@@ -60,21 +60,26 @@ class Dashboard extends BaseDashboard
                                 ->label('Cetak Laporan')
                                 ->icon('heroicon-o-printer')
                                 ->color('primary')
-                                ->url(function () {
+                                ->action(function () {
                                     $filters = $this->filters ?? [];
                                     $periode = $filters['periode'] ?? 'hari_ini';
                                     $start = $filters['tanggal_mulai'] ?? '';
                                     $end = $filters['tanggal_selesai'] ?? '';
-                                    return route('laporan.cetak', [
+                                    $url = route('laporan.cetak', [
                                         'periode' => $periode,
                                         'start' => $start,
                                         'end' => $end,
                                         'tenant_id' => \Filament\Facades\Filament::getTenant()?->id,
                                     ]);
+
+                                    $this->js("
+                                        let w = 800;
+                                        let h = 600;
+                                        let left = (screen.width/2)-(w/2);
+                                        let top = (screen.height/2)-(h/2);
+                                        window.open('{$url}', 'CetakLaporan', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
+                                    ");
                                 })
-                                ->extraAttributes([
-                                    'onclick' => "event.preventDefault(); let w = 800; let h = 600; let left = (screen.width/2)-(w/2); let top = (screen.height/2)-(h/2); window.open(this.href, 'CetakLaporan', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left); return false;"
-                                ])
                         ])->columnSpan(1)
                     ])
                     ->columns(4), // Ubah kolom dari 3 ke 4
