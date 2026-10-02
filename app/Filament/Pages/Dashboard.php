@@ -7,12 +7,50 @@ use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Utilities\Get;
-use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
 use Filament\Pages\Dashboard as BaseDashboard;
+use Filament\Actions\Action;
+use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
 
 class Dashboard extends BaseDashboard
 {
     use HasFiltersForm;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('cetak_laporan')
+                ->label('Cetak Laporan')
+                ->icon('heroicon-o-printer')
+                ->color('primary')
+                ->modalHeading('Preview Laporan Transaksi')
+                ->modalWidth('4xl')
+                ->modalContent(function () {
+                    $periode = $this->filters['periode'] ?? 'hari_ini';
+                    $start = $this->filters['tanggal_mulai'] ?? '';
+                    $end = $this->filters['tanggal_selesai'] ?? '';
+                    $url = route('laporan.cetak', [
+                        'periode' => $periode,
+                        'start' => $start,
+                        'end' => $end,
+                        'preview' => 1
+                    ]);
+                    return view('reports.preview-transaksi', ['url' => $url]);
+                })
+                ->modalSubmitActionLabel('Cetak Sekarang')
+                ->action(function () {
+                    $periode = $this->filters['periode'] ?? 'hari_ini';
+                    $start = $this->filters['tanggal_mulai'] ?? '';
+                    $end = $this->filters['tanggal_selesai'] ?? '';
+                    $url = route('laporan.cetak', [
+                        'periode' => $periode,
+                        'start' => $start,
+                        'end' => $end,
+                    ]);
+                    
+                    $this->js("window.open('{$url}', '_blank');");
+                })
+        ];
+    }
 
     public function getHeaderWidgets(): array
     {

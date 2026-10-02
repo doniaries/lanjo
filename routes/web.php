@@ -36,3 +36,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return $pdf->stream('laporan-transaksi-' . $start . '-to-' . $end . '.pdf');
     })->name('laporan.transaksi');
 });
+Route::get('/laporan/cetak', [App\Http\Controllers\LaporanController::class, 'cetak'])->name('laporan.cetak')->middleware(['web', 'auth']);
