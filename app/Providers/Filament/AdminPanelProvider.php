@@ -138,6 +138,19 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->renderHook(
+                \Filament\View\PanelsRenderHook::HEAD_END,
+                fn (): string => \Illuminate\Support\Facades\Blade::render('
+                    <link rel="manifest" href="/manifest.json">
+                    <script>
+                        if ("serviceWorker" in navigator) {
+                            window.addEventListener("load", function() {
+                                navigator.serviceWorker.register("/sw.js");
+                            });
+                        }
+                    </script>
+                ')
+            );
     }
 }

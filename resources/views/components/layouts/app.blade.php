@@ -34,6 +34,20 @@
     <title>{{ isset($title) ? $title . ' - ' . $opdName : $opdName }}</title>
 
     <link rel="icon" href="{{ asset('images/logo.png') }}">
+    
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, function(err) {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script>
 
     <script>
         // Initialize dark mode from localStorage before Alpine loads

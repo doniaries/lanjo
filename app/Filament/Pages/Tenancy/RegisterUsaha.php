@@ -3,12 +3,13 @@
 namespace App\Filament\Pages\Tenancy;
 
 use App\Models\Usaha;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Pages\Tenancy\RegisterTenant;
 use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Schema;
-use Filament\Pages\Tenancy\RegisterTenant;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class RegisterUsaha extends RegisterTenant
@@ -89,7 +90,7 @@ class RegisterUsaha extends RegisterTenant
         ]);
 
         // 2. Update Data User
-        $user = \App\Models\User::find(\Illuminate\Support\Facades\Auth::id());
+        $user = \App\Models\User::find(Auth::id());
 
         if ($user) {
             $user->update([
