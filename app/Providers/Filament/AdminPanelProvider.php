@@ -60,7 +60,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->navigationItems([
                 \Filament\Navigation\NavigationItem::make('🖥 Buka Kasir POS')
-                    ->url(fn() => route('kasir.pos', ['tenant_id' => \Filament\Facades\Filament::getTenant()?->id]), shouldOpenInNewTab: true)
+                    ->url(fn() => route('kasir.pos', ['toko' => \Filament\Facades\Filament::getTenant()?->slug]), shouldOpenInNewTab: true)
                     ->icon('heroicon-o-computer-desktop')
                     ->sort(-10) // paling atas
                     ->group('Transaksi'),

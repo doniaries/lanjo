@@ -19,7 +19,7 @@ class PosPage extends Component
     use WithPagination;
 
     #[\Livewire\Attributes\Url]
-    public ?int $tenant_id = null;
+    public ?string $toko = null;
 
     // State
     public ?int    $selectedKategori = null;
@@ -139,7 +139,15 @@ class PosPage extends Component
 
     public function getUsahaIdProperty()
     {
-        $id = $this->tenant_id ?? auth()->user()?->usaha_id;
+        $id = null;
+        if ($this->toko) {
+            $usaha = \App\Models\Usaha::where('slug', $this->toko)->first();
+            if ($usaha) {
+                $id = $usaha->id;
+            }
+        }
+        
+        $id = $id ?? auth()->user()?->usaha_id;
         
         if (!$id && auth()->user()?->tipe === 'superadmin') {
             $id = \App\Models\Usaha::first()?->id;
