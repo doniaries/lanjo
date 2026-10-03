@@ -1,4 +1,4 @@
-<div class="flex flex-col lg:flex-row h-screen min-h-screen overflow-hidden select-none"
+<div class="flex flex-col md:flex-row h-screen min-h-screen overflow-hidden select-none"
     @keydown.window.enter.prevent="if(!['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName) && Object.keys($wire.cart).length > 0 && !$wire.showCheckout && !$wire.showSuccess) $wire.set('showCheckout', true)">
 
     {{-- ═══════════════════════════════════════════════════════ --}}
@@ -291,7 +291,7 @@
     {{-- RIGHT PANEL — Cart                                     --}}
     {{-- ═══════════════════════════════════════════════════════ --}}
     <div
-        class="w-full lg:w-96 h-[42vh] lg:h-auto min-h-0 flex flex-col bg-surface-card border-t lg:border-t-0 lg:border-l border-surface-border shrink-0">
+        class="w-full md:w-80 lg:w-96 h-[42vh] md:h-auto min-h-0 flex flex-col bg-surface-card border-t md:border-t-0 md:border-l border-surface-border shrink-0">
 
         {{-- Cart Header --}}
         <div class="flex items-center justify-between px-5 py-4 border-b border-surface-border">
