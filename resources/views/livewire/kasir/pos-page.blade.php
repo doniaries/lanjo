@@ -473,19 +473,27 @@
                     {{-- Nominal (tunai only) --}}
                     @if ($metodePembayaran === 'tunai')
                         <div class="space-y-3" x-data="{
-                            display: '{{ number_format($nominalBayar, 0, ',', '.') }}',
+                            display: '{{ (int) $nominalBayar > 0 ? number_format($nominalBayar, 0, ',', '.') : '' }}',
                             init() {
-                                this.display = this.format({{ (int) $nominalBayar }});
                                 this.$watch('display', val => {
+                                    if (val === '') {
+                                        $wire.set('nominalBayar', 0);
+                                        return;
+                                    }
                                     const raw = parseInt(String(val).replace(/\./g, '')) || 0;
                                     $wire.set('nominalBayar', raw);
                                 });
                             },
                             format(n) {
-                                return parseInt(n).toLocaleString('id-ID');
+                                return n ? parseInt(n).toLocaleString('id-ID') : '';
                             },
                             onInput(e) {
                                 const raw = e.target.value.replace(/\./g, '').replace(/[^0-9]/g, '');
+                                if (!raw) {
+                                    this.display = '';
+                                    $wire.set('nominalBayar', 0);
+                                    return;
+                                }
                                 const num = parseInt(raw) || 0;
                                 this.display = this.format(num);
                                 $wire.set('nominalBayar', num);
@@ -502,8 +510,8 @@
                                 <span
                                     class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-300 font-bold text-xl">Rp</span>
                                 <input type="text" inputmode="numeric" x-model="display" @input="onInput($event)"
-                                    @focus="$event.target.select()"
-                                    class="w-full bg-surface border border-surface-border rounded-xl pl-12 pr-4 py-3 text-2xl font-black text-main focus:outline-none focus:border-brand-500 text-right tabular-nums">
+                                    @focus="$event.target.select()" placeholder="0"
+                                    class="w-full bg-surface border border-surface-border rounded-xl pl-12 pr-4 py-3 text-2xl font-black text-main focus:outline-none focus:border-brand-500 text-right tabular-nums placeholder-gray-300 dark:placeholder-gray-600">
                             </div>
 
                             {{-- Quick amounts dari total --}}

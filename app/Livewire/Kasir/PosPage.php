@@ -292,7 +292,7 @@ class PosPage extends Component
     public function openCheckout(): void
     {
         if (empty($this->cart)) return;
-        $this->nominalBayar  = $this->total;
+        $this->nominalBayar  = 0;
         $this->namaPembeli   = '';
         $this->bankPengirim  = '';
         $this->showCheckout  = true;
