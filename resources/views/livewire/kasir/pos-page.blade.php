@@ -1,4 +1,4 @@
-<div x-data="{ cartOpen: false }" class="flex h-screen overflow-hidden select-none relative"
+<div class="flex flex-col lg:flex-row h-screen min-h-screen overflow-hidden select-none"
     @keydown.window.enter.prevent="if(!['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName) && Object.keys($wire.cart).length > 0 && !$wire.showCheckout && !$wire.showSuccess) $wire.set('showCheckout', true)">
 
     {{-- ═══════════════════════════════════════════════════════ --}}
@@ -215,11 +215,7 @@
     {{-- ═══════════════════════════════════════════════════════ --}}
     {{-- RIGHT PANEL — Cart                                     --}}
     {{-- ═══════════════════════════════════════════════════════ --}}
-    {{-- Mobile Cart Overlay --}}
-    <div x-show="cartOpen" x-transition.opacity class="fixed inset-0 bg-black/50 z-40 lg:hidden" @click="cartOpen = false" style="display: none;"></div>
-
-    <div :class="cartOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'"
-         class="fixed lg:static inset-y-0 right-0 z-50 w-full sm:w-96 flex flex-col bg-surface-card border-l border-surface-border shrink-0 transition-transform duration-300">
+    <div class="w-full lg:w-96 h-[45vh] lg:h-auto flex flex-col bg-surface-card border-t lg:border-t-0 lg:border-l border-surface-border shrink-0">
 
         {{-- Cart Header --}}
         <div class="flex items-center justify-between px-5 py-4 border-b border-surface-border">
@@ -232,14 +228,9 @@
                     </span>
                 @endif
             </div>
-            <div class="flex items-center gap-3">
-                @if(!empty($cart))
-                    <button wire:click="clearCart" class="text-xs text-red-400 hover:text-red-300 transition">Kosongkan</button>
-                @endif
-                <button @click="cartOpen = false" class="lg:hidden text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
-            </div>
+            @if(!empty($cart))
+                <button wire:click="clearCart" class="text-xs text-red-400 hover:text-red-300 transition">Kosongkan</button>
+            @endif
         </div>
 
 
@@ -837,17 +828,6 @@
         </div>
     </div>
     @endif
-
-    {{-- Floating Cart Button for Mobile --}}
-    <button @click="cartOpen = true"
-            class="lg:hidden fixed bottom-6 right-6 z-30 bg-brand-600 text-white p-4 rounded-full shadow-xl shadow-brand-600/30 active:scale-95 transition-transform flex items-center justify-center">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-        @if(!empty($cart))
-            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-surface-card">
-                {{ collect($cart)->sum('qty') }}
-            </span>
-        @endif
-    </button>
 
     <script>
         document.addEventListener('trigger-print-riwayat', function(event) {
