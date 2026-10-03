@@ -30,10 +30,14 @@
         .border-b { border-bottom: 1px dashed black; }
         @media print {
             body { width: 100%; }
+            .no-print { display: none !important; }
         }
     </style>
 </head>
-<body onload="window.print();">
+<body>
+    <div class="no-print" style="text-align: center; margin-bottom: 10px; padding: 10px; background: #f3f4f6;">
+        <button onclick="window.print()" style="padding: 8px 16px; background: #059669; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">🖨️ Cetak Struk</button>
+    </div>
     <div class="print-container">
         @php
             $usaha = $pesanan->usaha ?? \App\Models\Usaha::first();
@@ -45,8 +49,8 @@
             @if($usaha->alamat)
                 <div style="font-size: 12px;">{{ $usaha->alamat }}</div>
             @endif
-            @if($usaha->no_telp)
-                <div style="font-size: 12px;">Telp: {{ $usaha->no_telp }}</div>
+            @if($usaha->telepon)
+                <div style="font-size: 12px;">Telp: {{ $usaha->telepon }}</div>
             @endif
         </div>
         
@@ -66,11 +70,11 @@
         <table class="w-full" style="font-size: 12px;">
             @foreach($pesanan->detailPesanans as $detail)
                 <tr>
-                    <td colspan="4" class="text-left">{{ $detail->menu->nama }}</td>
+                    <td colspan="4" class="text-left">{{ $detail->nama_menu_snapshot ?? $detail->menu->nama }}</td>
                 </tr>
                 <tr>
-                    <td class="text-left" style="width: 10%;">{{ $detail->qty }}x</td>
-                    <td class="text-right" style="width: 40%;">{{ number_format($detail->harga_satuan, 0, ',', '.') }}</td>
+                    <td class="text-left" style="width: 10%;">{{ $detail->jumlah }}x</td>
+                    <td class="text-right" style="width: 40%;">{{ number_format($detail->harga_satuan_snapshot, 0, ',', '.') }}</td>
                     <td class="text-right" style="width: 50%;">{{ number_format($detail->subtotal, 0, ',', '.') }}</td>
                 </tr>
             @endforeach
@@ -82,16 +86,16 @@
                     <td class="text-right" style="width:50%;">Subtotal:</td>
                     <td class="text-right font-bold">{{ number_format($pesanan->subtotal, 0, ',', '.') }}</td>
                 </tr>
-                @if($pesanan->pajak > 0)
+                @if($pesanan->pajak_nilai > 0)
                 <tr>
                     <td class="text-right">Pajak:</td>
-                    <td class="text-right">{{ number_format($pesanan->pajak, 0, ',', '.') }}</td>
+                    <td class="text-right">{{ number_format($pesanan->pajak_nilai, 0, ',', '.') }}</td>
                 </tr>
                 @endif
-                @if($pesanan->diskon > 0)
+                @if($pesanan->diskon_nilai > 0)
                 <tr>
                     <td class="text-right">Diskon:</td>
-                    <td class="text-right">-{{ number_format($pesanan->diskon, 0, ',', '.') }}</td>
+                    <td class="text-right">-{{ number_format($pesanan->diskon_nilai, 0, ',', '.') }}</td>
                 </tr>
                 @endif
                 <tr>

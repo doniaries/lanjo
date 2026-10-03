@@ -2,16 +2,16 @@
 
 namespace App\Filament\Resources\Pesanans\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
-use Filament\Forms\Components\DatePicker;
-use Filament\Tables\Actions\Action;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -25,7 +25,7 @@ class PesanansTable
                     ->with(['meja', 'kasir'])
                     ->latest('tanggal')
             )
-            ->recordUrl(fn (\Illuminate\Database\Eloquent\Model $record): string => \App\Filament\Resources\Pesanans\Pages\ViewPesanan::getUrl(['record' => $record->id]))
+            ->recordUrl(fn(\Illuminate\Database\Eloquent\Model $record): string => \App\Filament\Resources\Pesanans\Pages\ViewPesanan::getUrl(['record' => $record->id]))
             ->columns([
                 TextColumn::make('nomor_nota')
                     ->label('No. Nota')
@@ -99,11 +99,11 @@ class PesanansTable
                         return $query
                             ->when(
                                 $data['tanggal_mulai'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('tanggal', '>=', $date),
+                                fn(Builder $query, $date): Builder => $query->whereDate('tanggal', '>=', $date),
                             )
                             ->when(
                                 $data['tanggal_selesai'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('tanggal', '<=', $date),
+                                fn(Builder $query, $date): Builder => $query->whereDate('tanggal', '<=', $date),
                             );
                     })
             ])
@@ -112,8 +112,10 @@ class PesanansTable
                     ->label('Cetak Struk')
                     ->icon('heroicon-o-printer')
                     ->color('success')
-                    ->url(fn (\App\Models\Pesanan $record) => route('pesanan.cetak-struk', $record->id))
-                    ->openUrlInNewTab(),
+                    ->modalHeading('Preview Struk')
+                    ->modalContent(fn (\App\Models\Pesanan $record) => view('components.iframe-modal', ['url' => route('pesanan.cetak-struk', $record->id)]))
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('Tutup'),
                 ViewAction::make(),
                 EditAction::make(),
             ])

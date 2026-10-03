@@ -21,10 +21,14 @@ class ListPesanans extends ListRecords
                     \Filament\Forms\Components\DatePicker::make('start_date')
                         ->label('Dari Tanggal')
                         ->required()
+                        ->native(false)
+                        ->displayFormat('d/m/Y')
                         ->default(now()),
                     \Filament\Forms\Components\DatePicker::make('end_date')
                         ->label('Sampai Tanggal')
                         ->required()
+                        ->native(false)
+                        ->displayFormat('d/m/Y')
                         ->default(now()),
                 ])
                 ->action(function (array $data, \Livewire\Component $livewire) {
