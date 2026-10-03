@@ -49,14 +49,14 @@
                 </button>
 
                 {{-- Pending --}}
-                <button wire:click="$set('showPending', true)" title="Pesanan Pending"
+                {{-- <button wire:click="$set('showPending', true)" title="Pesanan Pending"
                     class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20 hover:bg-amber-500 hover:text-white transition group">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <span class="text-[10px] font-medium">Pending</span>
-                </button>
+                </button> --}}
 
                 {{-- Reset / Bersihkan Cart --}}
                 <button wire:click="clearCart" wire:confirm="Kosongkan semua pesanan?" title="Reset Pesanan"
@@ -407,13 +407,7 @@
             @endforelse
         </div>
 
-        {{-- Catatan --}}
-        @if (!empty($cart))
-            <div class="px-5 py-3 border-t border-surface-border">
-                <textarea wire:model.lazy="catatan" placeholder="Catatan pesanan..." rows="2"
-                    class="w-full bg-surface border border-surface-border rounded-xl px-3 py-2 text-sm text-main placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:border-brand-500 resize-none"></textarea>
-            </div>
-        @endif
+
 
         {{-- Summary & Checkout --}}
         <div class="px-5 py-3 border-t border-surface-border bg-surface-card space-y-2 shrink-0">
@@ -567,10 +561,9 @@
                 {{-- Footer Sticky --}}
                 <div class="p-5 border-t border-surface-border bg-surface-card shrink-0">
                     <div class="flex gap-3">
-                        <button wire:click="simpanPending" wire:loading.attr="disabled" wire:target="simpanPending"
-                            class="w-1/3 py-3 rounded-2xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-base transition active:scale-95 shadow-lg shadow-orange-900/50">
-                            <span wire:loading.remove wire:target="simpanPending">⏳ Pending</span>
-                            <span wire:loading wire:target="simpanPending">...</span>
+                        <button wire:click="$set('showCheckout', false)"
+                            class="w-1/3 py-3 rounded-2xl bg-gray-500 hover:bg-gray-600 text-white font-bold text-base transition active:scale-95 shadow-lg shadow-gray-900/50">
+                            Batal
                         </button>
                         <button wire:click="prosesTransaksi" wire:loading.attr="disabled" wire:target="prosesTransaksi"
                             class="w-2/3 py-3 rounded-2xl bg-green-600 hover:bg-green-500 text-white font-bold text-base transition active:scale-95 shadow-lg shadow-green-900/50">
