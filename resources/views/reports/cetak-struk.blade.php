@@ -40,17 +40,16 @@
     </div>
     <div class="print-container">
         @php
-            $usaha = $pesanan->usaha ?? \App\Models\Usaha::first();
-            $pengaturan = \App\Models\Pengaturan::where('usaha_id', $usaha->id)->first();
+            $pengaturan = \App\Models\Pengaturan::first();
         @endphp
         
         <div class="text-center mb-2">
-            <h2 class="font-bold mb-1" style="font-size: 16px; margin-top:0;">{{ $usaha->nama_usaha ?? 'NAMA TOKO' }}</h2>
-            @if($usaha->alamat)
-                <div style="font-size: 12px;">{{ $usaha->alamat }}</div>
+            <h2 class="font-bold mb-1" style="font-size: 16px; margin-top:0;">{{ $pengaturan->nama_toko ?? 'NAMA TOKO' }}</h2>
+            @if($pengaturan && $pengaturan->alamat)
+                <div style="font-size: 12px;">{{ $pengaturan->alamat }}</div>
             @endif
-            @if($usaha->telepon)
-                <div style="font-size: 12px;">Telp: {{ $usaha->telepon }}</div>
+            @if($pengaturan && $pengaturan->telepon)
+                <div style="font-size: 12px;">Telp: {{ $pengaturan->telepon }}</div>
             @endif
         </div>
         
@@ -70,7 +69,7 @@
         <table class="w-full" style="font-size: 12px;">
             @foreach($pesanan->detailPesanans as $detail)
                 <tr>
-                    <td colspan="4" class="text-left">{{ $detail->nama_menu_snapshot ?? $detail->menu->nama }}</td>
+                    <td colspan="4" class="text-left">{{ $detail->nama_menu_snapshot ?? $detail->menu->nama ?? '-' }}</td>
                 </tr>
                 <tr>
                     <td class="text-left" style="width: 10%;">{{ $detail->jumlah }}x</td>
@@ -110,8 +109,8 @@
             <table class="w-full">
                 @foreach($pesanan->pembayarans as $bayar)
                 <tr>
-                    <td class="text-right" style="width:50%;">Bayar ({{ ucfirst($bayar->metode_pembayaran) }}):</td>
-                    <td class="text-right">{{ number_format($bayar->nominal_bayar, 0, ',', '.') }}</td>
+                    <td class="text-right" style="width:50%;">Bayar ({{ ucfirst($bayar->metode) }}):</td>
+                    <td class="text-right">{{ number_format($bayar->jumlah_bayar, 0, ',', '.') }}</td>
                 </tr>
                 <tr>
                     <td class="text-right">Kembali:</td>
@@ -132,7 +131,7 @@
         </div>
         
         <div class="text-center mt-2" style="font-size: 11px;">
-            {!! nl2br(e($pengaturan->footer_struk ?? 'Terima kasih atas kunjungan Anda')) !!}
+            Terima kasih atas kunjungan Anda
         </div>
     </div>
 </body>
