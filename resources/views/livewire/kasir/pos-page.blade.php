@@ -1,4 +1,4 @@
-<div class="flex flex-col md:flex-row h-screen min-h-screen overflow-hidden select-none"
+<div x-data="{ cartOpen: false }" class="flex flex-row h-screen min-h-screen overflow-hidden select-none"
     @keydown.window.enter.prevent="if(!['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName) && Object.keys($wire.cart).length > 0 && !$wire.showCheckout && !$wire.showSuccess) $wire.set('showCheckout', true)">
 
     {{-- ═══════════════════════════════════════════════════════ --}}
@@ -287,18 +287,41 @@
                 </div>
             @endif
         </div>
+
+        {{-- FAB Mobile Cart --}}
+        <button @click="cartOpen = true"
+            class="md:hidden fixed bottom-6 right-6 z-40 bg-brand-600 text-white rounded-full p-4 shadow-xl shadow-brand-900/50 flex items-center justify-center transition active:scale-95">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            @if(count($cart) > 0)
+                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full border-2 border-surface-card shadow-sm">
+                    {{ collect($cart)->sum('qty') }}
+                </span>
+            @endif
+        </button>
     </div>
+
+    {{-- OVERLAY MOBILE --}}
+    <div x-show="cartOpen" x-transition.opacity style="display: none;"
+         @click="cartOpen = false"
+         class="md:hidden fixed inset-0 bg-black/60 z-40 backdrop-blur-sm"></div>
 
     {{-- ═══════════════════════════════════════════════════════ --}}
     {{-- RIGHT PANEL — Cart                                     --}}
     {{-- ═══════════════════════════════════════════════════════ --}}
-    <div
-        class="w-full md:w-80 lg:w-96 h-[42vh] md:h-auto min-h-0 flex flex-col bg-surface-card border-t md:border-t-0 md:border-l border-surface-border shrink-0">
+    <div :class="cartOpen ? 'translate-x-0' : 'translate-x-full'"
+        class="fixed md:static inset-y-0 right-0 z-50 w-[85%] sm:w-96 md:w-80 lg:w-96 h-full flex flex-col bg-surface-card border-l border-surface-border shrink-0 transition-transform duration-300 md:translate-x-0">
 
         {{-- Cart Header --}}
         <div class="flex items-center justify-between px-5 py-4 border-b border-surface-border">
             <div class="flex items-center gap-2">
-                <svg class="w-5 h-5 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button @click="cartOpen = false" class="md:hidden text-gray-500 hover:text-main -ml-2 mr-1">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                <svg class="w-5 h-5 text-brand-400 hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
