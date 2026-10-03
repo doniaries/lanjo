@@ -84,27 +84,34 @@ class PesanansTable
                         'selesai' => 'Selesai',
                         'batal'   => 'Batal',
                     ]),
-                Filter::make('tanggal')
+                Filter::make('periode')
                     ->form([
-                        DatePicker::make('tanggal_mulai')
-                            ->label('Dari Tanggal')
-                            ->native(false)
-                            ->displayFormat('d/m/Y'),
-                        DatePicker::make('tanggal_selesai')
-                            ->label('Sampai Tanggal')
-                            ->native(false)
-                            ->displayFormat('d/m/Y'),
+                        \Filament\Forms\Components\Select::make('periode')
+                            ->label('Periode')
+                            ->options([
+                                'hari_ini' => 'Hari Ini',
+                                'kemarin' => 'Kemarin',
+                                'minggu_ini' => 'Minggu Ini',
+                                'bulan_ini' => 'Bulan Ini',
+                                'tahun_ini' => 'Tahun Ini',
+                                'semua' => 'Semua',
+                            ])
+                            ->default('hari_ini'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                $data['tanggal_mulai'],
-                                fn(Builder $query, $date): Builder => $query->whereDate('tanggal', '>=', $date),
-                            )
-                            ->when(
-                                $data['tanggal_selesai'],
-                                fn(Builder $query, $date): Builder => $query->whereDate('tanggal', '<=', $date),
-                            );
+                        $now = now();
+                        return match ($data['periode'] ?? 'hari_ini') {
+                            'hari_ini' => $query->whereDate('tanggal', $now->format('Y-m-d')),
+                            'kemarin' => $query->whereDate('tanggal', $now->copy()->subDay()->format('Y-m-d')),
+                            'minggu_ini' => $query->whereBetween('tanggal', [
+                                $now->copy()->startOfWeek()->format('Y-m-d 00:00:00'),
+                                $now->copy()->endOfWeek()->format('Y-m-d 23:59:59'),
+                            ]),
+                            'bulan_ini' => $query->whereMonth('tanggal', $now->month)
+                                                 ->whereYear('tanggal', $now->year),
+                            'tahun_ini' => $query->whereYear('tanggal', $now->year),
+                            default => $query,
+                        };
                     })
             ])
             ->recordActions([
