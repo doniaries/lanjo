@@ -9,7 +9,11 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\Filter;
+use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class PesanansTable
 {
@@ -80,8 +84,36 @@ class PesanansTable
                         'selesai' => 'Selesai',
                         'batal'   => 'Batal',
                     ]),
+                Filter::make('tanggal')
+                    ->form([
+                        DatePicker::make('tanggal_mulai')
+                            ->label('Dari Tanggal')
+                            ->native(false)
+                            ->displayFormat('d/m/Y'),
+                        DatePicker::make('tanggal_selesai')
+                            ->label('Sampai Tanggal')
+                            ->native(false)
+                            ->displayFormat('d/m/Y'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['tanggal_mulai'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('tanggal', '>=', $date),
+                            )
+                            ->when(
+                                $data['tanggal_selesai'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('tanggal', '<=', $date),
+                            );
+                    })
             ])
             ->recordActions([
+                Action::make('cetak_struk')
+                    ->label('Cetak Struk')
+                    ->icon('heroicon-o-printer')
+                    ->color('success')
+                    ->url(fn (\App\Models\Pesanan $record) => route('pesanan.cetak-struk', $record->id))
+                    ->openUrlInNewTab(),
                 ViewAction::make(),
                 EditAction::make(),
             ])

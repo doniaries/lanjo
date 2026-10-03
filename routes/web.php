@@ -37,3 +37,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('laporan.transaksi');
 });
 Route::get('/laporan/cetak', [App\Http\Controllers\LaporanController::class, 'cetak'])->name('laporan.cetak')->middleware(['web', 'auth']);
+
+// Route Cetak Struk & Verifikasi
+Route::get('/pesanan/cetak-struk/{id}', function ($id) {
+    $pesanan = \App\Models\Pesanan::with(['detailPesanans.menu', 'kasir', 'meja', 'pembayarans', 'usaha'])->findOrFail($id);
+    return view('reports.cetak-struk', compact('pesanan'));
+})->name('pesanan.cetak-struk')->middleware(['web', 'auth']);
+
+Route::get('/verifikasi-struk/{nomor_nota}', function ($nomor_nota) {
+    $pesanan = \App\Models\Pesanan::with(['detailPesanans.menu', 'kasir', 'meja', 'pembayarans', 'usaha'])->where('nomor_nota', $nomor_nota)->firstOrFail();
+    return view('reports.verifikasi-struk', compact('pesanan'));
+})->name('verifikasi.struk');

@@ -718,6 +718,13 @@
             </div>
 
             <div class="text-center text-xs mt-4 mb-8">
+                @php
+                    $qrUrl = route('verifikasi.struk', $notaData['nomor']);
+                    $qrCode = (new \chillerlan\QRCode\QRCode())->render($qrUrl);
+                @endphp
+                <img src="{{ $qrCode }}" alt="QR Code" style="width:100px; height:100px; margin: 0 auto; display:block;" />
+                <div style="font-size:10px; margin-top:4px; margin-bottom:8px;">Scan untuk cek keaslian struk</div>
+                
                 @if (!empty($notaData['footer_struk']))
                     {!! nl2br(e($notaData['footer_struk'])) !!}
                 @else
