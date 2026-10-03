@@ -231,6 +231,8 @@
                     @foreach ($this->menus as $menu)
                         <button
                             wire:click="addToCart({{ $menu->id }}, '{{ addslashes($menu->nama) }}', {{ $menu->harga_jual }}, '{{ $menu->gambar ?? '' }}')"
+                            wire:loading.class="opacity-50 scale-95 pointer-events-none"
+                            wire:target="addToCart({{ $menu->id }})"
                             class="menu-card group relative bg-surface-card border border-surface-border rounded-xl overflow-hidden text-left
                         hover:border-brand-500 hover:shadow-lg hover:shadow-brand-900/30 active:scale-95 transition-all duration-200 cursor-pointer">
 
@@ -430,8 +432,10 @@
         <div class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
             wire:click.self="$set('showCheckout', false)">
             <div
-                class="bg-surface-card border border-surface-border rounded-3xl w-full max-w-md max-h-[85vh] overflow-y-auto p-5 sm:p-6 space-y-4 sm:space-y-5 fade-up shadow-2xl">
-                <div class="flex items-center justify-between">
+                class="bg-surface-card border border-surface-border rounded-3xl w-full max-w-md max-h-[90dvh] flex flex-col fade-up shadow-2xl overflow-hidden">
+                
+                {{-- Header --}}
+                <div class="flex items-center justify-between p-5 border-b border-surface-border shrink-0">
                     <h2 class="text-lg font-bold text-main">Konfirmasi Pembayaran</h2>
                     <button wire:click="$set('showCheckout', false)"
                         class="text-gray-500 dark:text-gray-300 hover:text-white">
@@ -442,101 +446,107 @@
                     </button>
                 </div>
 
-                {{-- Total --}}
-                <div class="bg-surface rounded-2xl p-4 text-center">
-                    <p class="text-sm text-gray-500 dark:text-gray-300 mb-1">Total Pembayaran</p>
-                    <p class="text-3xl font-black text-brand-400">Rp {{ number_format($this->total, 0, ',', '.') }}
-                    </p>
-                </div>
-
-                {{-- Metode --}}
-                <div class="space-y-2">
-                    <p class="text-xs text-gray-500 dark:text-gray-300 font-semibold uppercase tracking-wider">Metode
-                        Pembayaran</p>
-                    <div class="grid grid-cols-3 gap-2">
-                        @foreach (['tunai' => '💵 Tunai', 'debit' => '💳 Debit', 'qris' => '📱 QRIS'] as $val => $label)
-                            <button wire:click="$set('metodePembayaran', '{{ $val }}')"
-                                class="py-3 rounded-xl text-sm font-semibold border transition
-                                {{ $metodePembayaran === $val ? 'bg-brand-600 border-brand-500 text-white' : 'bg-surface border-surface-border text-gray-500 dark:text-gray-300 hover:border-brand-500' }}">
-                                {{ $label }}
-                            </button>
-                        @endforeach
+                {{-- Body (Scrollable) --}}
+                <div class="flex-1 overflow-y-auto p-5 space-y-4">
+                    {{-- Total --}}
+                    <div class="bg-surface rounded-2xl p-4 text-center">
+                        <p class="text-sm text-gray-500 dark:text-gray-300 mb-1">Total Pembayaran</p>
+                        <p class="text-3xl font-black text-brand-400">Rp {{ number_format($this->total, 0, ',', '.') }}
+                        </p>
                     </div>
-                </div>
 
-                {{-- Nominal (tunai only) --}}
-                @if ($metodePembayaran === 'tunai')
-                    <div class="space-y-3" x-data="{
-                        display: '{{ number_format($nominalBayar, 0, ',', '.') }}',
-                        init() {
-                            this.display = this.format({{ (int) $nominalBayar }});
-                            this.$watch('display', val => {
-                                const raw = parseInt(String(val).replace(/\./g, '')) || 0;
-                                $wire.set('nominalBayar', raw);
-                            });
-                        },
-                        format(n) {
-                            return parseInt(n).toLocaleString('id-ID');
-                        },
-                        onInput(e) {
-                            const raw = e.target.value.replace(/\./g, '').replace(/[^0-9]/g, '');
-                            const num = parseInt(raw) || 0;
-                            this.display = this.format(num);
-                            $wire.set('nominalBayar', num);
-                        },
-                        setVal(n) {
-                            this.display = this.format(n);
-                            $wire.set('nominalBayar', n);
-                        }
-                    }">
-                        <p class="text-xs text-gray-500 dark:text-gray-300 font-semibold uppercase tracking-wider">
-                            Nominal Bayar</p>
-
-                        <div class="relative">
-                            <span
-                                class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-300 font-bold text-xl">Rp</span>
-                            <input type="text" inputmode="numeric" x-model="display" @input="onInput($event)"
-                                @focus="$event.target.select()"
-                                class="w-full bg-surface border border-surface-border rounded-xl pl-12 pr-4 py-3 text-2xl font-black text-main focus:outline-none focus:border-brand-500 text-right tabular-nums">
-                        </div>
-
-                        {{-- Quick amounts dari total --}}
-                        @php
-                            $tot = (int) $this->total;
-                            $quickAmounts = array_unique([$tot, 20000, 50000, 100000, 200000]);
-                            sort($quickAmounts);
-                        @endphp
-                        <div class="flex flex-wrap gap-2">
-                            @foreach ($quickAmounts as $amount)
-                                <button @click="setVal({{ $amount }})"
-                                    class="px-4 py-2 bg-surface border border-surface-border rounded-xl text-sm font-bold text-main hover:border-brand-500 hover:text-brand-400 transition">
-                                    {{ number_format($amount, 0, ',', '.') }}
+                    {{-- Metode --}}
+                    <div class="space-y-2">
+                        <p class="text-xs text-gray-500 dark:text-gray-300 font-semibold uppercase tracking-wider">Metode
+                            Pembayaran</p>
+                        <div class="grid grid-cols-3 gap-2">
+                            @foreach (['tunai' => '💵 Tunai', 'debit' => '💳 Debit', 'qris' => '📱 QRIS'] as $val => $label)
+                                <button wire:click="$set('metodePembayaran', '{{ $val }}')"
+                                    class="py-3 rounded-xl text-sm font-semibold border transition
+                                    {{ $metodePembayaran === $val ? 'bg-brand-600 border-brand-500 text-white' : 'bg-surface border-surface-border text-gray-500 dark:text-gray-300 hover:border-brand-500' }}">
+                                    {{ $label }}
                                 </button>
                             @endforeach
                         </div>
+                    </div>
 
-                        <div
-                            class="flex justify-between items-center bg-green-500/10 border border-green-500/20 rounded-xl px-5 py-4">
-                            <div>
-                                <p class="text-xs text-green-400 font-semibold uppercase tracking-wider">Kembalian</p>
-                                <p class="text-2xl font-black text-green-400">Rp
-                                    {{ number_format($this->kembalian, 0, ',', '.') }}</p>
+                    {{-- Nominal (tunai only) --}}
+                    @if ($metodePembayaran === 'tunai')
+                        <div class="space-y-3" x-data="{
+                            display: '{{ number_format($nominalBayar, 0, ',', '.') }}',
+                            init() {
+                                this.display = this.format({{ (int) $nominalBayar }});
+                                this.$watch('display', val => {
+                                    const raw = parseInt(String(val).replace(/\./g, '')) || 0;
+                                    $wire.set('nominalBayar', raw);
+                                });
+                            },
+                            format(n) {
+                                return parseInt(n).toLocaleString('id-ID');
+                            },
+                            onInput(e) {
+                                const raw = e.target.value.replace(/\./g, '').replace(/[^0-9]/g, '');
+                                const num = parseInt(raw) || 0;
+                                this.display = this.format(num);
+                                $wire.set('nominalBayar', num);
+                            },
+                            setVal(n) {
+                                this.display = this.format(n);
+                                $wire.set('nominalBayar', n);
+                            }
+                        }">
+                            <p class="text-xs text-gray-500 dark:text-gray-300 font-semibold uppercase tracking-wider">
+                                Nominal Bayar</p>
+
+                            <div class="relative">
+                                <span
+                                    class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-300 font-bold text-xl">Rp</span>
+                                <input type="text" inputmode="numeric" x-model="display" @input="onInput($event)"
+                                    @focus="$event.target.select()"
+                                    class="w-full bg-surface border border-surface-border rounded-xl pl-12 pr-4 py-3 text-2xl font-black text-main focus:outline-none focus:border-brand-500 text-right tabular-nums">
+                            </div>
+
+                            {{-- Quick amounts dari total --}}
+                            @php
+                                $tot = (int) $this->total;
+                                $quickAmounts = array_unique([$tot, 20000, 50000, 100000, 200000]);
+                                sort($quickAmounts);
+                            @endphp
+                            <div class="flex flex-wrap gap-2">
+                                @foreach ($quickAmounts as $amount)
+                                    <button @click="setVal({{ $amount }})"
+                                        class="px-4 py-2 bg-surface border border-surface-border rounded-xl text-sm font-bold text-main hover:border-brand-500 hover:text-brand-400 transition">
+                                        {{ number_format($amount, 0, ',', '.') }}
+                                    </button>
+                                @endforeach
+                            </div>
+
+                            <div
+                                class="flex justify-between items-center bg-green-500/10 border border-green-500/20 rounded-xl px-5 py-4 mt-2">
+                                <div>
+                                    <p class="text-xs text-green-400 font-semibold uppercase tracking-wider">Kembalian</p>
+                                    <p class="text-2xl font-black text-green-400">Rp
+                                        {{ number_format($this->kembalian, 0, ',', '.') }}</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                @endif
+                    @endif
+                </div>
 
-                <div class="flex gap-3">
-                    <button wire:click="simpanPending" wire:loading.attr="disabled" wire:target="simpanPending"
-                        class="w-1/3 py-4 rounded-2xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-base transition active:scale-95 shadow-lg shadow-orange-900/50">
-                        <span wire:loading.remove wire:target="simpanPending">⏳ Pending</span>
-                        <span wire:loading wire:target="simpanPending">Memproses...</span>
-                    </button>
-                    <button wire:click="prosesTransaksi" wire:loading.attr="disabled" wire:target="prosesTransaksi"
-                        class="w-2/3 py-4 rounded-2xl bg-green-600 hover:bg-green-500 text-white font-bold text-base transition active:scale-95 shadow-lg shadow-green-900/50">
-                        <span wire:loading.remove wire:target="prosesTransaksi">✅ Selesaikan</span>
-                        <span wire:loading wire:target="prosesTransaksi">Memproses...</span>
-                    </button>
+                {{-- Footer Sticky --}}
+                <div class="p-5 border-t border-surface-border bg-surface-card shrink-0">
+                    <div class="flex gap-3">
+                        <button wire:click="simpanPending" wire:loading.attr="disabled" wire:target="simpanPending"
+                            class="w-1/3 py-3 rounded-2xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-base transition active:scale-95 shadow-lg shadow-orange-900/50">
+                            <span wire:loading.remove wire:target="simpanPending">⏳ Pending</span>
+                            <span wire:loading wire:target="simpanPending">...</span>
+                        </button>
+                        <button wire:click="prosesTransaksi" wire:loading.attr="disabled" wire:target="prosesTransaksi"
+                            class="w-2/3 py-3 rounded-2xl bg-green-600 hover:bg-green-500 text-white font-bold text-base transition active:scale-95 shadow-lg shadow-green-900/50">
+                            <span wire:loading.remove wire:target="prosesTransaksi">✅ Selesaikan</span>
+                            <span wire:loading wire:target="prosesTransaksi">...</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
