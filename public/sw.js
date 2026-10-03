@@ -1,9 +1,11 @@
-const CACHE_NAME = 'lanjo-pwa-v4';
+const CACHE_NAME = 'lanjo-pwa-v5';
+const OFFLINE_URL = '/offline.html';
 const urlsToCache = [
     '/images/icon-192x192.png',
     '/images/icon-512x512.png',
     '/images/pwa-icon.svg',
-    '/manifest.json'
+    '/manifest.json',
+    OFFLINE_URL
 ];
 
 self.addEventListener('install', event => {
@@ -24,13 +26,21 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('fetch', event => {
-    // Basic fetch strategy: Network first, fallback to cache
     // Only intercept GET requests
     if (event.request.method !== 'GET') return;
     
     event.respondWith(
         fetch(event.request).catch(() => {
-            return caches.match(event.request);
+            return caches.match(event.request).then(response => {
+                if (response) {
+                    return response;
+                }
+                // If it's a page navigation request, return the offline fallback
+                if (event.request.mode === 'navigate') {
+                    return caches.match(OFFLINE_URL);
+                }
+                return undefined;
+            });
         })
     );
 });
