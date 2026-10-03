@@ -346,7 +346,7 @@
     @if($showCheckout)
         <div class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
             wire:click.self="$set('showCheckout', false)">
-            <div class="bg-surface-card border border-surface-border rounded-3xl w-full max-w-md p-6 space-y-5 fade-up shadow-2xl">
+            <div class="bg-surface-card border border-surface-border rounded-3xl w-full max-w-md max-h-[85vh] overflow-y-auto p-5 sm:p-6 space-y-4 sm:space-y-5 fade-up shadow-2xl">
                 <div class="flex items-center justify-between">
                     <h2 class="text-lg font-bold text-main">Konfirmasi Pembayaran</h2>
                     <button wire:click="$set('showCheckout', false)" class="text-gray-500 dark:text-gray-300 hover:text-white">
@@ -466,7 +466,7 @@
     {{-- ═══════════════════════════════════════════════════════ --}}
     @if($showSuccess)
         <div class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div class="bg-surface-card border border-green-500/30 rounded-3xl w-full max-w-sm p-8 text-center space-y-4 fade-up shadow-2xl shadow-green-900/30">
+            <div class="bg-surface-card border border-green-500/30 rounded-3xl w-full max-w-sm max-h-[85vh] overflow-y-auto p-6 sm:p-8 text-center space-y-4 fade-up shadow-2xl shadow-green-900/30">
                 <div class="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto">
                     <svg class="w-10 h-10 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                 </div>
