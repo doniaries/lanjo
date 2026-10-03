@@ -53,6 +53,9 @@ class PosPage extends Component
     public ?int   $selectedPesananId  = null;
     public string $laporanStart       = '';
     public string $laporanEnd         = '';
+    public string $riwayatPeriode     = 'hari_ini';
+    public string $riwayatTanggalMulai = '';
+    public string $riwayatTanggalSelesai = '';
     public float  $kembalianSuccess   = 0;
     public array  $notaData           = [];   // untuk print
 
@@ -60,6 +63,8 @@ class PosPage extends Component
     {
         $this->laporanStart = now()->format('Y-m-d');
         $this->laporanEnd = now()->format('Y-m-d');
+        $this->riwayatTanggalMulai = now()->format('Y-m-d');
+        $this->riwayatTanggalSelesai = now()->format('Y-m-d');
         $this->selectedKategori = null;
     }
 
@@ -146,11 +151,31 @@ class PosPage extends Component
     #[Computed]
     public function riwayatTransaksi()
     {
-        return \App\Models\Pesanan::with('kasir')
-            ->when($this->usaha_id, fn ($q) => $q->where('usaha_id', $this->usaha_id))
-            ->whereDate('tanggal', today())
-            ->latest('tanggal')
-            ->paginate(15);
+        $query = \App\Models\Pesanan::with('kasir')
+            ->when($this->usaha_id, fn ($q) => $q->where('usaha_id', $this->usaha_id));
+
+        switch ($this->riwayatPeriode) {
+            case 'kemarin':
+                $query->whereDate('tanggal', today()->subDay());
+                break;
+            case 'minggu_ini':
+                $query->whereBetween('tanggal', [now()->startOfWeek(), now()->endOfWeek()]);
+                break;
+            case 'bulan_ini':
+                $query->whereBetween('tanggal', [now()->startOfMonth(), now()->endOfMonth()]);
+                break;
+            case 'custom':
+                if ($this->riwayatTanggalMulai && $this->riwayatTanggalSelesai) {
+                    $query->whereBetween('tanggal', [$this->riwayatTanggalMulai, $this->riwayatTanggalSelesai]);
+                }
+                break;
+            case 'hari_ini':
+            default:
+                $query->whereDate('tanggal', today());
+                break;
+        }
+
+        return $query->latest('tanggal')->paginate(15);
     }
 
     #[Computed]

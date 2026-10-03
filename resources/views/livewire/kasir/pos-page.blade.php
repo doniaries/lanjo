@@ -780,7 +780,7 @@
                 class="bg-white dark:bg-gray-900 w-full max-w-4xl max-h-[85vh] rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800 flex flex-col">
                 <div
                     class="p-4 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-900 rounded-t-2xl shrink-0">
-                    <h3 class="font-bold text-lg text-gray-900 dark:text-white">Riwayat Transaksi Hari Ini</h3>
+                    <h3 class="font-bold text-lg text-gray-900 dark:text-white">Riwayat Transaksi</h3>
                     <button wire:click="$set('showRiwayat', false)"
                         class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -788,6 +788,25 @@
                                 d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
+                </div>
+                
+                {{-- Filter Riwayat --}}
+                <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 shrink-0 flex flex-col sm:flex-row items-center gap-3">
+                    <select wire:model.live="riwayatPeriode" class="w-full sm:w-auto bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-brand-500">
+                        <option value="hari_ini">Hari Ini</option>
+                        <option value="kemarin">Kemarin</option>
+                        <option value="minggu_ini">Minggu Ini</option>
+                        <option value="bulan_ini">Bulan Ini</option>
+                        <option value="custom">Pertanggal (Custom)</option>
+                    </select>
+                    
+                    @if($riwayatPeriode === 'custom')
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <input type="date" wire:model.live="riwayatTanggalMulai" class="w-full sm:w-auto bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-brand-500">
+                            <span class="text-gray-500 dark:text-gray-400 text-sm">s/d</span>
+                            <input type="date" wire:model.live="riwayatTanggalSelesai" class="w-full sm:w-auto bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-brand-500">
+                        </div>
+                    @endif
                 </div>
                 <div class="p-0 overflow-auto flex-1 bg-white dark:bg-gray-900">
                     <table class="w-full text-left border-collapse text-sm text-gray-900 dark:text-white">
