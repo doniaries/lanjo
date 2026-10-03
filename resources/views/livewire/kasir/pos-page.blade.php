@@ -342,25 +342,18 @@
 
 
         {{-- Tipe Pesanan & Meja --}}
-        <div class="px-5 py-4 border-b border-surface-border space-y-3 shrink-0">
-            <div class="grid grid-cols-2 gap-2 bg-surface p-1 rounded-xl">
-                <button wire:click="$set('tipePesanan', 'dine_in')" class="py-2 text-sm font-bold rounded-lg transition-all {{ $tipePesanan === 'dine_in' ? 'bg-brand-600 text-white shadow' : 'text-gray-500 dark:text-gray-400 hover:bg-surface-card' }}">Dine In</button>
-                <button wire:click="$set('tipePesanan', 'take_away')" class="py-2 text-sm font-bold rounded-lg transition-all {{ $tipePesanan === 'take_away' ? 'bg-brand-600 text-white shadow' : 'text-gray-500 dark:text-gray-400 hover:bg-surface-card' }}">Take Away</button>
-            </div>
-            
-            @if ($tipePesanan === 'dine_in')
-                <select wire:model="selectedMeja"
-                    class="w-full bg-surface border border-surface-border rounded-xl px-3 py-2 text-sm text-main focus:outline-none focus:border-brand-500">
-                    <option value="">-- Pilih Meja --</option>
-                    @foreach ($this->mejas as $meja)
-                        <option value="{{ $meja->id }}">Meja {{ $meja->nomor_meja }}
-                            @if ($meja->status !== 'kosong')
-                                ({{ $meja->status }})
-                            @endif
-                        </option>
-                    @endforeach
-                </select>
-            @endif
+        <div class="px-5 py-3 border-b border-surface-border shrink-0">
+            <select wire:model="selectedMeja"
+                class="w-full bg-surface border border-surface-border rounded-xl px-3 py-2 text-sm text-main focus:outline-none focus:border-brand-500">
+                <option value="">-- Pilih Meja --</option>
+                @foreach ($this->mejas as $meja)
+                    <option value="{{ $meja->id }}">Meja {{ $meja->nomor_meja }}
+                        @if ($meja->status !== 'kosong')
+                            ({{ $meja->status }})
+                        @endif
+                    </option>
+                @endforeach
+            </select>
         </div>
 
         {{-- Cart Items --}}
@@ -423,7 +416,7 @@
         @endif
 
         {{-- Summary & Checkout --}}
-        <div class="px-5 py-4 border-t border-surface-border bg-surface-card space-y-2 shrink-0">
+        <div class="px-5 py-3 border-t border-surface-border bg-surface-card space-y-2 shrink-0">
             <div class="flex justify-between text-sm text-gray-500 dark:text-gray-300">
                 <span>Subtotal</span>
                 <span class="text-main">Rp {{ number_format($this->subtotal, 0, ',', '.') }}</span>
