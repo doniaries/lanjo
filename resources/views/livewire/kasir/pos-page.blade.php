@@ -341,19 +341,26 @@
 
 
 
-        {{-- Meja --}}
+        {{-- Tipe Pesanan & Meja --}}
         <div class="px-5 py-4 border-b border-surface-border space-y-3 shrink-0">
-            <select wire:model="selectedMeja"
-                class="w-full bg-surface border border-surface-border rounded-xl px-3 py-2 text-sm text-main focus:outline-none focus:border-brand-500">
-                <option value="">-- Pilih Meja --</option>
-                @foreach ($this->mejas as $meja)
-                    <option value="{{ $meja->id }}">Meja {{ $meja->nomor_meja }}
-                        @if ($meja->status !== 'kosong')
-                            ({{ $meja->status }})
-                        @endif
-                    </option>
-                @endforeach
-            </select>
+            <div class="grid grid-cols-2 gap-2 bg-surface p-1 rounded-xl">
+                <button wire:click="$set('tipePesanan', 'dine_in')" class="py-2 text-sm font-bold rounded-lg transition-all {{ $tipePesanan === 'dine_in' ? 'bg-brand-600 text-white shadow' : 'text-gray-500 dark:text-gray-400 hover:bg-surface-card' }}">Dine In</button>
+                <button wire:click="$set('tipePesanan', 'take_away')" class="py-2 text-sm font-bold rounded-lg transition-all {{ $tipePesanan === 'take_away' ? 'bg-brand-600 text-white shadow' : 'text-gray-500 dark:text-gray-400 hover:bg-surface-card' }}">Take Away</button>
+            </div>
+            
+            @if ($tipePesanan === 'dine_in')
+                <select wire:model="selectedMeja"
+                    class="w-full bg-surface border border-surface-border rounded-xl px-3 py-2 text-sm text-main focus:outline-none focus:border-brand-500">
+                    <option value="">-- Pilih Meja --</option>
+                    @foreach ($this->mejas as $meja)
+                        <option value="{{ $meja->id }}">Meja {{ $meja->nomor_meja }}
+                            @if ($meja->status !== 'kosong')
+                                ({{ $meja->status }})
+                            @endif
+                        </option>
+                    @endforeach
+                </select>
+            @endif
         </div>
 
         {{-- Cart Items --}}
@@ -452,10 +459,10 @@
     {{-- CHECKOUT MODAL                                         --}}
     {{-- ═══════════════════════════════════════════════════════ --}}
     @if ($showCheckout)
-        <div class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        <div class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center sm:p-4"
             wire:click.self="$set('showCheckout', false)">
             <div
-                class="bg-surface-card border border-surface-border rounded-3xl w-full max-w-md max-h-[90dvh] flex flex-col fade-up shadow-2xl overflow-hidden">
+                class="bg-surface-card border border-surface-border rounded-t-3xl rounded-b-none sm:rounded-3xl w-full max-w-md max-h-[95dvh] sm:max-h-[90dvh] flex flex-col fade-up shadow-2xl overflow-hidden pb-4 sm:pb-0">
                 
                 {{-- Header --}}
                 <div class="flex items-center justify-between p-5 border-b border-surface-border shrink-0">
