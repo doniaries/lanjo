@@ -69,6 +69,16 @@ class Usaha extends Model implements HasName
         return $this->hasMany(Shift::class);
     }
 
+    public function isFree(): bool
+    {
+        return $this->paket === 'free';
+    }
+
+    public function isPremium(): bool
+    {
+        return $this->paket === 'premium';
+    }
+
     public function tipeUsaha()
     {
         return $this->belongsTo(TipeUsaha::class, 'tipe_usaha_id');

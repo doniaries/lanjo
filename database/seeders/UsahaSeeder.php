@@ -26,6 +26,7 @@ class UsahaSeeder extends Seeder
             'pajak_default' => 11.00,
             'pajak_aktif'   => true,
             'is_active'     => true,
+            'paket'         => 'premium',
         ]);
 
         $usaha2 = Usaha::create([
@@ -37,6 +38,7 @@ class UsahaSeeder extends Seeder
             'pajak_default' => 10.00,
             'pajak_aktif'   => false,
             'is_active'     => true,
+            'paket'         => 'free',
         ]);
 
         // ─── Buat User per Usaha ───────────────────────────────────────────

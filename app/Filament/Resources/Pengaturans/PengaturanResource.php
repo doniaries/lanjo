@@ -27,6 +27,21 @@ class PengaturanResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'id';
 
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+        if ($user->isSuperadmin()) {
+            return true;
+        }
+
+        $usaha = $user->usaha;
+        if ($usaha && $usaha->isFree()) {
+            return false; 
+        }
+
+        return true;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return PengaturanForm::configure($schema);

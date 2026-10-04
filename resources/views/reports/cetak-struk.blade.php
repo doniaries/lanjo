@@ -40,13 +40,18 @@
     </div>
     <div class="print-container">
         @php
-            $pengaturan = \App\Models\Pengaturan::first();
+            $isFree = $pesanan->usaha && $pesanan->usaha->isFree();
+            $pengaturan = \App\Models\Pengaturan::where('usaha_id', $pesanan->usaha_id)->first();
         @endphp
         
         <div class="text-center mb-2">
-            <h2 class="font-bold mb-1" style="font-size: 16px; margin-top:0;">{{ $pengaturan->nama_toko ?? 'NAMA TOKO' }}</h2>
-            @if($pengaturan && $pengaturan->alamat)
-                <div style="font-size: 12px;">{{ $pengaturan->alamat }}</div>
+            @if($isFree)
+                <h2 class="font-bold mb-1" style="font-size: 16px; margin-top:0;">Struk Belanja</h2>
+            @else
+                <h2 class="font-bold mb-1" style="font-size: 16px; margin-top:0;">{{ $pengaturan->nama_toko ?? $pesanan->usaha->nama_usaha ?? 'NAMA TOKO' }}</h2>
+                @if($pengaturan && $pengaturan->alamat)
+                    <div style="font-size: 12px;">{{ $pengaturan->alamat }}</div>
+                @endif
             @endif
             @if($pengaturan && $pengaturan->telepon)
                 <div style="font-size: 12px;">Telp: {{ $pengaturan->telepon }}</div>
@@ -131,7 +136,13 @@
         </div>
         
         <div class="text-center mt-2" style="font-size: 11px;">
-            Terima kasih atas kunjungan Anda
+            @if($isFree)
+                <p style="margin:0;">* VERSI FREE *</p>
+                <p style="margin:0;">Software Kasir by: Lanjo</p>
+                <p style="margin:0;">Upgrade / Hubungi: WA 0812-XXXX-XXXX</p>
+            @else
+                {{ $pengaturan->teks_footer ?? 'Terima kasih atas kunjungan Anda' }}
+            @endif
         </div>
     </div>
 </body>
