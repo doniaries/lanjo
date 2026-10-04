@@ -17,7 +17,7 @@ class CreatePesanan extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         /** @var \App\Models\User|null $user */
-        $user = auth()->user();
+        $user = \Illuminate\Support\Facades\Auth::user();
         $usaha = $user?->usaha;
 
         if ($usaha && $usaha->isFree()) {
