@@ -16,7 +16,9 @@ class CreatePesanan extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $usaha = auth()->user()->usaha;
+        /** @var \App\Models\User|null $user */
+        $user = auth()->user();
+        $usaha = $user?->usaha;
 
         if ($usaha && $usaha->isFree()) {
             $jumlahPesananBulanIni = \App\Models\Pesanan::where('usaha_id', $usaha->id)

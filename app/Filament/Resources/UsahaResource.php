@@ -3,45 +3,56 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UsahaResource\Pages;
-use App\Filament\Resources\UsahaResource\RelationManagers;
 use App\Models\Usaha;
-use Filament\Forms;
-use Filament\Forms\Form;
+use BackedEnum;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Table;
+use Filament\Schemas\Schema;
 use Filament\Tables\Actions\Action;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Table;
 
 class UsahaResource extends Resource
 {
     protected static ?string $model = Usaha::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
-    protected static ?string $navigationGroup = 'Sistem Admin';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-building-storefront';
+    
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Sistem Admin';
+    }
 
     // Membatasi HANYA SUPERADMIN yang bisa melihat menu ini
     public static function canAccess(): bool
     {
-        return auth()->user()->tipe === 'superadmin';
+        /** @var \App\Models\User|null $user */
+        $user = auth()->user();
+        
+        return $user?->tipe === 'superadmin';
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('nama_usaha')
+        return $schema
+            ->components([
+                TextInput::make('nama_usaha')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Select::make('paket')
+                Select::make('paket')
                     ->options([
                         'free' => 'Free',
                         'premium' => 'Premium',
                     ])
                     ->default('free')
                     ->required(),
-                Forms\Components\Toggle::make('is_active')
+                Toggle::make('is_active')
                     ->required(),
             ]);
     }
@@ -50,23 +61,24 @@ class UsahaResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nama_usaha')
+                TextColumn::make('nama_usaha')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('paket')
+                TextColumn::make('paket')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'free' => 'gray',
                         'premium' => 'success',
+                        default => 'primary',
                     })
                     ->formatStateUsing(fn (string $state) => strtoupper($state)),
-                Tables\Columns\ToggleColumn::make('is_active')
+                ToggleColumn::make('is_active')
                     ->label('Aktif?'),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -74,7 +86,7 @@ class UsahaResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
+            ->recordActions([
                 // Tombol aksi cepat untuk upgrade ke Premium
                 Action::make('upgrade')
                     ->label('Jadikan Premium')
@@ -92,11 +104,11 @@ class UsahaResource extends Resource
                     ->requiresConfirmation()
                     ->hidden(fn (Usaha $record) => $record->isFree())
                     ->action(fn (Usaha $record) => $record->update(['paket' => 'free'])),
-                Tables\Actions\EditAction::make(),
+                EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

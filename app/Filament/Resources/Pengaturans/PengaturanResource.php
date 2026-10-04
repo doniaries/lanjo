@@ -29,8 +29,9 @@ class PengaturanResource extends Resource
 
     public static function canAccess(): bool
     {
+        /** @var \App\Models\User|null $user */
         $user = auth()->user();
-        if ($user->isSuperadmin()) {
+        if ($user && $user->isSuperadmin()) {
             return true;
         }
 
